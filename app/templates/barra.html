@@ -1,0 +1,53 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+DEMO-APP
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
+<link href="{{ url_for('static', filename='img/favicon.png')}}" rel="icon">
+  <link href="{{ url_for('static', filename='img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <!--external css-->
+  <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<section id="container">
+  <!-- **********************************************************************************************************************************************************
+      TOP BAR CONTENT & NOTIFICATIONS
+      *********************************************************************************************************************************************************** -->
+  <!--header start-->
+  <header class="header black-bg">
+    
+    <!--logo start-->
+    <a class="logo"><b>DEMO<span>APP</span></b></a>
+    <!--logo end-->
+    
+  <div class="top-menu">
+    <ul class="nav pull-right top-menu">
+      {% if is_authenticated(session) %}
+      <li><a class="logout" href="{{ url_for('user_index') }}">Entrar</a></li>
+      {% else %}
+      <li><a class="logout" href="{{ url_for('auth_login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+
+    
+  </header>
+  <div class="container">
+    {%block container %} {% endblock %}
+  </div> 
+{% endblock %}
