@@ -27,6 +27,7 @@ class DevelopmentConfig(BaseConfig):
     DB_NAME = environ.get("DB_NAME")
 
 
+
 class TestingConfig(BaseConfig):
     """Testing configuration."""
 
