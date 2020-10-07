@@ -11,6 +11,7 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_sqlalchemy import SQLAlchemy
 
 
 def create_app(environment="development"):
@@ -25,9 +26,10 @@ def create_app(environment="development"):
 
     # Server Side session
     app.config["SESSION_TYPE"] = "filesystem"
-    Session(app)
+    Session(app) 
 
     # Configure db
+    db = SQLAlchemy(app)
     db.init_app(app)
 
     # Funciones que se exportan al contexto de Jinja2

@@ -2,10 +2,10 @@ class User(object):
     @classmethod
     def all(cls, conn):
         sql = "SELECT * FROM users"
-        cursor = conn.cursor()
-        cursor.execute(sql)
-
-        return cursor.fetchall()
+        #cursor = conn.cursor()
+        #conn.execute(sql)
+        #cursor.fetchall()
+        return conn.execute(sql)
 
     @classmethod
     def create(cls, conn, data):
@@ -14,9 +14,9 @@ class User(object):
             VALUES (%s, %s, %s, %s)
         """
 
-        cursor = conn.cursor()
-        cursor.execute(sql, list(data.values()))
-        conn.commit()
+        ##cursor = conn.cursor()
+        conn.execute(sql, list(data.values()))
+        ##conn.commit()
 
         return True
 
@@ -27,8 +27,8 @@ class User(object):
             WHERE u.email = %s AND u.password = %s
         """
 
-        cursor = conn.cursor()
-        cursor.execute(sql, (email, password))
-
-        return cursor.fetchone()
+        #cursor = conn.cursor()
+        
+        res = conn.execute(sql, (email, password))
+        return res.first()
 
