@@ -20,7 +20,7 @@ def authenticate():
     session["user"] = user["email"]
     flash("La sesión se inició correctamente.")
 
-    return redirect(url_for("home"))
+    return redirect(url_for("dashboard"))
 
 
 def logout():
@@ -28,4 +28,4 @@ def logout():
     session.clear()
     flash("La sesión se cerró correctamente.")
 
-    return redirect(url_for("auth_login"))
+    return redirect(url_for("index"))
