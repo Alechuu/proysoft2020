@@ -38,7 +38,7 @@ DEMO-APP
   <div class="top-menu">
     <ul class="nav pull-right top-menu">
       {% if is_authenticated(session) %}
-      <li><a class="logout" href="{{ url_for('user_index') }}">Entrar</a></li>
+      <li><a class="logout" href="{{ url_for('dashboard') }}">Entrar</a></li>
       {% else %}
       <li><a class="logout" href="{{ url_for('auth_login') }}">Login</a></li>
       {% endif %}
