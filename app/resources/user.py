@@ -8,8 +8,8 @@ def index():
     if not authenticated(session):
         abort(401)
 
-    conn = connection()
-    users = User.all(conn)
+    #conn = connection()
+    users = User.all()
 
     return render_template("user/index.html", users=users)
 
@@ -25,6 +25,6 @@ def create():
     if not authenticated(session):
         abort(401)
 
-    conn = connection()
-    User.create(conn, request.form)
+    #conn = connection()
+    User.create(request.form)
     return redirect(url_for("user_index"))

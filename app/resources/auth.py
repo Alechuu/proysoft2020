@@ -8,16 +8,16 @@ def login():
 
 
 def authenticate():
-    conn = connection()
+    ##conn = connection()
     params = request.form
 
-    user = User.find_by_email_and_pass(conn, params["email"], params["password"])
+    user = User.find_by_email_and_pass(params["email"], params["password"])
 
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
 
-    session["user"] = user["email"]
+    session["user"] = user
     flash("La sesión se inició correctamente.")
 
     return redirect(url_for("dashboard"))
