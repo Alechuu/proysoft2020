@@ -2,17 +2,17 @@ from os import path, environ
 from flask import Flask, render_template, g
 from flask_session import Session
 from config import config
-from app import db
+from app.db import db
 from app.resources import issue
 from app.resources import user
 from app.resources import auth
+#from app.resources import configuracion
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-
 
 def create_app(environment="development"):
     # Configuración inicial de la app
@@ -28,8 +28,7 @@ def create_app(environment="development"):
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app) 
 
-    # Configure db
-    db = SQLAlchemy(app)
+    # Configure db    
     db.init_app(app)
 
     # Funciones que se exportan al contexto de Jinja2
@@ -86,6 +85,8 @@ def create_app(environment="development"):
     @app.route('/new_user')
     def new_user():
         return render_template('new_user.html')
+
+    #app.add_url_rule('/configuracion', configuracion, configuracion.index)
 
 
     # Rutas de API-rest
