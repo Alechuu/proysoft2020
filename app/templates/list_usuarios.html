@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="Dashboard">
   <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-  <title>ARQ - DPSIT</title>
+  <title>Centros de Bs.As</title>
 
   <!-- Favicons -->
   <link href="{{ url_for('static', filename='img/logonew3png')}}" rel="icon">
@@ -16,7 +16,7 @@
   <!-- Bootstrap core CSS -->
   <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
   <!--external css-->
-  <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
@@ -45,7 +45,7 @@
       
       <div class="top-menu">
         <ul class="nav pull-right top-menu">
-          <li><a class="logout" href="{{ url_for('logout') }}">Logout</a></li>
+          <li><a class="logout" href="{{ url_for('index') }}">Logout</a></li>
         </ul>
       </div>
     </header>
@@ -72,9 +72,9 @@
               <span>Backup</span>
               </a>
             <ul class="sub">
-              <li><a href="{{ url_for('back_gonnet') }}">Gonnet</a></li>
-              <li><a href="{{ url_for('back_nube') }}">Nubes</a></li>
-              <li><a href="{{ url_for('back_write') }}">CopyWrite</a></li>
+              <li><a href="{{ url_for('index') }}">Gonnet</a></li>
+              <li><a href="{{ url_for('index') }}">Nubes</a></li>
+              <li><a href="{{ url_for('index') }}">CopyWrite</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -83,13 +83,13 @@
               <span>Scripts</span>
               </a>
             <ul class="sub">
-              <li><a href="{{ url_for('nube') }}">Alta Nube</a></li>
-              <li><a href="{{ url_for('vlan') }}">VLAN</a></li>
+              <li><a href="{{ url_for('index') }}">Alta Nube</a></li>
+              <li><a href="{{ url_for('index') }}">VLAN</a></li>
             </ul>
           </li>
           
           <li>
-            <a class="active" href="{{ url_for('tareas') }}">
+            <a class="active" href="{{ url_for('index') }}">
               <i class="fa fa-tasks"></i>
               <span>Tareas </span>
               </a>
@@ -105,7 +105,7 @@
     <!--main content start-->
     <section id="main-content">
       <section class="wrapper">
-        <h3><i class="fa fa-angle-right"></i> To-Do Lists</h3>
+        <h3><i class="fa fa-angle-right"></i> Listado de Usuarios</h3>
         <!-- SIMPLE TO DO LIST -->
         
         <!-- SORTABLE TO DO LIST -->
@@ -114,93 +114,64 @@
             <section class="task-panel tasks-widget">
               <div class="panel-heading">
                 <div class="pull-left">
-                  <h5><i class="fa fa-tasks"></i> Todo List - Sortable Style</h5>
+                  <h4><i class="fa fa-tasks" style="font-size:20px"></i>  Acá podes ver a todos los usuarios del sistema. Podés habilitar, bloquear, editar y eliminar.</h4>
                 </div>
-                <br>
+                <div>
+                  <form action="#" method="GET"> 
+                    <div class="row">
+                      <div class="col-xs-12 col-md-12">
+                        <div class="input-group">
+                          <input class="form-control" id="inputSearch" type="text" placeholder="Buscá un Usuario por cualquier campo">
+                          <div class="input-group-btn">
+                            <button disabled class="btn btn-primary" type="submit">
+                              <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>  
               </div>
               <div class="panel-body">
-                <div class="task-content">
-                  <ul id="sortable" class="task-list">
-                    <li class="list-primary">
-                      <i class=" fa fa-ellipsis-v"></i>
-                      <div class="task-checkbox">
-                        <input type="checkbox" class="list-child" value="" />
-                      </div>
-                      <div class="task-title">
-                        <span class="task-title-sp">Dashio - Admin Panel & Front-end Theme</span>
-                        <span class="badge bg-theme">Done</span>
-                        <div class="pull-right hidden-phone">
-                          <button class="btn btn-success btn-xs fa fa-check"></button>
-                          <button class="btn btn-primary btn-xs fa fa-pencil"></button>
-                          <button class="btn btn-danger btn-xs fa fa-trash-o"></button>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-danger">
-                      <i class=" fa fa-ellipsis-v"></i>
-                      <div class="task-checkbox">
-                        <input type="checkbox" class="list-child" value="" />
-                      </div>
-                      <div class="task-title">
-                        <span class="task-title-sp">Extensive collection of plugins</span>
-                        <span class="badge bg-warning">Cool</span>
-                        <div class="pull-right hidden-phone">
-                          <button class="btn btn-success btn-xs fa fa-check"></button>
-                          <button class="btn btn-primary btn-xs fa fa-pencil"></button>
-                          <button class="btn btn-danger btn-xs fa fa-trash-o"></button>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-success">
-                      <i class=" fa fa-ellipsis-v"></i>
-                      <div class="task-checkbox">
-                        <input type="checkbox" class="list-child" value="" />
-                      </div>
-                      <div class="task-title">
-                        <span class="task-title-sp">Free updates always, no extra fees.</span>
-                        <span class="badge bg-success">2 Days</span>
-                        <div class="pull-right hidden-phone">
-                          <button class="btn btn-success btn-xs fa fa-check"></button>
-                          <button class="btn btn-primary btn-xs fa fa-pencil"></button>
-                          <button class="btn btn-danger btn-xs fa fa-trash-o"></button>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-warning">
-                      <i class=" fa fa-ellipsis-v"></i>
-                      <div class="task-checkbox">
-                        <input type="checkbox" class="list-child" value="" />
-                      </div>
-                      <div class="task-title">
-                        <span class="task-title-sp">More features coming soon</span>
-                        <span class="badge bg-info">Tomorrow</span>
-                        <div class="pull-right hidden-phone">
-                          <button class="btn btn-success btn-xs fa fa-check"></button>
-                          <button class="btn btn-primary btn-xs fa fa-pencil"></button>
-                          <button class="btn btn-danger btn-xs fa fa-trash-o"></button>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-info">
-                      <i class=" fa fa-ellipsis-v"></i>
-                      <div class="task-checkbox">
-                        <input type="checkbox" class="list-child" value="" />
-                      </div>
-                      <div class="task-title">
-                        <span class="task-title-sp">Hey, seriously, you should buy this Dashboard</span>
-                        <span class="badge bg-important">Now</span>
-                        <div class="pull-right hidden-phone">
-                          <button class="btn btn-success btn-xs fa fa-check"></button>
-                          <button class="btn btn-primary btn-xs fa fa-pencil"></button>
-                          <button class="btn btn-danger btn-xs fa fa-trash-o"></button>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class=" add-task-row">
-                  <a class="btn btn-success btn-sm pull-left" href="todo_list.html#">Add New Tasks</a>
-                  <a class="btn btn-default btn-sm pull-right" href="todo_list.html#">See All Tasks</a>
+                <div class="table-responsive">
+                    <table class="table table-striped" style="font-size:14px">
+                      <thead>
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col" style="width:150px;">Habilitado</th>
+                          <th scope="col" style="width:200px;">Nombre</th>
+                          <th scope="col" style="width:200px;">Apellido</th>
+                          <th scope="col" style="width:150px">Nombre de Usuario</th>
+                          <th scope="col" >E-Mail</th>
+                          <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaUsuarios" >
+                    {% for user in usuarios %}
+                    <tr>
+                      <th scope="row">{{user[0]}}</th>
+                      {% if user[4] == 1 %}
+                        <td>Habilitado</td>
+                      {% else %}
+                        <td>Bloqueado</td>
+                      {% endif %}
+                      <td>{{user[7]}}</td>
+                      <td>{{user[8]}}</td>
+                      <td>{{user[3]}}</td>
+                      <td>{{user[1]}}</td>
+                      <td>
+                        {% if user[4] == 1 %}
+                          <button class="btn btn-warning btn-xs far fa-times-circle" style="size:14px;font-size: 17px;"></button>
+                        {% else %}
+                          <button class="btn btn-success btn-xs far fas fa-check" style="size:14px;font-size: 17px;"></button>
+                        {% endif %}
+                        <button class="btn btn-primary btn-xs far fa-edit" style="size:14px;font-size: 17px;"></button>
+                        <button class="btn btn-danger btn-xs fas fa-trash" style="size:14px;font-size: 17px;"></button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
                 </div>
               </div>
             </section>
@@ -230,15 +201,14 @@
   <script type="text/javascript" src="{{ url_for('static', filename='lib/gritter-conf.js')}}"></script>
   <!--script for this page-->
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <script src="{{ url_for('static', filename='lib/tasks.js')}}" type="text/javascript"></script>
   <script>
-    jQuery(document).ready(function() {
-      TaskList.initTaskWidget();
-    });
-
-    $(function() {
-      $("#sortable").sortable();
-      $("#sortable").disableSelection();
+    $(document).ready(function(){
+      $("#inputSearch").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#tablaUsuarios tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
     });
   </script>
 

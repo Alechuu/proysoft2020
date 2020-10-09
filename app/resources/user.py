@@ -28,3 +28,12 @@ def create():
     conn = connection()
     User.create(conn, request.form)
     return redirect(url_for("user_index"))
+
+def listarUsuarios():
+    if not authenticated(session):
+        abort(401)
+    
+    conn = connection()
+    usuarios = User.all(conn)
+    print(session)
+    return render_template("list_usuarios.html", usuarios=usuarios)
