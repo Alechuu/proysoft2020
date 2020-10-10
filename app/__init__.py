@@ -86,9 +86,15 @@ def create_app(environment="development"):
     def new_user():
         return render_template('new_user.html')
 
+<<<<<<< HEAD
     #app.add_url_rule('/configuracion', configuracion, configuracion.index)
 
 
+=======
+    @app.route('/list_usuarios')
+    def list_usuarios():
+        return render_template('list_usuarios.html')
+>>>>>>> development
     # Rutas de API-rest
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
