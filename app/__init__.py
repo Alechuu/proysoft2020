@@ -6,7 +6,7 @@ from app.db import db
 from app.resources import issue
 from app.resources import user
 from app.resources import auth
-#from app.resources import configuracion
+from app.resources import configuracion
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -85,7 +85,8 @@ def create_app(environment="development"):
     def new_user():
         return render_template('new_user.html')
 
-    #app.add_url_rule('/configuracion', configuracion, configuracion.index)
+    app.add_url_rule('/configuracion', "configuracion", configuracion.index)
+    app.add_url_rule('/configuracion', "configuracion_save", configuracion.save, methods=["POST"])
 
 
     # Rutas de API-rest

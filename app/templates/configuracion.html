@@ -1,0 +1,48 @@
+{% extends 'barra.html' %}
+
+{% set titleHead = 'Configuración' %}
+
+{% block content %}
+
+
+<div class="content">
+	<form action="{{ url_for('configuracion_save') }}" method="post">
+		<input type="hidden" name="crsf" value="{{ crsf }}">		
+        <!-- titulo -->
+		<div class="item-formulario-label-izq">
+            <label for="titulo">T&iacute;tulo: </label>
+            <input type="text" name="titulo" id="titulo" value="{{ conf.titulo }}" required>
+            </div>
+		<!-- Descripcion -->
+		<div class="item-formulario-label-sup-izq">
+		<label for="descripcion">Descripci&oacute;n: </label>
+		<textarea name="descripcion" rows="5" cols="25" required>{{ conf.descripcion }}</textarea>
+		</div>
+		<!-- mail de contacto -->
+		<div class="item-formulario-label-izq">
+		<label for="mailContacto">Mail de Contacto: </label>
+		<input type="text" name="mailContacto" id="mailContacto" value="{{ conf.email }}" required>
+		</div>
+        <!-- paginado -->
+		<div class="item-formulario-label-izq">
+            <label for="paginado">Lim&iacute;te de Paginado: </label>
+            <input type="number" min="0" max="50" name="paginado" id="paginado" value="{{ conf.paginado }}" required>
+            </div>
+		<!-- Sitio habilitado -->
+		<div class="item-formulario-label-izq">
+		<label for="sitioHabilitado">Habilitaci&oacute;n del Sitio: </label>
+		<select name="habilitado" size = "1" id="sitioHabilitado">
+		</div>
+		<div class="item-formulario-label-izq">
+		{% for clave,valor in estadosSitio.items() %}
+			<option value="{{ estadosSitio[conf.habilitado]}}" {% if clave == conf.habilitado %} selected {% endif %} >{{ valor }}</option>
+		{% endfor %}
+		</select>
+		</div>		
+		<div class="boton-enviar-borrar">
+			<input type="submit" value="Guardar">			
+		</div>
+	</form>
+</div>
+
+{% endblock %}
