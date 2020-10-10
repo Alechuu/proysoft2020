@@ -51,6 +51,7 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     app.add_url_rule("/usuarios/listar", "user_listar", user.listarUsuarios)
+    app.add_url_rule("/usuarios/borrar", "user_borrar", user.delete)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
@@ -86,10 +87,6 @@ def create_app(environment="development"):
     def new_user():
         return render_template('new_user.html')
 
-
-    @app.route('/list_usuarios')
-    def list_usuarios():
-        return render_template('list_usuarios.html')
     # Rutas de API-rest
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 

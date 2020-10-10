@@ -3,19 +3,16 @@ from app import db
 class User(db.Model):
     __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(30), nullable=False)
-    password = db.Column(db.String(30), nullable=False)
-    first_name = db.Column(db.String(30), nullable=False)
-    last_name = db.Column(db.String(30), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    activo = db.Column(db.Integer, nullable=False)
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name = db.Column(db.String(255), nullable=False)
 
     #@classmethod
     @staticmethod 
     def all():
-        #sql = "SELECT * FROM users"
-        #cursor = conn.cursor()
-        #conn.execute(sql)
-        #cursor.fetchall()
-        #conn.execute(sql)
         return User.query.all()
 
     #@classmethod
@@ -33,10 +30,18 @@ class User(db.Model):
         db.session.add(usuario)
         db.session.commit()
         return True
+    
 
     #@classmethod
     @staticmethod 
-    def find_by_email_and_pass(email, password):
+    def delete(id_usuario):
+        User.query.filter_by(id=id_usuario).delete()
+        db.session.commit()
+        return True
+
+    #@classmethod
+    @staticmethod 
+    def find_by_username_and_pass(username, password):
         #sql = """
         #    SELECT * FROM users AS u
         #    WHERE u.email = %s AND u.password = %s
@@ -46,5 +51,5 @@ class User(db.Model):
         
         #res = conn.execute(sql, (email, password))
         #res.first()
-        return User.query.filter_by(email=email,password=password).first()  
+        return User.query.filter_by(username=username,password=password).first()  
 

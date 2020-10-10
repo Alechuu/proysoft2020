@@ -11,13 +11,14 @@ def authenticate():
     ##conn = connection()
     params = request.form
 
-    user = User.find_by_email_and_pass(params["email"], params["password"])
+    user = User.find_by_username_and_pass(params["username"], params["password"])
 
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
 
-    session["user"] = user
+    session["user"] = user.username
+    session["first_name"] = user.first_name
     flash("La sesión se inició correctamente.")
 
     return redirect(url_for("dashboard"))
