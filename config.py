@@ -27,10 +27,10 @@ class DevelopmentConfig(BaseConfig):
 
     ENV = "development"
     DEBUG = environ.get("DEBUG", True)
-    DB_HOST = environ.get("DB_HOST")
-    DB_USER = environ.get("DB_USER")
-    DB_PASS = environ.get("DB_PASS")
-    DB_NAME = environ.get("DB_NAME")
+    DB_HOST = environ.get("DB_HOST", "localhost")
+    DB_USER = environ.get("DB_USER", "root")
+    DB_PASS = environ.get("DB_PASS", "")
+    DB_NAME = environ.get("DB_NAME", "grupo33")
     SQLALCHEMY_DATABASE_URI = "{0}+{1}://{2}:{3}@{4}:{5}/{6}".format(BaseConfig.DB_DIALECT, BaseConfig.DB_DRIVER, DB_USER, DB_PASS, DB_HOST, BaseConfig.DB_PORT, DB_NAME)
 
 

@@ -29,11 +29,17 @@ def create():
     User.create(request.form)
     return redirect(url_for("user_index"))
 
+def delete():
+    if not authenticated(session):
+        abort(401)
+    
+    User.delete(request.args.get("id_usuario"))
+    return redirect(url_for("user_listar"))
+
 def listarUsuarios():
     if not authenticated(session):
         abort(401)
     
     conn = connection()
-    usuarios = User.all(conn)
-    print(session)
+    usuarios = User.all()
     return render_template("list_usuarios.html", usuarios=usuarios)

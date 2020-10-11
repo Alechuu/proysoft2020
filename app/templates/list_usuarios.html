@@ -1,107 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "menubarra.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="Dashboard">
-  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-  <title>Centros de Bs.As</title>
-
-  <!-- Favicons -->
-  <link href="{{ url_for('static', filename='img/logonew3png')}}" rel="icon">
-  <link href="{{ url_for('static', filename='img/apple-touch-icon.png')}}" rel="apple-touch-icon">
-
-  <!-- Bootstrap core CSS -->
-  <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-  <!--external css-->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
-
-  <!-- =======================================================
-    Template Name: Dashio
-    Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
-    Author: TemplateMag.com
-    License: https://templatemag.com/license/
-  ======================================================= -->
-</head>
-
-<body>
-  <section id="container">
-    <!-- **********************************************************************************************************************************************************
-        TOP BAR CONTENT & NOTIFICATIONS
-        *********************************************************************************************************************************************************** -->
-    <!--header start-->
-    <header class="header black-bg">
-      <div class="sidebar-toggle-box">
-        <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-      </div>
-      <!--logo start-->
-      <a href="{{ url_for('index') }}" class="logo"><b>ARQ<span>DPSIT</span></b></a>
-      <!--logo end-->
-      
-      <div class="top-menu">
-        <ul class="nav pull-right top-menu">
-          <li><a class="logout" href="{{ url_for('index') }}">Logout</a></li>
-        </ul>
-      </div>
-    </header>
-    <!--header end-->
-    <!-- **********************************************************************************************************************************************************
-        MAIN SIDEBAR MENU
-        *********************************************************************************************************************************************************** -->
-    <!--sidebar start-->
-    <aside>
-      <div id="sidebar" class="nav-collapse ">
-        <!-- sidebar menu start-->
-        <ul class="sidebar-menu" id="nav-accordion">
-          <p class="centered"><a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='img/profile.png')}}" class="img-circle" width="80"></a></p>
-          <h5 class="centered">{{name}}</h5>
-          <li class="mt">
-            <a href="{{ url_for('dashboard') }}">
-              <i class="fa fa-dashboard"></i>
-              <span>Dashboard</span>
-              </a>
-          </li>
-          <li class="sub-menu">
-            <a href="javascript:;">
-              <i class="fa fa-book"></i>
-              <span>Backup</span>
-              </a>
-            <ul class="sub">
-              <li><a href="{{ url_for('index') }}">Gonnet</a></li>
-              <li><a href="{{ url_for('index') }}">Nubes</a></li>
-              <li><a href="{{ url_for('index') }}">CopyWrite</a></li>
-            </ul>
-          </li>
-          <li class="sub-menu">
-            <a href="javascript:;">
-              <i class="fa fa-cogs"></i>
-              <span>Scripts</span>
-              </a>
-            <ul class="sub">
-              <li><a href="{{ url_for('index') }}">Alta Nube</a></li>
-              <li><a href="{{ url_for('index') }}">VLAN</a></li>
-            </ul>
-          </li>
-          
-          <li>
-            <a class="active" href="{{ url_for('index') }}">
-              <i class="fa fa-tasks"></i>
-              <span>Tareas </span>
-              </a>
-          </li>
-        </ul>
-        <!-- sidebar menu end-->
-      </div>
-    </aside>
-    <!--sidebar end-->
-    <!-- **********************************************************************************************************************************************************
-        MAIN CONTENT
-        *********************************************************************************************************************************************************** -->
+{% block main %}
     <!--main content start-->
     <section id="main-content">
       <section class="wrapper">
@@ -150,24 +49,24 @@
                     <tbody id="tablaUsuarios" >
                     {% for user in usuarios %}
                     <tr>
-                      <th scope="row">{{user[0]}}</th>
-                      {% if user[4] == 1 %}
+                      <th scope="row">{{user.id}}</th>
+                      {% if user.activo == 1 %}
                         <td>Habilitado</td>
                       {% else %}
                         <td>Bloqueado</td>
                       {% endif %}
-                      <td>{{user[7]}}</td>
-                      <td>{{user[8]}}</td>
-                      <td>{{user[3]}}</td>
-                      <td>{{user[1]}}</td>
+                      <td>{{user.first_name}}</td>
+                      <td>{{user.last_name}}</td>
+                      <td>{{user.username}}</td>
+                      <td>{{user.email}}</td>
                       <td>
-                        {% if user[4] == 1 %}
+                        {% if user.activo == 1 %}
                           <button class="btn btn-warning btn-xs far fa-times-circle" style="size:14px;font-size: 17px;"></button>
                         {% else %}
-                          <button class="btn btn-success btn-xs far fas fa-check" style="size:14px;font-size: 17px;"></button>
+                          <button class="btn btn-success btn-xs far fa-check-circle" style="size:14px;font-size: 17px;"></button>
                         {% endif %}
                         <button class="btn btn-primary btn-xs far fa-edit" style="size:14px;font-size: 17px;"></button>
-                        <button class="btn btn-danger btn-xs fas fa-trash" style="size:14px;font-size: 17px;"></button>
+                        <button class="btn btn-danger btn-xs fas fa-trash-alt" onclick="window.location.href='{{ url_for('user_borrar',id_usuario=user.id) }}';" style="size:14px;font-size: 17px;"></button>
                       </td>
                     </tr>
                     {% endfor %}
@@ -187,18 +86,11 @@
     <!--footer start-->
      
   </section>
-  <!-- js placed at the end of the document so the pages load faster -->
-  <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
 
+</body>
+
+  <!-- js placed at the end of the document so the pages load faster -->
   <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
-  <script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
-  <script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='lib/jquery.nicescroll.js')}}" type="text/javascript"></script>
-  <script src="{{ url_for('static', filename='lib/jquery.sparkline.js')}}"></script>
-  <!--common script for all pages-->
-  <script src="{{ url_for('static', filename='lib/common-scripts.js')}}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='lib/gritter/js/jquery.gritter.js')}}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='lib/gritter-conf.js')}}"></script>
   <!--script for this page-->
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
@@ -211,7 +103,6 @@
       });
     });
   </script>
-
-</body>
-
 </html>
+
+{% endblock %}

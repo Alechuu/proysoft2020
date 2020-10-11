@@ -7,14 +7,15 @@
   <meta name="description" content="">
   <meta name="author" content="Dashboard">
   <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-  <title>ARQ-DPSIT</title>
+  <title>DEMO-APP</title>
 
 
   <!-- Favicons rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}} -->
   <link href="{{ url_for('static', filename='img/logonew3png')}}" rel="icon">
   <link href="{{ url_for('static', filename='img/apple-touch-icon.png')}}" rel="apple-touch-icon">
 
-  <!-- Bootstrap core CSS -->
+  <!-- Bootstrap core CSS and Jquery -->
+  <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
   <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
   <!--external css-->
   
@@ -24,7 +25,7 @@
  
 
   <!--external css-->
-  <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}"/>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/zabuto_calendar.css')}}"> 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/gritter/css/jquery.gritter.css')}}" />
@@ -71,37 +72,37 @@
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
           <p class="centered"><a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='img/profile.png')}}" class="img-circle" width="80"></a></p>
-          <h5 class="centered">name</h5>
+          <h5 class="centered">Hola, {{session['first_name']}}</h5>
           <li class="mt">
             <a class="active" href="{{ url_for('dashboard') }}">
-              <i class="fa fa-dashboard"></i>
+              <i class="fas fa-clipboard-check"></i>
               <span>Dashboard</span>
               </a>
           </li>
           <li class="sub-menu">
             <a href="javascript:;">
-              <i class="fa fa-book"></i>
+              <i class="fas fa-house-user"></i>
               <span>Centros de Ayuda</span>
               </a>
             <ul class="sub">
               <li><a href="{{ url_for('centros') }}">Listado de Centros</a></li>
-              <li><a href="{{ url_for('centros') }}">Agregar Centro</a></li>
+              <li><a href="{{ url_for('new_centro') }}">Agregar Centro</a></li>
             </ul>
           </li>
           <li class="sub-menu">
             <a href="javascript:;">
-              <i class="fa fa-cogs"></i>
+              <i class="fas fa-users-cog"></i>
               <span>Usuarios</span>
               </a>
             <ul class="sub">
-              <li><a href="{{ url_for('centros') }}">Listado de Usuarios</a></li>
-              <li><a href="{{ url_for('centros') }}">Agregar Usuario</a></li>
+              <li><a href="{{ url_for('user_listar') }}">Listado de Usuarios</a></li>
+              <li><a href="{{ url_for('new_user') }}">Agregar Usuario</a></li>
             </ul>
           </li>                    
           <li>           
             <a href="{{ url_for('configuracion') }}">
               <i class="fa fa-tasks"></i>
-              <span>Configuracion</span>
+              <span>Configuración Sitio</span>
               </a>
           </li>
         </ul>
@@ -117,7 +118,6 @@
       {% block main %}{% endblock %}   
     
   <!-- js placed at the end of the document so the pages load faster -->
-  <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
 
   <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
   <script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
