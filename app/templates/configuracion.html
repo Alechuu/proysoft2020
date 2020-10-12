@@ -1,48 +1,102 @@
-{% extends 'barra.html' %}
+{% extends 'menubarra.html' %}
 
-{% set titleHead = 'Configuración' %}
+{% block main %} 
 
-{% block content %}
+<!--main content start-->
+<section id="main-content">
+	<section class="wrapper">
+	  <h3><i class="fa fa-angle-right"></i> Configuración</h3>
+	  <!-- BASIC FORM VALIDATION -->
 
+	  <!-- FORM VALIDATION -->
+	  <div class="row mt">
+		<div class="col-lg-12">		  
+		  <div class="form-panel">
+			<div class="form">
+			  <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('configuracion_save') }}">
+				{{ form.hidden_tag() }}
+				<!-- titulo -->
+				<div class="form-group">
+				  <!--<label for="titulo" class="control-label col-lg-2">T&iacute;tulo (requerido)</label>-->
+				  {{ form.titulo.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class=" form-control" id="titulo" name="titulo" minlength="2" type="text" value="{{ conf.titulo }}" required />-->
+					{{ form.titulo(class="form-control", minlength="2", value= conf.titulo) }}
+				  </div>
+				</div>
+				<!-- Descripcion -->
+				<div class="form-group">
+				  <!--<label for="descripcion" class="control-label col-lg-2">Descripci&oacute;n </label>-->
+				  {{ form.descripcion.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class="form-control " id="descripcion" type="text" name="descripcion" value={{ conf.descripcion }} />-->
+					{{ form.descripcion(class="form-control", value=conf.descripcion) }}
+				  </div>
+				</div>
+				<!-- mail de contacto -->
+				<div class="form-group">
+				  <!--<label for="mailContacto" class="control-label col-lg-2">Mail de Contacto</label>-->
+				  {{ form.mailContacto.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class="form-control " id="mailContacto" type="email" name="mailContacto" value="{{ conf.email }}" />-->
+					{{ form.mailContacto(class="form-control", value=conf.email) }}
+				  </div>
+				</div>
+				<!-- paginado -->
+				<div class="form-group">
+				  <!--<label for="paginado" class="control-label col-lg-2">Paginado</label>-->
+				  {{ form.paginado.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class="form-control " type="number" min="0" max="50" id="paginado" name="paginado" value="{{ conf.paginado }}" required />-->					
+					{{ form.paginado(class="form-control", value=conf.paginado) }}
+				  </div>
+				</div>
+				<!-- Sitio habilitado -->
+				<div class="form-group ">
+					<!--<label for="sitioHabilitado" class="control-label col-lg-2 col-sm-3">Sitio Habilitado</label>-->
+					{{ form.sitioHabilitado.label(class="control-label col-lg-2 col-sm-3") }}
+                    <div class="col-lg-10 col-sm-9">
+					  <!--<input type="checkbox" style="width: 20px" class="checkbox form-control" id="sitioHabilitado" name="habilitado" {% if conf.habilitado %}checked{% endif %}/>-->
+					  {{ form.sitioHabilitado(style="width: 20px", class="checkbox form-control") }}
+                    </div>
+				  </div>	
+				<!-- Boton guardar -->
+				<div class="form-group">
+				  <div class="col-lg-offset-2 col-lg-10">
+					<!--<button class="btn btn-theme" type="submit">Guardar</button>-->
+					{{ form.submit(class="btn btn-theme") }}
+				  </div>
+				</div>
+			  </form>
+			</div>
+		  </div>
+		  <!-- /form-panel -->
+		</div>
+		<!-- /col-lg-12 -->
+	  </div>
+	  <!-- /row -->
+	</section>
+	<!-- /wrapper -->
+  </section>
+  <!-- /MAIN CONTENT -->
+  <!--main content end-->
 
-<div class="content">
-	<form action="{{ url_for('configuracion_save') }}" method="post">
-		<input type="hidden" name="crsf" value="{{ crsf }}">		
-        <!-- titulo -->
-		<div class="item-formulario-label-izq">
-            <label for="titulo">T&iacute;tulo: </label>
-            <input type="text" name="titulo" id="titulo" value="{{ conf.titulo }}" required>
-            </div>
-		<!-- Descripcion -->
-		<div class="item-formulario-label-sup-izq">
-		<label for="descripcion">Descripci&oacute;n: </label>
-		<textarea name="descripcion" rows="5" cols="25" required>{{ conf.descripcion }}</textarea>
-		</div>
-		<!-- mail de contacto -->
-		<div class="item-formulario-label-izq">
-		<label for="mailContacto">Mail de Contacto: </label>
-		<input type="text" name="mailContacto" id="mailContacto" value="{{ conf.email }}" required>
-		</div>
-        <!-- paginado -->
-		<div class="item-formulario-label-izq">
-            <label for="paginado">Lim&iacute;te de Paginado: </label>
-            <input type="number" min="0" max="50" name="paginado" id="paginado" value="{{ conf.paginado }}" required>
-            </div>
-		<!-- Sitio habilitado -->
-		<div class="item-formulario-label-izq">
-		<label for="sitioHabilitado">Habilitaci&oacute;n del Sitio: </label>
-		<select name="habilitado" size = "1" id="sitioHabilitado">
-		</div>
-		<div class="item-formulario-label-izq">
-		{% for clave,valor in estadosSitio.items() %}
-			<option value="{{ estadosSitio[conf.habilitado]}}" {% if clave == conf.habilitado %} selected {% endif %} >{{ valor }}</option>
-		{% endfor %}
-		</select>
-		</div>		
-		<div class="boton-enviar-borrar">
-			<input type="submit" value="Guardar">			
-		</div>
-	</form>
-</div>
+</section>
 
 {% endblock %}
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
+
+<script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
+<script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
+<script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script>
+<script src="{{ url_for('static', filename='lib/jquery.nicescroll.js')}}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='lib/jquery.sparkline.js')}}"></script>
+<!--common script for all pages-->
+<script src="{{ url_for('static', filename='lib/common-scripts.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='lib/gritter/js/jquery.gritter.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='lib/gritter-conf.js')}}"></script>
+
+</body>
+
+</html>
