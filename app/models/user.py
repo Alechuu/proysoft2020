@@ -1,4 +1,10 @@
 from app import db
+from app.models.rol import Rol
+
+usuario_tiene_rol = db.Table("usuario_tiene_rol",
+    db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
+    db.Column("usuario_id", db.Integer, db.ForeignKey("usuario.id"), primary_key=True)
+)
 
 class User(db.Model):
     __tablename__ = 'usuario'
@@ -9,47 +15,30 @@ class User(db.Model):
     activo = db.Column(db.Integer, nullable=False)
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
+    roles = db.relationship("Rol", secondary=usuario_tiene_rol, lazy=True, backref=db.backref('usuarios', lazy=True))
 
-    #@classmethod
     @staticmethod 
     def all():
         return User.query.all()
 
-    #@classmethod
     @staticmethod 
     def create(data):
-        #sql = """
-        #    INSERT INTO users (email, password, first_name, last_name)
-        #    VALUES (%s, %s, %s, %s)
-        #"""
-
-        ##cursor = conn.cursor()
-        #conn.execute(sql, list(data.values()))
-        ##conn.commit()
         usuario = User(email=data.get("email"), password=data.get("password"), first_name=data.get("first_name"), last_name=data.get("last_name"))
         db.session.add(usuario)
         db.session.commit()
         return True
     
-
-    #@classmethod
     @staticmethod 
     def delete(id_usuario):
         User.query.filter_by(id=id_usuario).delete()
         db.session.commit()
         return True
 
-    #@classmethod
     @staticmethod 
     def find_by_username_and_pass(username, password):
-        #sql = """
-        #    SELECT * FROM users AS u
-        #    WHERE u.email = %s AND u.password = %s
-        #"""
+        return User.query.filter_by(username=username,password=password).first()
 
-        #cursor = conn.cursor()
-        
-        #res = conn.execute(sql, (email, password))
-        #res.first()
-        return User.query.filter_by(username=username,password=password).first()  
+    @staticmethod
+    def find_by_username(username):
+          return User.query.filter_by(username=username).first()
 

@@ -1,16 +1,24 @@
 from flask import render_template, session, abort, redirect, url_for
 from app.models.configuracion import Configuracion
+from app.models.user import User
 from app.helpers.auth import authenticated
+from app.helpers.autorizacion import get_permisos
 from app.forms.configuracion.formConfiguracion import FormConfiguracion
 
 def index():
     if not authenticated(session):
         abort(401)
 
-    form = FormConfiguracion()
-    miConfiguracion = Configuracion.get_first()  
-    form.sitioHabilitado.data = miConfiguracion.habilitado  
-    return render_template("configuracion.html", conf=miConfiguracion, form=form)
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    if "configuracion_index" in permisos:        
+        form = FormConfiguracion()
+        miConfiguracion = Configuracion.get_first()  
+        form.sitioHabilitado.data = miConfiguracion.habilitado  
+        return render_template("configuracion.html", conf=miConfiguracion, form=form)
+    else:
+        #Informar error
+        return render_template("dashboard.html", permisos=permisos)
 
 
 def save():

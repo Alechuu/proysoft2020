@@ -98,13 +98,15 @@
               <li><a href="{{ url_for('user_listar') }}">Listado de Usuarios</a></li>
               <li><a href="{{ url_for('new_user') }}">Agregar Usuario</a></li>
             </ul>
-          </li>                    
+          </li>
+          {% if 'configuracion_index' in permisos %}                    
           <li>           
             <a href="{{ url_for('configuracion') }}">
               <i class="fa fa-tasks"></i>
               <span>Configuración Sitio</span>
               </a>
           </li>
+          {% endif %}
         </ul>
         <!-- sidebar menu end-->
       </div>
