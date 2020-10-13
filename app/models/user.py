@@ -17,6 +17,17 @@ class User(db.Model):
     last_name = db.Column(db.String(255), nullable=False)
     roles = db.relationship("Rol", secondary=usuario_tiene_rol, lazy=True, backref=db.backref('usuarios', lazy=True))
 
+    def __init__(self, id, username, email, password, activo, first_name, last_name, roles):
+        self.id = id
+        self.username = name
+        self.email = email
+        self.password = password
+        self.activo = activo
+        self.first_name = first_name
+        self.last_name = last_name
+        self.roles = roles
+
+
     @staticmethod 
     def all():
         return User.query.all()
@@ -34,6 +45,20 @@ class User(db.Model):
         db.session.commit()
         return True
 
+ 
+    @staticmethod
+    def update(id_usuario):
+        my_user = User.query.get(id=id_usuario)
+ 
+        my_user.username = request.form['username']
+        my_data.email = request.form['email']
+ 
+        db.session.commit()
+        flash("Actualizado Correctamente")
+ 
+        return True
+     
+
     @staticmethod 
     def find_by_username_and_pass(username, password):
         return User.query.filter_by(username=username,password=password).first()
@@ -42,3 +67,5 @@ class User(db.Model):
     def find_by_username(username):
           return User.query.filter_by(username=username).first()
 
+
+    

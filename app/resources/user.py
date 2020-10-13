@@ -22,7 +22,7 @@ def new():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     if "usuario_new" in permisos:
-        return render_template("user/new_user.html", permisos=permisos)
+        return render_template("user/user_new.html", permisos=permisos)
     else:
         abort(401)
 
@@ -41,6 +41,14 @@ def delete():
     
     User.delete(request.args.get("id_usuario"))
     return redirect(url_for("user_listar"))
+
+def update():
+    if not authenticated(session):
+        abort(401)
+    
+    User.update(request.args.get("id_usuario"))
+    return redirect(url_for("user_listar"))
+
 
 def listarUsuarios():
     if not authenticated(session):

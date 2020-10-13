@@ -44,6 +44,8 @@ def create_app(environment="development"):
     app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # Rutas de Usuarios
+    #p1 = User(0,"user", "email", "password", 1, "first_name", "last_name", "roles")
+    
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     app.add_url_rule("/usuarios/listar", "user_index", user.listarUsuarios)
@@ -64,6 +66,7 @@ def create_app(environment="development"):
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
+
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
