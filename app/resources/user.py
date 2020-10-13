@@ -2,6 +2,7 @@ from flask import redirect, render_template, request, url_for, session, abort
 from app.db import connection
 from app.models.user import User
 from app.helpers.auth import authenticated
+from app.helpers.autorizacion import get_permisos
 
 # Protected resources
 def index():
@@ -17,8 +18,13 @@ def index():
 def new():
     if not authenticated(session):
         abort(401)
-
-    return render_template("user/new.html")
+      
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    if "usuario_new" in permisos:
+        return render_template("user/new_user.html", permisos=permisos)
+    else:
+        abort(401)
 
 
 def create():
@@ -40,6 +46,10 @@ def listarUsuarios():
     if not authenticated(session):
         abort(401)
     
-    conn = connection()
-    usuarios = User.all()
-    return render_template("list_usuarios.html", usuarios=usuarios)
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    if "usuario_index" in permisos: 
+        usuarios = User.all()
+        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos)
+    else:
+        abort(401)
