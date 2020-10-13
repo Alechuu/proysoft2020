@@ -16,14 +16,14 @@ def authenticate():
 
     if not user:
         flash("Usuario o clave incorrecto.")
-        return redirect(url_for("auth_login"))
+        return redirect(url_for("auth_login",error=True))
 
     session["user"] = user.username
     session["first_name"] = user.first_name
     flash("La sesión se inició correctamente.")
 
-    usuario = User.find_by_username(session.get("user"))
-    permisos = get_permisos(usuario)
+    """ usuario = User.find_by_username(session.get("user")) """
+    permisos = get_permisos(user)
 
     return render_template("dashboard.html", permisos=permisos)
 
