@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
 from app.db import connection
 from app.models.user import User
+from app.helpers.autorizacion import get_permisos
 
 
 def login():
@@ -15,13 +16,16 @@ def authenticate():
 
     if not user:
         flash("Usuario o clave incorrecto.")
-        return redirect(url_for("auth_login"))
+        return redirect(url_for("auth_login",error=True))
 
     session["user"] = user.username
     session["first_name"] = user.first_name
     flash("La sesión se inició correctamente.")
 
-    return redirect(url_for("dashboard"))
+    """ usuario = User.find_by_username(session.get("user")) """
+    permisos = get_permisos(user)
+
+    return render_template("dashboard.html", permisos=permisos)
 
 
 def logout():

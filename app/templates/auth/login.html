@@ -33,8 +33,13 @@
   <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
-  <div id="login-page">
-    <div class="container">
+  <div id="login-page" style="background-color:whitesmoke;height:100vh">
+    <div class="container" >
+      {% if request.args.get('error'): %}
+      <div style="position:relative;top:50px;" class="alert alert-danger" role="alert">
+        ¡Credenciales Inválidas!
+      </div>
+      {% endif %}
       <form class="form-login" action="{{ url_for('auth_authenticate') }}" method="POST" >
         <h2 class="form-login-heading">Iniciar Sesión</h2>
         <div class="login-wrap">
