@@ -13,7 +13,7 @@
 		<div class="col-lg-12">		  
 		  <div class="form-panel">
 			<div class="form">
-			  <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('configuracion_save') }}">
+			  <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('configuracion_save') }}" novalidate>
 				{{ form.hidden_tag() }}
 				<!-- titulo -->
 				<div class="form-group">
@@ -22,6 +22,9 @@
 				  <div class="col-lg-10">
 					<!--<input class=" form-control" id="titulo" name="titulo" minlength="2" type="text" value="{{ conf.titulo }}" required />-->
 					{{ form.titulo(class="form-control", minlength="2", value= conf.titulo) }}
+					{% for error in form.titulo.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
 				  </div>
 				</div>
 				<!-- Descripcion -->
@@ -31,6 +34,9 @@
 				  <div class="col-lg-10">
 					<!--<input class="form-control " id="descripcion" type="text" name="descripcion" value={{ conf.descripcion }} />-->
 					{{ form.descripcion(class="form-control", value=conf.descripcion) }}
+					{% for error in form.descripcion.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
 				  </div>
 				</div>
 				<!-- mail de contacto -->
@@ -40,6 +46,9 @@
 				  <div class="col-lg-10">
 					<!--<input class="form-control " id="mailContacto" type="email" name="mailContacto" value="{{ conf.email }}" />-->
 					{{ form.mailContacto(class="form-control", value=conf.email) }}
+					{% for error in form.mailContacto.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
 				  </div>
 				</div>
 				<!-- paginado -->
@@ -49,6 +58,9 @@
 				  <div class="col-lg-10">
 					<!--<input class="form-control " type="number" min="0" max="50" id="paginado" name="paginado" value="{{ conf.paginado }}" required />-->					
 					{{ form.paginado(class="form-control", value=conf.paginado) }}
+					{% for error in form.paginado.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
 				  </div>
 				</div>
 				<!-- Sitio habilitado -->

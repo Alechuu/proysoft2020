@@ -8,6 +8,6 @@ class FormConfiguracion(FlaskForm):
     titulo = StringField("Título (requerido)", validators=[DataRequired(), Length(max=255)])
     descripcion = StringField("Descripción", validators=[Length(max=255)])
     mailContacto = EmailField("Mail de Contacto", validators=[Email()])
-    paginado = IntegerField("Paginado", validators=[NumberRange(min=1, max=None)])
+    paginado = IntegerField("Paginado", validators=[NumberRange(min=1, max=50)])
     sitioHabilitado = BooleanField("Sitio Habilitado")
     submit = SubmitField("Guardar")
