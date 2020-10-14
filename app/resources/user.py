@@ -21,11 +21,10 @@ def new():
       
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
-    if "usuario_new" in permisos:
-        return render_template("user/user_new.html", permisos=permisos)
-    else:
-        abort(401)
+    #usuarios = User.all()
+    return render_template("user/user_new.html", permisos=permisos)
 
+    
 
 def create():
     if not authenticated(session):

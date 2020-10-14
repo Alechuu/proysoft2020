@@ -17,15 +17,14 @@ class User(db.Model):
     last_name = db.Column(db.String(255), nullable=False)
     roles = db.relationship("Rol", secondary=usuario_tiene_rol, lazy=True, backref=db.backref('usuarios', lazy=True))
 
-    def __init__(self, id, username, email, password, activo, first_name, last_name, roles):
-        self.id = id
-        self.username = name
+    def __init__(self, username, email, password, activo, first_name, last_name):
+        self.username = username
         self.email = email
         self.password = password
         self.activo = activo
         self.first_name = first_name
         self.last_name = last_name
-        self.roles = roles
+        
 
 
     @staticmethod 
@@ -34,7 +33,8 @@ class User(db.Model):
 
     @staticmethod 
     def create(data):
-        usuario = User(email=data.get("email"), password=data.get("password"), first_name=data.get("first_name"), last_name=data.get("last_name"))
+        usuario = User(username=data.get("username"), email=data.get("email"), password=data.get("password"), activo=1, first_name=data.get("first_name"), last_name=data.get("last_name"))
+        print(usuario)
         db.session.add(usuario)
         db.session.commit()
         return True
