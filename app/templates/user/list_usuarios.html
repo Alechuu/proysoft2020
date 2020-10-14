@@ -65,11 +65,10 @@
                         {% else %}
                           <button class="btn btn-success btn-xs far fa-check-circle" style="size:14px;font-size: 17px;"></button>
                         {% endif %}
-                        <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modaledit" style="size:14px;font-size: 17px;"></button>
+                        <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modaledit{{ user.id }}" style="size:14px;font-size: 17px;"></button>
                         <button class="btn btn-danger btn-xs fas fa-trash-alt" onclick="window.location.href='{{ url_for('user_borrar',id_usuario=user.id) }}';" style="size:14px;font-size: 17px;"></button>
                       </td>
                     </tr>
-                    {% endfor %}
                     </tbody>
                 </div>
               </div>
@@ -84,7 +83,7 @@
     <!-- /MAIN CONTENT -->
     <!--main content end-->
     <!--footer start-->
-    <div id="modaledit" class="modal fade" role="dialog">
+    <div id="modaledit{{ user.id }}" class="modal fade" role="dialog">
       <div class="modal-dialog">
     
     
@@ -94,7 +93,7 @@
             <div class="modal-header">
     
     
-               <h4 class="modal-title">Actualizar Informacion</h4>
+               <h4 class="modal-title">Actualizar Informacion de {{ user.username }}</h4>
     
     
             </div>
@@ -103,19 +102,29 @@
             <div class="modal-body">
     
             
-               <form action="{{url_for('usuarios')}}" method="POST">
+               <form action="{{ url_for('user_update') }}" method="POST">
     
     
                   <div class="form-group">
     
     
-                     <label>Name:</label>
-                      <input type="hidden"  name="id" value="id">
-    
-                     <input type="text" class="form-control" name="name" value="{{ username }}">
+                     <label>Nombre:</label>
+                     
+                     <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
     
     
                   </div>
+                  
+                  <div class="form-group">
+    
+    
+                    <label>Apellido:</label>
+                     
+                    <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+   
+   
+                 </div>
+   
     
     
     
@@ -124,17 +133,20 @@
     
                      <label>Email:</label>
     
-                     <input type="text" class="form-control" name="email" value="{{ email }}">
+                     <input type="text" class="form-control" name="email" value="{{ user.email }}">
     
+                     <input type="hidden" class="form-control" name="username" value="{{ user.username }}">
     
                   </div>
+
+                  
     
     
     
                   <div class="form-group">
     
     
-                     <button class="btn btn-primary" type="submit">Update</button>
+                     <button class="btn btn-primary"  type="submit">Update</button>
     
     
                   </div>
@@ -161,7 +173,7 @@
       </div>
     
     </div>
-    
+    {% endfor %}
   </section>
 
 </body>
