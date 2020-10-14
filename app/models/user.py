@@ -47,14 +47,16 @@ class User(db.Model):
 
  
     @staticmethod
-    def update(id_usuario):
-        my_user = User.query.get(id=id_usuario)
- 
-        my_user.username = request.form['username']
-        my_data.email = request.form['email']
- 
+    def update(data):
+       
+        #miusuario = User.query.filter_by(id=data.get("id_usuario"))
+        miusuario = User.find_by_username(data.get("username"))
+        print(miusuario)
+        miusuario.first_name = data.get("first_name")
+        miusuario.last_name = data.get("last_name")
+        miusuario.email = data.get("email")
+        
         db.session.commit()
-        flash("Actualizado Correctamente")
  
         return True
      

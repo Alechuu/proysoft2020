@@ -40,14 +40,23 @@ def delete():
         abort(401)
     
     User.delete(request.args.get("id_usuario"))
-    return redirect(url_for("user_listar"))
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    usuarios = User.all()
+    return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos)
+
 
 def update():
     if not authenticated(session):
         abort(401)
     
-    User.update(request.args.get("id_usuario"))
-    return redirect(url_for("user_listar"))
+    User.update(request.form)
+    print(request.form)
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    usuarios = User.all()
+    return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos)
+
 
 
 def listarUsuarios():
