@@ -68,6 +68,7 @@ def create_app(environment="development"):
 
 
     app.add_url_rule("/profile", "profile", profile.index)
+    
     app.add_url_rule("/dashboard", "dashboard", dashboard.index)
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
@@ -90,10 +91,7 @@ def create_app(environment="development"):
     def centros():
         return render_template('centros.html')
 
-    @app.route('/usuarios')
-    def usuarios():
-        return render_template('usuarios.html')
-
+   
    #@app.route('/new_centro')
    # def new_centro():
    #     return render_template('new_centro.html')

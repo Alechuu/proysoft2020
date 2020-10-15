@@ -12,5 +12,5 @@ def index():
     #conn = connection()
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
-    #usuarios = User.all()
-    return render_template("profile.html", permisos=permisos)
+    usuarios = User.all()
+    return render_template("profile.html", permisos=permisos, usuario=usuario)
