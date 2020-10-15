@@ -1,6 +1,7 @@
 {% extends "menubarra.html" %}
 
 {% block main %}
+    
     <!--main content start-->
     <section id="main-content">
       <section class="wrapper">
@@ -193,11 +194,11 @@
         </div>
       </div>
     </div>
+    
     {% endfor %}
   </section>
-
+  
 </body>
-
 
   <script>
     $(document).ready(function(){
@@ -213,6 +214,8 @@
 
 
 {% endblock %}
+
+
 <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
 
 <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
