@@ -48,6 +48,6 @@ def save():
         
         miConfiguracion.save()
         permisos = get_permisos(User.find_by_username(session.get("user")))
-        return render_template("dashboard.html", permisos=permisos)
+        return render_template("dashboard.html", permisos=permisos, conf=miConfiguracion)
     
     return render_template("configuracion.html", conf=miConfiguracion, form=form)
