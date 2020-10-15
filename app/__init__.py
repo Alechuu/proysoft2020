@@ -3,7 +3,7 @@ from flask import Flask, render_template, g
 from flask_session import Session
 from config import config
 from app.db import db
-from app.resources import issue, user, auth, configuracion, centro, profile
+from app.resources import issue, user, auth, configuracion, centro, profile, dashboard
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -68,6 +68,7 @@ def create_app(environment="development"):
 
 
     app.add_url_rule("/profile", "profile", profile.index)
+    app.add_url_rule("/dashboard", "dashboard", dashboard.index)
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
@@ -84,10 +85,7 @@ def create_app(environment="development"):
     def index():
         return render_template('index.html')
 
-    @app.route('/dashboard')
-    def dashboard():
-        return render_template('dashboard.html')
-
+    
     @app.route('/centros')
     def centros():
         return render_template('centros.html')

@@ -13,4 +13,4 @@ def index():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     #usuarios = User.all()
-    return render_template("profile.html", permisos=permisos)
+    return render_template("dashboard.html", permisos=permisos)
