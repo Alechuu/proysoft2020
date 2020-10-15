@@ -69,16 +69,17 @@ def create_app(environment="development"):
     app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
 
-
     # Ruta para el Home (usando decorator)
-    @app.route("/")
-    def home():
-        return render_template("index.html")
+    app.add_url_rule("/", "home", configuracion.home)
+    app.add_url_rule("/index", "home", configuracion.home)
+    #@app.route("/")
+    #def home():
+    #    return render_template("index.html")
 
     
-    @app.route('/index')
-    def index():
-        return render_template('index.html')
+    #@app.route('/index')
+    #def index():
+    #    return render_template('index.html')
 
     @app.route('/dashboard')
     def dashboard():

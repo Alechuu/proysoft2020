@@ -1,8 +1,8 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}
+{% block title %} 
 Bs.As Centros
-{% endblock %}
+{% endblock %} 
 
 {% block styles %}
 {{super()}}
@@ -30,9 +30,9 @@ Bs.As Centros
       *********************************************************************************************************************************************************** -->
   <!--header start-->
   <header class="header black-bg">
-    
+
     <!--logo start-->
-    <a class="logo"><b>CENTROS <span>BUENOS AIRES</span></b></a>
+    <a class="logo"><b><span>{{conf.titulo}}</span></b></a>
     <!--logo end-->
     
   <div class="top-menu">
@@ -47,7 +47,7 @@ Bs.As Centros
 
     
   </header>
-  <div class="container">
+  <!-- <div class="container"> -->
     {%block container %} {% endblock %}
-  </div> 
+  <!-- </div>  -->
 {% endblock %}

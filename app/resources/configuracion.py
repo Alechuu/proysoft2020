@@ -51,3 +51,7 @@ def save():
         return render_template("dashboard.html", permisos=permisos)
     
     return render_template("configuracion.html", conf=miConfiguracion, form=form)
+
+def home():
+    miConfiguracion = Configuracion.get_first()
+    return render_template("index.html", conf=miConfiguracion)
