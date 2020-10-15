@@ -1,5 +1,8 @@
-from flask import render_template
+from flask import render_template, session, abort
 from app.models.configuracion import Configuracion
+from app.models.user import User
+from app.helpers.autorizacion import get_permisos
+from app.helpers.auth import authenticated
 
 """
 El propósito de este controlador es simplemente levantar la configuracion del sistema y enviarla a todas las plantillas.
@@ -10,12 +13,21 @@ def home():
     return render_template("index.html", conf=miConfiguracion)
 
 def dashboard():
+    if not authenticated(session):
+        abort(401)
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
     miConfiguracion = Configuracion.get_first()
-    return render_template("dashboard.html", conf=miConfiguracion)
+    return render_template("dashboard.html",permisos=permisos, conf=miConfiguracion)
 
 def profile():
+    if not authenticated(session):
+        abort(401)
     miConfiguracion = Configuracion.get_first()
-    return render_template("profile.html", conf=miConfiguracion)
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    usuarios = User.all()
+    return render_template("profile.html",permisos=permisos, usuario=usuario, conf=miConfiguracion)
 
 def centros():
     miConfiguracion = Configuracion.get_first()
@@ -24,4 +36,3 @@ def centros():
 def usuarios():
     miConfiguracion = Configuracion.get_first()
     return render_template("usuarios.html", conf=miConfiguracion)
-
