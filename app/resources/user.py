@@ -57,7 +57,12 @@ def update():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     if "usuario_index" in permisos:
-        User.update(request.form)
+        try:
+            User.update(request.form)
+        except:
+            usuarios = User.all()
+            notificacion="¡El Email: "+request.form.get("email")+" ya existe, ingrese otro!"
+            return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion)
         usuarios = User.all()
         notificacion="¡Se actualizó con éxito al usuario: "+request.form.get("username")+"!"
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion)
