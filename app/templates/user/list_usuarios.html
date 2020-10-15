@@ -6,8 +6,11 @@
       <section class="wrapper">
       {% if notificacion  %}
       <br>
-      <div class="alert alert-success" role="alert">
+      <div class="alert alert-success alert-dismissible" role="alert">
         {{notificacion}}
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+         </button>
       </div>
       {% endif %}
         <h3><i class="fa fa-angle-right"></i> Listado de Usuarios</h3>
@@ -127,12 +130,36 @@
                   <div class="form-group">
                     <label>Apellido:</label>
                     <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
-                 </div>
-                  <div class="form-group">
-                     <label>Email:</label>
-                     <input type="text" class="form-control" name="email" value="{{ user.email }}">
-                     <input type="hidden" class="form-control" name="username" value="{{ user.username }}">
                   </div>
+                  <div class="form-group">
+                      <label>Email:</label>
+                      <input type="text" class="form-control" name="email" value="{{ user.email }}">
+                      <input type="hidden" class="form-control" name="username" value="{{ user.username }}">
+                  </div>
+                  <div class="form-group">
+                    <label>Roles:</label>
+                    {% set rolesParsed = [] %}
+                    {% for rol in user.roles: %}
+                    <p style="display:none">{{ rolesParsed.append(rol.nombre) }}</p>
+                    {% endfor %}
+                    <div style="display:flex;">
+                      <label for="checkAdmin" style="top:12px;position:relative">Administrador</label>
+                      {% if "Administrador" in rolesParsed: %}
+                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="Administrador" name="Administrador" checked />
+                      {%else:%}
+                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="Administrador" name="Administrador" />
+                      {% endif %}
+                    </div>
+                    <div style="display:flex">
+                      <label for="checkOperador" style="top:12px;position:relative">Operador de Centro</label>
+                      {% if "OperadorCentroAyuda" in rolesParsed: %}
+                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="OperadorCentroAyuda" name="OperadorCentroAyuda" checked />
+                      {% else: %}
+                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="OperadorCentroAyuda" name="OperadorCentroAyuda" />
+                      {% endif %}
+                    </div>
+                  </div>
+                  <hr>
                   <div class="form-group">
                      <button class="btn btn-primary"  type="submit">Actualizar</button>
                   </div>
