@@ -54,6 +54,11 @@ class User(db.Model):
         miusuario.first_name = data.get("first_name")
         miusuario.last_name = data.get("last_name")
         miusuario.email = data.get("email")
+        miusuario.roles = []
+        if(data.get("Administrador")=="on"):
+            miusuario.roles.append(Rol.find_by_name("Administrador"))
+        if(data.get("OperadorCentroAyuda")=="on"):
+            miusuario.roles.append(Rol.find_by_name("OperadorCentroAyuda"))
         
         db.session.commit()
  
