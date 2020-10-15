@@ -51,7 +51,6 @@ class User(db.Model):
        
         #miusuario = User.query.filter_by(id=data.get("id_usuario"))
         miusuario = User.find_by_username(data.get("username"))
-        print(miusuario)
         miusuario.first_name = data.get("first_name")
         miusuario.last_name = data.get("last_name")
         miusuario.email = data.get("email")
@@ -59,7 +58,14 @@ class User(db.Model):
         db.session.commit()
  
         return True
-     
+
+    @staticmethod 
+    def cambiarEstado(username):
+        usuario = User.find_by_username(username)
+        usuario.activo = not usuario.activo
+        db.session.commit()
+        return True
+
 
     @staticmethod 
     def find_by_username_and_pass(username, password):
