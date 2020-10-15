@@ -23,3 +23,6 @@ class Rol(db.Model):
         if not self.id:
             db.session.add(self)
         db.session.commit()
+        
+    def find_by_name(name):
+        return Rol.query.filter_by(nombre=name).first()
