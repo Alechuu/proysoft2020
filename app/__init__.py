@@ -3,11 +3,7 @@ from flask import Flask, render_template, g
 from flask_session import Session
 from config import config
 from app.db import db
-<<<<<<< HEAD
-from app.resources import issue, user, auth, configuracion, centro, mainController
-=======
-from app.resources import issue, user, auth, configuracion, centro, profile, dashboard
->>>>>>> 6bcf6e56c18fb47cc143634ad377e965396e6210
+from app.resources import issue, user, auth, configuracion, centro,profile, dashboard, mainController
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
