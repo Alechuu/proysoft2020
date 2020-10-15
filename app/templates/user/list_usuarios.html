@@ -148,7 +148,7 @@
                     <p style="display:none">{{ rolesParsed.append(rol.nombre) }}</p>
                     {% endfor %}
                     <div style="display:flex;">
-                      <label for="checkAdmin" style="top:12px;position:relative">Administrador</label>
+                      <label for="checkAdmin" style="top:12px;position:relative">Administrador </label>
                       {% if "Administrador" in rolesParsed: %}
                       <input type="checkbox" style="width: 20px" class="checkbox form-control" id="Administrador" name="Administrador" checked />
                       {%else:%}
@@ -156,7 +156,7 @@
                       {% endif %}
                     </div>
                     <div style="display:flex">
-                      <label for="checkOperador" style="top:12px;position:relative">Operador de Centro</label>
+                      <label for="checkOperador" style="top:12px;position:relative">Operador de Centro </label>
                       {% if "OperadorCentroAyuda" in rolesParsed: %}
                       <input type="checkbox" style="width: 20px" class="checkbox form-control" id="OperadorCentroAyuda" name="OperadorCentroAyuda" checked />
                       {% else: %}
