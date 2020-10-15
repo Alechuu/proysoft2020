@@ -1,6 +1,7 @@
 {% extends "menubarra.html" %}
 
 {% block main %}
+    
     <!--main content start-->
     <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <section id="main-content">
@@ -148,7 +149,7 @@
                     <p style="display:none">{{ rolesParsed.append(rol.nombre) }}</p>
                     {% endfor %}
                     <div style="display:flex;">
-                      <label for="checkAdmin" style="top:12px;position:relative">Administrador</label>
+                      <label for="checkAdmin" style="top:12px;position:relative">Administrador </label>
                       {% if "Administrador" in rolesParsed: %}
                       <input type="checkbox" style="width: 20px" class="checkbox form-control" id="Administrador" name="Administrador" checked />
                       {%else:%}
@@ -156,7 +157,7 @@
                       {% endif %}
                     </div>
                     <div style="display:flex">
-                      <label for="checkOperador" style="top:12px;position:relative">Operador de Centro</label>
+                      <label for="checkOperador" style="top:12px;position:relative">Operador de Centro </label>
                       {% if "OperadorCentroAyuda" in rolesParsed: %}
                       <input type="checkbox" style="width: 20px" class="checkbox form-control" id="OperadorCentroAyuda" name="OperadorCentroAyuda" checked />
                       {% else: %}
@@ -194,9 +195,10 @@
         </div>
       </div>
     </div>
+    
     {% endfor %}
   </section>
-
+  
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>

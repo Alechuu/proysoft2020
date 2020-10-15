@@ -32,7 +32,7 @@ Bs.As Centros
   <header class="header black-bg">
 
     <!--logo start-->
-    <a class="logo"><b><span>{{conf.titulo}}</span></b></a>
+    <a class="logo"><b>{{conf.titulo}}</b></a>
     <!--logo end-->
     
   <div class="top-menu">
@@ -50,4 +50,19 @@ Bs.As Centros
   <!-- <div class="container"> -->
     {%block container %} {% endblock %}
   <!-- </div>  -->
+  <footer class="site-footer">
+    <div class="text-center">
+      <p>
+        &copy; <strong>{{conf.titulo }}</strong>
+      </p>
+      <div class="credits">
+    
+        {{ conf.email}}
+      </div>
+      
+        <i class="fa fa-angle-up"></i>
+        </a>
+    </div>
+  </footer>
+
 {% endblock %}
