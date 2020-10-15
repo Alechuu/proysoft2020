@@ -1,15 +1,18 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
 from app.db import connection
 from app.models.user import User
+from app.models.configuracion import Configuracion
 from app.helpers.autorizacion import get_permisos
 
 
 def login():
-    return render_template("auth/login.html")
+    miConfiguracion = Configuracion.get_first() 
+    return render_template("auth/login.html", conf=miConfiguracion)
 
 
 def authenticate():
     ##conn = connection()
+    miConfiguracion = Configuracion.get_first() 
     params = request.form
 
     user = User.find_by_username_and_pass(params["username"], params["password"])
@@ -25,7 +28,7 @@ def authenticate():
     """ usuario = User.find_by_username(session.get("user")) """
     permisos = get_permisos(user)
 
-    return render_template("dashboard.html", permisos=permisos)
+    return render_template("dashboard.html", permisos=permisos, conf=miConfiguracion)
 
 
 def logout():

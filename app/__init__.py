@@ -3,7 +3,7 @@ from flask import Flask, render_template, g
 from flask_session import Session
 from config import config
 from app.db import db
-from app.resources import issue, user, auth, configuracion, centro
+from app.resources import issue, user, auth, configuracion, centro, mainController
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -70,37 +70,16 @@ def create_app(environment="development"):
     app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
 
-    # Ruta para el Home (usando decorator)
-    app.add_url_rule("/", "home", configuracion.home)
-    app.add_url_rule("/index", "home", configuracion.home)
-    #@app.route("/")
-    #def home():
-    #    return render_template("index.html")
+    # Ruta para el Home 
+    app.add_url_rule("/", "home", mainController.home)
+    app.add_url_rule("/index", "index", mainController.home)
+  
+    app.add_url_rule("/dashboard", "dashboard", mainController.dashboard)
 
-    
-    #@app.route('/index')
-    #def index():
-    #    return render_template('index.html')
+    app.add_url_rule("/profile", "profile", mainController.profile)
 
-    @app.route('/dashboard')
-    def dashboard():
-        return render_template('dashboard.html')
+    app.add_url_rule("/centros", "centros", mainController.centros)
 
-    @app.route('/profile')
-    def profile():
-        return render_template('profile.html')
+    app.add_url_rule("/usuarios", "usuarios", mainController.usuarios)
 
-    @app.route('/centros')
-    def centros():
-        return render_template('centros.html')
-
-    @app.route('/usuarios')
-    def usuarios():
-        return render_template('usuarios.html')
-
-   #@app.route('/new_centro')
-   # def new_centro():
-   #     return render_template('new_centro.html')
-
-    # Retornar la instancia de app configurada
     return app
