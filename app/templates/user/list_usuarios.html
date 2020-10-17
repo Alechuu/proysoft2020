@@ -206,9 +206,24 @@
 <script>
   $(document).ready(function() {
     tabla = $('#tablaUsers').DataTable({
+    "language":{
+      "info": "Mostrando página _PAGE_ de _PAGES_",
+      "zeroRecords": "No se encontraron Usuarios.",
+      "paginate": {
+        "first":"Primero",
+        "last": "Último",
+        "next": "Siguiente",
+        "previous":"Anterior"
+    },
+      },
     "dom":"lrtip",
     "bLengthChange": false, //Este parametro controla si el usuario puede cambiar el paginado
-    "iDisplayLength":  {{conf.paginado}}  }); //Este es el paginado por Default
+    "iDisplayLength":  {{conf.paginado}}, //Este es el paginado por Default
+    "columnDefs": [ {
+      "targets": 6,
+      "orderable": false
+    }]  
+    }); 
     $('#inputSearch').keyup(function(){
       tabla.search($(this).val()).draw() ;
     })
@@ -218,8 +233,6 @@
 
 {% endblock %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js"></script>
 <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
 
 <script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
