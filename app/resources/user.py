@@ -22,8 +22,9 @@ def new():
     miConfiguracion = Configuracion.get_first()  
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
+    active_page="user_new"
     #usuarios = User.all()
-    return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion)
+    return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion, active_page=active_page)
 
     
 
@@ -89,8 +90,9 @@ def listarUsuarios():
     miConfiguracion = Configuracion.get_first() 
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
+    active_page = "user_index"
     if "usuario_index" in permisos: 
         usuarios = User.all()
-        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion )
+        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion, active_page=active_page )
     else:
         abort(401)
