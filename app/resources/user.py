@@ -39,19 +39,21 @@ def create():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     active_page="user_new"
-
+    if(request.form.get('password') != request.form.get('confirm_password')):
+        notificacion="¡Las contraseñas no coinciden!"
+        return render_template("user/user_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion,user_data=request.form)
     
     try:
         User.create(request.form)
+        notificacion="¡Se registró exitosamente el usuario "+request.form.get('username')+"! Puede visualizarlo en el listado."
+        return render_template("user/user_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion)
     except Exception as e:
-        print(str(e))
-        print(e)
         if "for key 'email'" in str(e):
-            notificacion="Ya existe una cuenta con ese email asociada"
-            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page)
+            notificacion="Ya existe un usuario con el email: "+request.form.get('email')+". Por favor, elija otro."
+            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,user_data=request.form)
         if "for key 'username'" in str(e):
-            notificacion="Ya existe una cuenta con este nombre de usuario"
-            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page)
+            notificacion="Ya existe un usuario con el nombre de usuario: "+request.form.get('username')+". Por favor, elija otro."
+            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,user_data=request.form)
             
    
 def delete():
