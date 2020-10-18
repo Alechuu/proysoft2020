@@ -1,4 +1,5 @@
 from flask import render_template, session, abort, redirect, url_for
+
 from app.models.configuracion import Configuracion
 from app.models.user import User
 from app.helpers.auth import authenticated
@@ -17,7 +18,7 @@ def index():
         form.sitioHabilitado.data = miConfiguracion.habilitado  
         return render_template("configuracion.html", conf=miConfiguracion, form=form, permisos=permisos)
     else:
-        #Informar error
+        # Informar error
         abort(401)
 
 
@@ -33,7 +34,7 @@ def save():
         mailContacto = form.mailContacto.data
         paginado = form.paginado.data
         sitioHabilitado = form.sitioHabilitado.data
-        #actualizo la configuracion                
+        # actualizo la configuracion                
 
         if miConfiguracion.titulo != titulo:
             miConfiguracion.set_titulo(titulo)
@@ -48,6 +49,7 @@ def save():
         
         miConfiguracion.save()
         permisos = get_permisos(User.find_by_username(session.get("user")))
-        return render_template("dashboard.html", permisos=permisos, conf=miConfiguracion)
+        notificacion = "¡Se editó correctamente la configuración del sitio!"
+        return render_template("configuracion.html", conf=miConfiguracion, form=form, active_page=active_page,permisos=permisos,notificacion=notificacion)
     
     return render_template("configuracion.html", conf=miConfiguracion, form=form, active_page=active_page)

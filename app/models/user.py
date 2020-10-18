@@ -31,6 +31,7 @@ class User(db.Model):
     def all():
         return User.query.all()
 
+
     @staticmethod 
     def create(data):
         if data.get('habilitado') == 'on':
@@ -49,18 +50,17 @@ class User(db.Model):
             return False
         
         
-        
-    
     @staticmethod 
     def delete(id_usuario):
-        User.query.filter_by(id=id_usuario).delete()
+        # User.query.filter_by(id=id_usuario).delete()
+        user = db.session.query(User).filter(User.id==id_usuario).first()
+        db.session.delete(user)
         db.session.commit()
         return True
 
  
     @staticmethod
-    def update(data):
-       
+    def update(data):       
         try:
             miusuario = User.find_by_username(data.get("username"))
             miusuario.first_name = data.get("first_name")
@@ -79,6 +79,7 @@ class User(db.Model):
  
         return True
 
+
     @staticmethod 
     def cambiarEstado(username):
         usuario = User.find_by_username(username)
@@ -90,6 +91,7 @@ class User(db.Model):
     @staticmethod 
     def find_by_username_and_pass(username, password):
         return User.query.filter_by(username=username,password=password).first()
+
 
     @staticmethod
     def find_by_username(username):

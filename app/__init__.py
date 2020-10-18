@@ -1,15 +1,17 @@
 from os import path, environ
+
 from flask import Flask, render_template, g
 from flask_session import Session
-from config import config
-from app.db import db
-from app.resources import issue, user, auth, configuracion, centro,profile, mainController
-from app.resources.api import issue as api_issue
-from app.helpers import handler
-from app.helpers import auth as helper_auth
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+
+from config import config
+from app.db import db
+from app.resources import user, auth, configuracion, centro,profile, mainController
+from app.helpers import handler
+from app.helpers import auth as helper_auth
+
 
 def create_app(environment="development"):
     # Configuración inicial de la app
@@ -38,13 +40,7 @@ def create_app(environment="development"):
         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
     )
 
-    # Rutas de Consultas
-    app.add_url_rule("/consultas", "issue_index", issue.index)
-    app.add_url_rule("/consultas", "issue_create", issue.create, methods=["POST"])
-    app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
-
     # Rutas de Usuarios
-    #p1 = User(0,"user", "email", "password", 1, "first_name", "last_name", "roles")
     
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
@@ -63,8 +59,6 @@ def create_app(environment="development"):
     app.add_url_rule('/configuracion', "configuracion", configuracion.index)
     app.add_url_rule('/configuracion', "configuracion_save", configuracion.save, methods=["POST"])
 
-    # Rutas de API-rest
-    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)

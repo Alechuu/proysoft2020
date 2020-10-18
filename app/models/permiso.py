@@ -11,12 +11,15 @@ class Permiso(db.Model):
     def get_all():
         return Permiso.query.all()
 
+
     @staticmethod
     def get_by_name(nombre):
         return Permiso.query.filter_by(nombre=nombre).first()
-    
+
+
     def set_nombre(self, nombre):
         self.nombre = nombre
+
 
     def save(self):
         if not self.id:

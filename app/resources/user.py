@@ -1,4 +1,5 @@
 from flask import redirect, render_template, request, url_for, session, abort
+
 from app.db import connection
 from app.models.user import User
 from app.models.configuracion import Configuracion
@@ -10,7 +11,6 @@ def index():
     if not authenticated(session):
         abort(401)
 
-    #conn = connection()
     users = User.all()
     miConfiguracion = Configuracion.get_first()
     return render_template("user/index.html", users=users, conf=miConfiguracion)
@@ -27,14 +27,12 @@ def new():
         return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion, active_page=active_page)
     else:
         abort(401)
-
     
 
 def create():
     if not authenticated(session):
         abort(401)
 
-    #conn = connection()
     miConfiguracion = Configuracion.get_first()  
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
@@ -91,6 +89,7 @@ def update():
     else:
         abort(401)
 
+
 def cambiarEstado():
     if not authenticated(session):
         abort(401)
@@ -104,6 +103,7 @@ def cambiarEstado():
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion)
     else:
         abort(401)
+
 
 def listarUsuarios():
     if not authenticated(session):

@@ -1,10 +1,18 @@
 {% extends 'menubarra.html' %}
 
 {% block main %} 
-
 <!--main content start-->
 <section id="main-content">
 	<section class="wrapper">
+	{% if notificacion  %}
+	<br>
+	<div class="alert alert-success alert-dismissible" role="alert">
+	{{notificacion}}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+	</div>
+	{%endif%}
 	  <h3><i class="fa fa-angle-right"></i> Configuración</h3>
 	  <!-- BASIC FORM VALIDATION -->
 

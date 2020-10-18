@@ -15,14 +15,17 @@ class Rol(db.Model):
     @staticmethod
     def get_all():
         return Rol.query.all()
-    
+
+
     def set_nombre(self, nombre):
         self.nombre = nombre
+
 
     def save(self):
         if not self.id:
             db.session.add(self)
         db.session.commit()
+
         
     def find_by_name(name):
         return Rol.query.filter_by(nombre=name).first()

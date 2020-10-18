@@ -8,6 +8,7 @@ def usuarioTienePermiso(unUsuario, unPermiso):
             tienePermiso = True
     return tienePermiso
 
+
 def get_permisos(unUsuario):
     #Retorno una lista con los nombres de los permisos del usuario
     lista_permisos = set()
