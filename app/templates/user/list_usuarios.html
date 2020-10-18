@@ -78,10 +78,16 @@
                           <td>{{user.username}}</td>
                           <td>{{user.email}}</td>
                           <td>
-                          {% if user.activo == 1 %}
-                            <button class="btn btn-warning btn-xs far fa-times-circle" data-toggle="modal" data-target="#modalEstado{{user.id}}" style="size:14px;font-size: 17px;"></button>
-                          {% else %}
-                            <button class="btn btn-success btn-xs far fa-check-circle" data-toggle="modal" data-target="#modalEstado{{user.id}}" style="size:14px;font-size: 17px;"></button>
+                            {% set rolesParsedAcciones = [] %}
+                            {% for rol in user.roles: %}
+                              <p style="display:none">{{ rolesParsedAcciones.append(rol.nombre) }}</p>
+                            {% endfor %}
+                          {% if "Administrador" not in rolesParsedAcciones %}
+                            {% if user.activo == 1 %}
+                              <button class="btn btn-warning btn-xs far fa-times-circle" data-toggle="modal" data-target="#modalEstado{{user.id}}" style="size:14px;font-size: 17px;"></button>
+                            {% else %}
+                              <button class="btn btn-success btn-xs far fa-check-circle" data-toggle="modal" data-target="#modalEstado{{user.id}}" style="size:14px;font-size: 17px;"></button>
+                            {% endif %}
                           {% endif %}
                           <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modaledit{{ user.id }}" style="size:14px;font-size: 17px;"></button>
                           <button class="btn btn-danger btn-xs fas fa-trash-alt" data-toggle="modal" data-target="#modalBorrar{{user.id}}" style="size:14px;font-size: 17px;"></button>

@@ -19,14 +19,17 @@ def authenticate():
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login",error=True))
-    if user.activo == 1:
-        session["user"] = user.username
-        session["first_name"] = user.first_name
-        flash("La sesión se inició correctamente.")
-        permisos = get_permisos(user)
-        return redirect(url_for("profile"))
-    else:
+
+    permisos = get_permisos(user)
+    if ("usuario_new" not in permisos) and (miConfiguracion.habilitado == 0):
         abort(401)
+    else:
+        if user.activo == 1:
+            session["user"] = user.username
+            session["first_name"] = user.first_name
+            return redirect(url_for("profile"))
+        else:
+            abort(401)
 
 
 def logout():
