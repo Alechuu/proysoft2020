@@ -99,7 +99,6 @@
     /* body container */
     #main-content {
         margin: 0px!important;
-        position: none !important;
     }
 
     #sidebar > ul > li > a > span {
@@ -231,7 +230,6 @@
         background-image: -webkit-linear-gradient(top, #fafafa, #efefef) !important;
         background-image: -o-linear-gradient(top, #fafafa, #efefef) !important;
         background-image: linear-gradient(to bottom, #fafafa, #efefef) !important;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr='#fafafa', endColorstr='#efefef', GradientType=0) !important;
         -webkit-box-shadow: 0 1px 0px rgba(255, 255, 255, .8) !important;
         -moz-box-shadow: 0 1px 0px rgba(255, 255, 255, .8) !important;
         box-shadow: 0 1px 0px rgba(255, 255, 255, .8) !important;
@@ -255,7 +253,6 @@
         background-image: -webkit-linear-gradient(top, #e5e4e4, #dddcdc) !important;
         background-image: -o-linear-gradient(top, #e5e4e4, #dddcdc) !important;
         background-image: linear-gradient(to bottom, #e5e4e4, #dddcdc) !important;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr='#e5e4e4', endColorstr='#dddcdc', GradientType=0) !important;
     }
 
     .fc-content {

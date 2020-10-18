@@ -17,6 +17,7 @@
   <div id="login-page" style="background-color:whitesmoke;height:100vh">
     <div class="container" >
       {% if request.args.get('error'): %}
+      <br>
       <div style="position:relative;top:50px;" class="alert alert-danger" role="alert">
         ¡Credenciales Inválidas!
       </div>
