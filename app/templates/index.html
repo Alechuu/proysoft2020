@@ -1,11 +1,12 @@
 {% extends "barra.html" %}
 
 {% block container %}
-  <div class="jumbotron" style="position:relative;top:50px; background-color:aliceblue; text-align:center " >
-      <h1 style="color:black">¡Bienvenido a {{conf.titulo}}!</h1>
-      <p style="color:black" class="lead">{{conf.descripcion}}</p>
-  </div>
-  <hr style="position:relative;top:20px"/>
+<div class="jumbotron" style="position:relative;top:50px; background-color:aliceblue; text-align:center " >
+  <h1 style="color:black">¡Bienvenido a {{conf.titulo}}!</h1>
+  <p style="color:black" class="lead">{{conf.descripcion}}</p>
+</div>
+<hr style="position:relative;top:20px"/>
+{% if conf.habilitado %}   
   <div class="jumbotron" style="text-align:center;background-color:white">
     <i class="fas fa-info-circle" style="font-size:50px; color:#4ecdc4"></i>
     <h2>¿De qué trata este Sitio Web?</h2>
@@ -29,4 +30,13 @@
     <p>Hacé click en el botón de abajo y seguí los pasos.</p>
     <button type="button" class="btn btn-primary" style="font-size:30px;background-color:#4ecdc4;position:relative;top:20px;">Necesito una mano</button>
   </div>
+  {% else %}
+  <div class="jumbotron" style="text-align:center;background-color:white">
+    <i class="fas fa-info-circle" style="font-size:50px; color:#4ecdc4"></i>
+    <h2>Sitio en Mantenimiento</h2>
+    <p>Estamos reformando nuestra página web.</p>
+    <p>Proximamente estaremos online.</p>
+    <p>Agradecemos tu comprensión</p>
+  </div>
+  {% endif %}
 {% endblock %}
