@@ -1,5 +1,5 @@
 {% extends "bootstrap/base.html" %}
-
+{% block html_attribs %} lang="es" {% endblock html_attribs %}
 {% block title %} 
 Bs.As Centros
 {% endblock %} 
@@ -52,17 +52,12 @@ Bs.As Centros
   <!-- </div>  -->
   <footer class="site-footer">
     <div class="text-center">
-      <p>
-        &copy; <strong>{{conf.titulo }}</strong>
-      </p>
-      <div class="credits">
-    
+      <p> &copy; <strong>{{conf.titulo }}</strong></p>
+      <div class="credits">    
         {{ conf.email}}
-      </div>
-      
-        <i class="fa fa-angle-up"></i>
-        </a>
+      </div>      
+        <i class="fa fa-angle-up"></i>        
     </div>
   </footer>
-
+</section>
 {% endblock %}
