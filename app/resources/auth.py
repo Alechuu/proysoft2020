@@ -31,6 +31,7 @@ def authenticate():
 
 def logout():
     del session["user"]
+    del session["first_name"]
     session.clear()
     flash("La sesión se cerró correctamente.")
 

@@ -62,9 +62,9 @@ def delete():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     if "usuario_index" in permisos:
-        User.delete(request.args.get("id_usuario"))
+        User.delete(request.form.get("id_usuario"))
         usuarios = User.all()
-        notificacion = "¡Se eliminó con éxito al usuario!"
+        notificacion = "¡Se eliminó con éxito al usuario "+request.form.get('username')+"!"
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion)
     else:
         abort(401)
@@ -97,9 +97,9 @@ def cambiarEstado():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     if "usuario_index" in permisos:
-        User.cambiarEstado(request.args.get("username"))
+        User.cambiarEstado(request.form.get("username"))
         usuarios = User.all()
-        notificacion = "¡Se actualizó con éxito el Estado del usuario: "+request.args.get("username")+"!"
+        notificacion = "¡Se actualizó con éxito el Estado del usuario: "+request.form.get("username")+"!"
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion)
     else:
         abort(401)

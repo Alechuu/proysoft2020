@@ -5,6 +5,7 @@ from flask_session import Session
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 
 from config import config
 from app.db import db
@@ -16,7 +17,7 @@ from app.helpers import auth as helper_auth
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
-
+    CSRFProtect(app)
     bootstrap = Bootstrap(app)
 
     # Carga de la configuración
@@ -45,9 +46,9 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     app.add_url_rule("/usuarios/listar", "user_index", user.listarUsuarios)
-    app.add_url_rule("/usuarios/borrar", "user_borrar", user.delete)
+    app.add_url_rule("/usuarios/borrar", "user_borrar", user.delete, methods=["POST"])
     app.add_url_rule("/usuarios/update", "user_update", user.update, methods=["POST"])
-    app.add_url_rule("/usuarios/cambiarEstado", "user_cambiar_estado", user.cambiarEstado)
+    app.add_url_rule("/usuarios/cambiarEstado", "user_cambiar_estado", user.cambiarEstado,methods=["POST"])
 
 
     #Rutas de Centros
@@ -63,6 +64,7 @@ def create_app(environment="development"):
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
+    app.register_error_handler(400, handler.csrf_error)
     # Implementar lo mismo para el error 500 y 401
 
     # Ruta para el Home 

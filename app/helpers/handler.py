@@ -1,5 +1,5 @@
 from flask import render_template
-
+from flask_wtf.csrf import CSRFProtect
 
 def not_found_error(e):
     kwargs = {
@@ -15,5 +15,13 @@ def unauthorized_error(e):
         "error_description": "No deberías estar por acá, hacé click en el botón.",
     }
     return render_template("error.html", **kwargs), 401
+
+
+def csrf_error(e):
+    kwargs = {
+        "error_name": "400 Error de CSRF Token",
+        "error_description": "No deberías estar por acá, hacé click en el botón.",
+    }
+    return render_template('error.html', **kwargs), 400
 
 
