@@ -1,0 +1,106 @@
+{% extends 'menubarra.html' %}
+
+{% block main %} 
+<!--main content start-->
+<section id="main-content">
+	<section class="wrapper">
+	{% if notificacion  %}
+	<br>
+	<div class="alert alert-success alert-dismissible" role="alert">
+	{{notificacion}}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+	</div>
+	{%endif%}
+	  <h3><i class="fa fa-angle-right"></i> Configuración</h3>
+	  <!-- BASIC FORM VALIDATION -->
+
+	  <!-- FORM VALIDATION -->
+	  <div class="row mt" style="height:100vh">
+		<div class="col-lg-12">		  
+		  <div class="form-panel">
+			<div class="form">
+			  <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('configuracion_save') }}" novalidate>
+				{{ form.hidden_tag() }}
+				<!-- titulo -->
+				<div class="form-group">
+				  <!--<label for="titulo" class="control-label col-lg-2">T&iacute;tulo (requerido)</label>-->
+				  {{ form.titulo.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class=" form-control" id="titulo" name="titulo" minlength="2" type="text" value="{{ conf.titulo }}" required />-->
+					{{ form.titulo(class="form-control", minlength="2", value= conf.titulo) }}
+					{% for error in form.titulo.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
+				  </div>
+				</div>
+				<!-- Descripcion -->
+				<div class="form-group">
+				  <!--<label for="descripcion" class="control-label col-lg-2">Descripci&oacute;n </label>-->
+				  {{ form.descripcion.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class="form-control " id="descripcion" type="text" name="descripcion" value={{ conf.descripcion }} />-->
+					{{ form.descripcion(class="form-control", value=conf.descripcion) }}
+					{% for error in form.descripcion.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
+				  </div>
+				</div>
+				<!-- mail de contacto -->
+				<div class="form-group">
+				  <!--<label for="mailContacto" class="control-label col-lg-2">Mail de Contacto</label>-->
+				  {{ form.mailContacto.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class="form-control " id="mailContacto" type="email" name="mailContacto" value="{{ conf.email }}" />-->
+					{{ form.mailContacto(class="form-control", value=conf.email) }}
+					{% for error in form.mailContacto.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
+				  </div>
+				</div>
+				<!-- paginado -->
+				<div class="form-group">
+				  <!--<label for="paginado" class="control-label col-lg-2">Paginado</label>-->
+				  {{ form.paginado.label(class="control-label col-lg-2") }}
+				  <div class="col-lg-10">
+					<!--<input class="form-control " type="number" min="0" max="50" id="paginado" name="paginado" value="{{ conf.paginado }}" required />-->					
+					{{ form.paginado(class="form-control", value=conf.paginado) }}
+					{% for error in form.paginado.errors %}
+					<span style="color: red;">{{ error }}</span>
+					{% endfor %}
+				  </div>
+				</div>
+				<!-- Sitio habilitado -->
+				<div class="form-group ">
+					<!--<label for="sitioHabilitado" class="control-label col-lg-2 col-sm-3">Sitio Habilitado</label>-->
+					{{ form.sitioHabilitado.label(class="control-label col-lg-2 col-sm-3") }}
+                    <div class="col-lg-10 col-sm-9">
+					  <!--<input type="checkbox" style="width: 20px" class="checkbox form-control" id="sitioHabilitado" name="habilitado" {% if conf.habilitado %}checked{% endif %}/>-->
+					  {{ form.sitioHabilitado(style="width: 20px", class="checkbox form-control") }}
+                    </div>
+				  </div>	
+				<!-- Boton guardar -->
+				<div class="form-group">
+				  <div class="col-lg-offset-2 col-lg-10">
+					<!--<button class="btn btn-theme" type="submit">Guardar</button>-->
+					{{ form.submit(class="btn btn-theme") }}
+				  </div>
+				</div>
+			  </form>
+			</div>
+		  </div>
+		  <!-- /form-panel -->
+		</div>
+		<!-- /col-lg-12 -->
+	  </div>
+	  <!-- /row -->
+	</section>
+	<!-- /wrapper -->
+  </section>
+  <!-- /MAIN CONTENT -->
+  <!--main content end-->
+
+</section>
+
+{% endblock %}

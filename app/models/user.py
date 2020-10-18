@@ -1,34 +1,101 @@
-class User(object):
-    @classmethod
-    def all(cls, conn):
-        sql = "SELECT * FROM users"
-        cursor = conn.cursor()
-        cursor.execute(sql)
+from app import db
+from app.models.rol import Rol
 
-        return cursor.fetchall()
+usuario_tiene_rol = db.Table("usuario_tiene_rol",
+    db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
+    db.Column("usuario_id", db.Integer, db.ForeignKey("usuario.id"), primary_key=True)
+)
 
-    @classmethod
-    def create(cls, conn, data):
-        sql = """
-            INSERT INTO users (email, password, first_name, last_name)
-            VALUES (%s, %s, %s, %s)
-        """
+class User(db.Model):
+    __tablename__ = 'usuario'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    activo = db.Column(db.Integer, nullable=False)
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name = db.Column(db.String(255), nullable=False)
+    roles = db.relationship("Rol", secondary=usuario_tiene_rol, lazy=True, backref=db.backref('usuarios', lazy=True))
 
-        cursor = conn.cursor()
-        cursor.execute(sql, list(data.values()))
-        conn.commit()
+    def __init__(self, username, email, password, activo, first_name, last_name):
+        self.username = username
+        self.email = email
+        self.password = password
+        self.activo = activo
+        self.first_name = first_name
+        self.last_name = last_name
+        
 
+
+    @staticmethod 
+    def all():
+        return User.query.all()
+
+
+    @staticmethod 
+    def create(data):
+        if data.get('habilitado') == 'on':
+            activo = 1
+        else:
+            activo = 0
+        usuario = User(username=data.get("username"), email=data.get("email"), password=data.get("password"), activo=activo, first_name=data.get("first_name"), last_name=data.get("last_name"))   
+        try:
+            db.session.add(usuario)
+            db.session.commit()
+            return True
+            
+        except Exception as e:
+            db.session.rollback()
+            raise
+            return False
+        
+        
+    @staticmethod 
+    def delete(id_usuario):
+        # User.query.filter_by(id=id_usuario).delete()
+        user = db.session.query(User).filter(User.id==id_usuario).first()
+        db.session.delete(user)
+        db.session.commit()
         return True
 
-    @classmethod
-    def find_by_email_and_pass(cls, conn, email, password):
-        sql = """
-            SELECT * FROM users AS u
-            WHERE u.email = %s AND u.password = %s
-        """
+ 
+    @staticmethod
+    def update(data):       
+        try:
+            miusuario = User.find_by_username(data.get("username"))
+            miusuario.first_name = data.get("first_name")
+            miusuario.last_name = data.get("last_name")
+            miusuario.email = data.get("email")
+            miusuario.roles = []
+            if(data.get("Administrador")=="on"):
+                miusuario.roles.append(Rol.find_by_name("Administrador"))
+            if(data.get("OperadorCentroAyuda")=="on"):
+                miusuario.roles.append(Rol.find_by_name("OperadorCentroAyuda"))
+            
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+ 
+        return True
 
-        cursor = conn.cursor()
-        cursor.execute(sql, (email, password))
 
-        return cursor.fetchone()
+    @staticmethod 
+    def cambiarEstado(username):
+        usuario = User.find_by_username(username)
+        usuario.activo = not usuario.activo
+        db.session.commit()
+        return True
 
+
+    @staticmethod 
+    def find_by_username_and_pass(username, password):
+        return User.query.filter_by(username=username,password=password).first()
+
+
+    @staticmethod
+    def find_by_username(username):
+          return User.query.filter_by(username=username).first()
+
+
+    

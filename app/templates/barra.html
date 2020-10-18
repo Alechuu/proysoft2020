@@ -1,0 +1,63 @@
+{% extends "bootstrap/base.html" %}
+{% block html_attribs %} lang="es" {% endblock html_attribs %}
+{% block title %} 
+Bs.As Centros
+{% endblock %} 
+
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
+  <link href="{{ url_for('static', filename='img/favicon.png')}}" rel="icon">
+  <link href="{{ url_for('static', filename='img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <!--external css-->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+
+<section id="container">
+  <!-- **********************************************************************************************************************************************************
+      TOP BAR CONTENT & NOTIFICATIONS
+      *********************************************************************************************************************************************************** -->
+  <!--header start-->
+  <header class="header black-bg">
+
+    <!--logo start-->
+    <a href="{{ url_for('index') }}" class="logo"><b><span>{{conf.titulo}}</span></b></a>
+    <!--logo end-->
+    
+  <div class="top-menu">
+    <ul class="nav pull-right top-menu">
+      {% if is_authenticated(session) %}
+      <li><a class="logout" href="{{ url_for('profile') }}">Administrar</a></li>
+      {% else %}
+      <li><a class="logout" href="{{ url_for('auth_login') }}">Iniciar Sesión</a></li>
+      {% endif %}
+    </ul>
+  </div>
+
+  </header>
+  <!-- <div class="container"> -->
+    {%block container %} {% endblock %}
+  <!-- </div>  -->
+
+  <footer class="site-footer">
+    <div class="text-center">
+      <p> &copy; <strong>{{conf.titulo }}</strong></p>
+      <div class="credits">    
+        {{ conf.email}}
+      </div>
+      <a href="#" class="go-top">
+        <i class="fa fa-angle-up"></i>
+      </a>                      
+    </div>
+  </footer>
+</section>
+{% endblock %}
