@@ -74,7 +74,7 @@
           <p class="centered"><a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='img/profile.png')}}" class="img-circle" width="80"></a></p>
           <h5 class="centered">Hola, {{session['first_name']}}</h5>
           <li class="mt">
-            <a class="active" href="{{ url_for('dashboard') }}">
+            <a class="{{'active' if active_page == 'dashboard'}}" href="{{ url_for('dashboard') }}">
               <i class="fas fa-clipboard-check"></i>
               <span>Mi Panel</span>
               </a>
@@ -103,7 +103,7 @@
             </ul>
           </li>                       
           <li>           
-            <a href="{{ url_for('configuracion') }}">
+            <a class="{{'active' if active_page == 'configuracion'}}" href="{{ url_for('configuracion') }}">
               <i class="fa fa-tasks"></i>
               <span>Configuración Sitio</span>
               </a>

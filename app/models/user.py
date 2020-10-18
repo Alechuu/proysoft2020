@@ -35,9 +35,19 @@ class User(db.Model):
     def create(data):
         usuario = User(username=data.get("username"), email=data.get("email"), password=data.get("password"), activo=1, first_name=data.get("first_name"), last_name=data.get("last_name"))
         print(usuario)
-        db.session.add(usuario)
-        db.session.commit()
-        return True
+   
+        try:
+            db.session.add(usuario)
+            db.session.commit()
+            return True
+            
+        except Exception as e:
+            db.session.rollback()
+            raise
+            return False
+        
+        
+        
     
     @staticmethod 
     def delete(id_usuario):

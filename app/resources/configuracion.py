@@ -24,7 +24,7 @@ def index():
 def save():
     if not authenticated(session):
         abort(401)
-
+    active_page="configuracion"
     miConfiguracion = Configuracion.get_first()
     form = FormConfiguracion()
     if form.validate_on_submit():
@@ -50,4 +50,4 @@ def save():
         permisos = get_permisos(User.find_by_username(session.get("user")))
         return render_template("dashboard.html", permisos=permisos, conf=miConfiguracion)
     
-    return render_template("configuracion.html", conf=miConfiguracion, form=form)
+    return render_template("configuracion.html", conf=miConfiguracion, form=form, active_page=active_page)

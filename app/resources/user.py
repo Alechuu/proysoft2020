@@ -22,8 +22,11 @@ def new():
     miConfiguracion = Configuracion.get_first()  
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
+    active_page="user_new"
+
+    
     #usuarios = User.all()
-    return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion)
+    return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion, active_page=active_page)
 
     
 
@@ -32,9 +35,25 @@ def create():
         abort(401)
 
     #conn = connection()
-    User.create(request.form)
-    return redirect(url_for("user_index"))
+    miConfiguracion = Configuracion.get_first()  
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    active_page="user_new"
 
+    
+    try:
+        User.create(request.form)
+    except Exception as e:
+        print(str(e))
+        print(e)
+        if "for key 'email'" in str(e):
+            notificacion="Ya existe una cuenta con ese email asociada"
+            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page)
+        if "for key 'username'" in str(e):
+            notificacion="Ya existe una cuenta con este nombre de usuario"
+            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page)
+            
+   
 def delete():
     if not authenticated(session):
         abort(401)
@@ -89,8 +108,9 @@ def listarUsuarios():
     miConfiguracion = Configuracion.get_first() 
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
+    active_page = "user_index"
     if "usuario_index" in permisos: 
         usuarios = User.all()
-        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion )
+        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion, active_page=active_page )
     else:
         abort(401)
