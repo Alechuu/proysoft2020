@@ -7,8 +7,11 @@
       <section class="wrapper">
         {% if notificacion  %}
         <br>
-  
+          {% if 'exitosamente' in notificacion %}
+          <div class="alert alert-success alert-dismissible" role="alert">
+          {% else %}
           <div class="alert alert-danger alert-dismissible" role="alert">
+          {% endif %}
           {{notificacion}}
            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -27,19 +30,31 @@
                   <div class="form-group ">
                     <label for="firstname" class="control-label col-lg-2">Nombre</label>
                     <div class="col-lg-10">
+                      {% if user_data %}
+                      <input class=" form-control" id="first_name" name="first_name" type="text" required value="{{user_data.get('first_name')}}"/>
+                      {% else %}
                       <input class=" form-control" id="first_name" name="first_name" type="text" required/>
+                      {%endif%}
                     </div>
                   </div>
                   <div class="form-group ">
                     <label for="lastname" class="control-label col-lg-2">Apellido</label>
                     <div class="col-lg-10">
-                      <input class=" form-control" id="last_name" name="last_name" type="text" required/>
+                      {% if user_data %}
+                      <input class=" form-control" id="last_name" name="last_name" type="text" required  value="{{user_data.get('last_name')}}"/>
+                      {% else %}
+                      <input class=" form-control" id="last_name" name="last_name" type="text" required />
+                      {% endif %}
                     </div>
                   </div>
                   <div class="form-group ">
                     <label for="username" class="control-label col-lg-2">Username</label>
                     <div class="col-lg-10">
+                      {% if user_data and ('nombre de usuario' not in notificacion)  %}
+                      <input class="form-control " id="username" name="username" type="text" required value="{{user_data.get('username')}}"/>
+                      {% else %}
                       <input class="form-control " id="username" name="username" type="text" required/>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="form-group ">
@@ -57,13 +72,21 @@
                   <div class="form-group ">
                     <label for="email" class="control-label col-lg-2">Email</label>
                     <div class="col-lg-10">
-                      <input class="form-control " id="email" name="email" type="email" required />
+                      {% if user_data and ('email' not in notificacion)  %}
+                      <input class="form-control " id="email" name="email" type="email" required value="{{user_data.get('email')}}" />
+                      {% else %}
+                      <input class="form-control " id="email" name="email" type="email" required/>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="form-group ">
-                    <label for="agree" class="control-label col-lg-2 col-sm-3">Habilitado</label>
+                    <label for="habilitado" class="control-label col-lg-2 col-sm-3">Habilitado</label>
                     <div class="col-lg-10 col-sm-9">
-                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="agree" name="agree" />
+                      {% if user_data and (user_data.get('habilitado')) %}
+                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="habilitado" name="habilitado" checked />
+                      {% else %}
+                      <input type="checkbox" style="width: 20px" class="checkbox form-control" id="habilitado" name="habilitado"/>
+                      {% endif %}
                     </div>
                   </div>
                 

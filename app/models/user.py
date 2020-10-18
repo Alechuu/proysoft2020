@@ -33,9 +33,11 @@ class User(db.Model):
 
     @staticmethod 
     def create(data):
-        usuario = User(username=data.get("username"), email=data.get("email"), password=data.get("password"), activo=1, first_name=data.get("first_name"), last_name=data.get("last_name"))
-        print(usuario)
-   
+        if data.get('habilitado') == 'on':
+            activo = 1
+        else:
+            activo = 0
+        usuario = User(username=data.get("username"), email=data.get("email"), password=data.get("password"), activo=activo, first_name=data.get("first_name"), last_name=data.get("last_name"))   
         try:
             db.session.add(usuario)
             db.session.commit()
