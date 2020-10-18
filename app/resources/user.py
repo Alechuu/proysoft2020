@@ -22,11 +22,11 @@ def new():
     miConfiguracion = Configuracion.get_first()  
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
-    active_page="user_new"
-
-    
-    #usuarios = User.all()
-    return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion, active_page=active_page)
+    if "usuario_new" in permisos:
+        active_page="user_new"
+        return render_template("user/user_new.html", permisos=permisos, conf=miConfiguracion, active_page=active_page)
+    else:
+        abort(401)
 
     
 
@@ -38,23 +38,24 @@ def create():
     miConfiguracion = Configuracion.get_first()  
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
-    active_page="user_new"
-    if(request.form.get('password') != request.form.get('confirm_password')):
-        notificacion="¡Las contraseñas no coinciden!"
-        return render_template("user/user_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion,user_data=request.form)
-    
-    try:
-        User.create(request.form)
-        notificacion="¡Se registró exitosamente el usuario "+request.form.get('username')+"! Puede visualizarlo en el listado."
-        return render_template("user/user_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion)
-    except Exception as e:
-        if "for key 'email'" in str(e):
-            notificacion="Ya existe un usuario con el email: "+request.form.get('email')+". Por favor, elija otro."
-            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,user_data=request.form)
-        if "for key 'username'" in str(e):
-            notificacion="Ya existe un usuario con el nombre de usuario: "+request.form.get('username')+". Por favor, elija otro."
-            return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,user_data=request.form)
-            
+    if "usuario_new" in permisos:
+        active_page="user_new"
+        if(request.form.get('password') != request.form.get('confirm_password')):
+            notificacion="¡Las contraseñas no coinciden!"
+            return render_template("user/user_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion,user_data=request.form)
+        
+        try:
+            User.create(request.form)
+            notificacion="¡Se registró exitosamente el usuario "+request.form.get('username')+"! Puede visualizarlo en el listado."
+            return render_template("user/user_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion)
+        except Exception as e:
+            if "for key 'email'" in str(e):
+                notificacion="Ya existe un usuario con el email: "+request.form.get('email')+". Por favor, elija otro."
+                return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,user_data=request.form)
+            if "for key 'username'" in str(e):
+                notificacion="Ya existe un usuario con el nombre de usuario: "+request.form.get('username')+". Por favor, elija otro."
+                return render_template("user/user_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,user_data=request.form)
+                
    
 def delete():
     if not authenticated(session):
@@ -83,7 +84,7 @@ def update():
         except:
             usuarios = User.all()
             notificacion="¡El Email: "+request.form.get("email")+" ya existe, ingrese otro!"
-            return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion)
+            return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion,conf=miConfiguracion)
         usuarios = User.all()
         notificacion="¡Se actualizó con éxito al usuario: "+request.form.get("username")+"!"
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion)
@@ -113,6 +114,6 @@ def listarUsuarios():
     active_page = "user_index"
     if "usuario_index" in permisos: 
         usuarios = User.all()
-        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion, active_page=active_page )
+        return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion, active_page=active_page)
     else:
         abort(401)

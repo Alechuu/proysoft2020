@@ -36,7 +36,7 @@ Bs.As Centros
   <div class="top-menu">
     <ul class="nav pull-right top-menu">
       {% if is_authenticated(session) %}
-      <li><a class="logout" href="{{ url_for('dashboard') }}">Administrar</a></li>
+      <li><a class="logout" href="{{ url_for('profile') }}">Administrar</a></li>
       {% else %}
       <li><a class="logout" href="{{ url_for('auth_login') }}">Iniciar Sesión</a></li>
       {% endif %}

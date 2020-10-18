@@ -52,12 +52,12 @@
         <ul class="sidebar-menu" id="nav-accordion">
           <p class="centered"><a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='img/profile.png')}}" class="img-circle" width="80"></a></p>
           <h5 class="centered">Hola, {{session['first_name']}}</h5>
-          <li class="mt">
+<!--           <li class="mt">
             <a class="{{'active' if active_page == 'dashboard'}}" href="{{ url_for('dashboard') }}">
               <i class="fas fa-clipboard-check"></i>
               <span>Mi Panel</span>
               </a>
-          </li>
+          </li> -->
           <!--<li class="sub-menu">
             <a href="javascript:;">
               <i class="fas fa-house-user"></i>
@@ -127,26 +127,5 @@
   <!--script for this page-->
   <script src="{{ url_for('static', filename='lib/sparkline-chart.js')}}"></script>
   <script src="{{ url_for('static', filename='lib/zabuto_calendar.js')}}"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      var unique_id = $.gritter.add({
-        // (string | mandatory) the heading of the notification
-        title: 'Bienvenido',
-        // (string | mandatory) the text inside the notification
-        text: 'probando texto',
-        // (string | optional) the image to display on the left
-        image: "{{ url_for('static', filename='img/detect.jpeg')}}",
-        // (bool | optional) if you want it to fade out on its own or just sit there
-        sticky: false,
-        // (int | optional) the time you want it to be alive for before fading out
-        time: 8000,
-        // (string | optional) the class name you want to apply to that specific message
-        class_name: 'my-sticky-class'
-      });
-
-      return false;
-    });
-  </script>
-  
 {% endblock %}
 
