@@ -30,6 +30,7 @@
             <div class="form-panel">
               <div class="form">
                 <form class="cmxform form-horizontal style-form" id="signupForm" action="{{ url_for('user_create') }}" method="POST">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                   <div class="form-group ">
                     <label for="firstname" class="control-label col-lg-2">Nombre</label>
                     <div class="col-lg-10">

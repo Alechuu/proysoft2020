@@ -26,7 +26,7 @@
         <!-- SIMPLE TO DO LIST -->
         
         <!-- SORTABLE TO DO LIST -->
-        <div class="row mt mb">
+        <div class="row mt mb" style="height: 100vh;">
           <div class="col-md-12">
             <section class="task-panel tasks-widget">
               <div class="panel-heading">
@@ -116,7 +116,12 @@
           </div>
           <div class="modal-body">
             <br>
-            <button onclick="window.location.href='{{ url_for('user_cambiar_estado',username=user.username) }}';" class="btn btn-primary">Sí</button>
+            <form action="{{url_for('user_cambiar_estado')}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="username" value="{{user.username}}"/>
+            <button type="submit" class="btn btn-primary">Sí</button>
+            </form>
+            
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -133,6 +138,7 @@
             </div>
             <div class="modal-body">
                <form action="{{ url_for('user_update') }}" method="POST">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                   <div class="form-group">
                      <label>Nombre:</label>
                      <input required type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
@@ -191,7 +197,12 @@
           <div class="modal-body">
             <p>Esta acción es <b>permanente</b> y <b>no se puede deshacer</b>.</p>
             <br>
-            <button onclick="window.location.href='{{ url_for('user_borrar',id_usuario=user.id) }}';" class="btn btn-danger">Borrar</button>
+            <form action="{{url_for('user_borrar')}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="id_usuario" value="{{user.id}}"/>
+            <input type="hidden" name="username" value="{{user.username}}"/>
+            <button type="submit" class="btn btn-danger">Borrar</button>
+            </form>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

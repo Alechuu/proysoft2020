@@ -29,6 +29,7 @@
           <br>
           <input type="password" name="password" class="form-control" placeholder="Clave" required>
           <br>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <button class="btn btn-theme btn-block" value="Login" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
           <hr>
           
