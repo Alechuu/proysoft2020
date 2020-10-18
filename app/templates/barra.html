@@ -5,7 +5,7 @@ Bs.As Centros
 {% endblock %} 
 
 {% block styles %}
-{{super()}}
+  {{super()}}
   <link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
   <link href="{{ url_for('static', filename='img/favicon.png')}}" rel="icon">
   <link href="{{ url_for('static', filename='img/apple-touch-icon.png')}}" rel="apple-touch-icon">
@@ -18,11 +18,9 @@ Bs.As Centros
   <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
 
-
 {% endblock %}
 
 {% block content %}
-
 
 <section id="container">
   <!-- **********************************************************************************************************************************************************

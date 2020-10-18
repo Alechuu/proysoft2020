@@ -1,39 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="Dashboard">
-  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-  <title>Bs.As Centros</title>
-
-
-  <!-- Favicons rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}} -->
-  <link href="{{ url_for('static', filename='img/favicon.png')}}" rel="icon">
-  <link href="{{ url_for('static', filename='img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+{% extends "barra.html" %}
+{% block styles %}
+  {{super()}}
 
   <!-- Bootstrap core CSS and Jquery -->
   <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
-  <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-  <!--external css-->
-  
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
- 
+  <!--external css--> 
 
   <!--external css-->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}"/>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/zabuto_calendar.css')}}"> 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/gritter/css/jquery.gritter.css')}}" />
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/style-responsive.css')}}" rel="stylesheet">
   <script src="{{ url_for('static', filename='lib/chart-master/Chart.js')}}"></script>
 
+{% endblock %}
   <!-- =======================================================
     Template Name: Dashio
     Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
@@ -41,7 +20,7 @@
     License: https://templatemag.com/license/
   ======================================================= -->
 
-  {% block content %}
+{% block content %}
 
   <section id="container">
     <!-- **********************************************************************************************************************************************************
@@ -79,7 +58,7 @@
               <span>Mi Panel</span>
               </a>
           </li>
-<!--           <li class="sub-menu">
+          <!--<li class="sub-menu">
             <a href="javascript:;">
               <i class="fas fa-house-user"></i>
               <span>Centros de Ayuda</span>
@@ -119,13 +98,23 @@
         *********************************************************************************************************************************************************** -->
     <!--main content start-->
       
-      {% block main %}{% endblock %}   
-
-     
+    {% block main %}{% endblock %} 
+    <footer class="site-footer">
+      <div class="text-center">
+        <p> &copy; <strong>{{conf.titulo }}</strong></p>
+        <div class="credits">    
+          {{ conf.email}}
+        </div>
+        <a href="#" class="go-top">
+          <i class="fa fa-angle-up"></i>
+        </a>                      
+      </div>
+    </footer>  
+  </section>
+{% endblock %}     
     
-    
+{% block scripts %}  
   <!-- js placed at the end of the document so the pages load faster -->
-
   <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
   <script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
   <script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script>
