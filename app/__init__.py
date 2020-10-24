@@ -75,7 +75,7 @@ def create_app(environment="development"):
 
     app.add_url_rule("/profile", "profile", mainController.profile)
 
-    app.add_url_rule("/centros", "centros", mainController.centros)
+    #app.add_url_rule("/centros", "centros", mainController.centros)
 
     app.add_url_rule("/usuarios", "usuarios", mainController.usuarios)
 
