@@ -49,7 +49,7 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios/borrar", "user_borrar", user.delete, methods=["POST"])
     app.add_url_rule("/usuarios/update", "user_update", user.update, methods=["POST"])
     app.add_url_rule("/usuarios/cambiarEstado", "user_cambiar_estado", user.cambiarEstado,methods=["POST"])
-
+    app.add_url_rule("/usuarios/api/username=<username>","user_api_consultar", user.api_consultar,methods=["GET"])
 
     #Rutas de Centros
     app.add_url_rule("/centros", "centro_index", centro.index)

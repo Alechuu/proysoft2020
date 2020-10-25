@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, url_for, session, abort
 
+from app.helpers.serialize import serializeSQLAlchemy
 from app.db import connection
 from app.models.user import User
 from app.models.configuracion import Configuracion
@@ -117,3 +118,7 @@ def listarUsuarios():
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion, active_page=active_page)
     else:
         abort(401)
+
+def api_consultar(username):
+    usuario = User.find_by_username(username)
+    return serializeSQLAlchemy(usuario)
