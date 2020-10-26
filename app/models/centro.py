@@ -26,3 +26,9 @@ class Centro(db.Model):
         numPaginas = Centro.query.paginate(pagina,maxCentros,False).pages
         res = [totales,datos,numPaginas]
         return res
+    
+    def get_by_id(id_centro):
+        try:
+            return Centro.query.filter_by(id=id_centro).first()
+        except Exception as e:
+            raise 

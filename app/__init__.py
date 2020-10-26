@@ -82,4 +82,5 @@ def create_app(environment="development"):
 
     # API
     app.add_url_rule("/api/centros/pagina=<pagina>","api_get_all",centroAPI.api_get_all,methods=["GET"])
+    app.add_url_rule("/api/centros/id=<id_centro>","api_get_by_id",centroAPI.api_get_by_id,methods=["GET"])
     return app
