@@ -20,5 +20,9 @@ class Centro(db.Model):
     turnos = db.relationship("Turno", backref='centro', lazy=True)
 
     @staticmethod
-    def get_all():
-        return Centro.query.all()
+    def get_all_api(pagina,maxCentros):
+        totales = db.session.query(Centro).count()
+        datos = Centro.query.paginate(pagina,maxCentros,False).items
+        numPaginas = Centro.query.paginate(pagina,maxCentros,False).pages
+        res = [totales,datos,numPaginas]
+        return res

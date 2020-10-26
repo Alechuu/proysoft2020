@@ -10,6 +10,7 @@ from flask_wtf.csrf import CSRFProtect
 from config import config
 from app.db import db
 from app.resources import user, auth, configuracion, centro,profile, mainController
+from app.resources.api import centro as centroAPI
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
@@ -49,7 +50,7 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios/borrar", "user_borrar", user.delete, methods=["POST"])
     app.add_url_rule("/usuarios/update", "user_update", user.update, methods=["POST"])
     app.add_url_rule("/usuarios/cambiarEstado", "user_cambiar_estado", user.cambiarEstado,methods=["POST"])
-    app.add_url_rule("/usuarios/api/username=<username>","user_api_consultar", user.api_consultar,methods=["GET"])
+    
 
     #Rutas de Centros
     app.add_url_rule("/centros", "centro_index", centro.index)
@@ -79,4 +80,6 @@ def create_app(environment="development"):
 
     app.add_url_rule("/usuarios", "usuarios", mainController.usuarios)
 
+    # API
+    app.add_url_rule("/api/centros/pagina=<pagina>","api_get_all",centroAPI.api_get_all,methods=["GET"])
     return app
