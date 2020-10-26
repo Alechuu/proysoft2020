@@ -32,3 +32,25 @@ class Centro(db.Model):
             return Centro.query.filter_by(id=id_centro).first()
         except Exception as e:
             raise 
+
+    def create(data):
+        nuevo_centro = Centro(
+            nombre=data['nombre'],
+            direccion=data['direccion'],
+            telefono=data['telefono'],
+            hora_apertura=data['hora_apertura'],
+            hora_cierre=data['hora_cierre'],
+            id_tipo_centro=data['tipo'],
+            sitio_web=data['sitio_web'],
+            email=data['email'],
+            estado=data['estado']
+        )
+
+        try:
+            db.session.add(nuevo_centro)
+            db.session.commit()
+            return nuevo_centro
+        except Exception as e:
+            db.session.rollback()
+            raise
+            return False

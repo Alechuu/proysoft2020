@@ -1,8 +1,10 @@
 import json
 
-from flask import Response
+from flask import Response, request
 from flask_restful import Resource
+from flask_wtf.csrf import CSRFProtect
 
+from app.forms.api.centro import formCentros
 from app.helpers.serialize import serializeSQLAlchemy
 from app.models.configuracion import Configuracion
 from app.models.centro import Centro
@@ -46,5 +48,28 @@ class CentroID(Resource):
 
 #def api_create_new():
 #    print(request.form)
+
+class CentroNew(Resource):
+
+    def post(self):
+        form = formCentros(request.form)
+        form.estado.data = False
+        # Acá faltan los campos de Latitud, Longitud, id_municipio e id_tipo_centro (tipo centro se manda un id a mano pero luego no va a ser asi)
+        if(not form.validate()):
+            datos = {'status':400,'body':'Bad Request'}
+            return Response(json.dumps(datos), mimetype='application/json')
+        else:
+            try:
+                nuevo_centro = Centro.create(form.data)
+                campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','id_municipio']
+                datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
+                return Response(json.dumps(datos), mimetype='application/json')
+            except Exception as e:
+                print(str(e))
+                datos = {'status':500,'body':'Internal Server Error'}
+                return Response(json.dumps(datos), mimetype='application/json')
+            
+
+
 
    

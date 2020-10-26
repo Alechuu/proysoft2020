@@ -19,9 +19,9 @@ from app.helpers import auth as helper_auth
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
-    CSRFProtect(app)
+    csrf = CSRFProtect(app)
     bootstrap = Bootstrap(app)
-    api = Api(app)
+    api = Api(app, decorators=[csrf.exempt])
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
@@ -86,4 +86,5 @@ def create_app(environment="development"):
     #app.add_url_rule("/api/centros","api_create_new",centroAPI.api_create_new,methods=["POST"])
     api.add_resource(centroAPI.AllCentros, '/api/centros/pagina=<pagina>')
     api.add_resource(centroAPI.CentroID, '/api/centros/id=<id_centro>')
+    api.add_resource(centroAPI.CentroNew, '/api/centros')
     return app
