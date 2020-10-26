@@ -20,5 +20,37 @@ class Centro(db.Model):
     turnos = db.relationship("Turno", backref='centro', lazy=True)
 
     @staticmethod
-    def get_all():
-        return Centro.query.all()
+    def get_all_api(pagina,maxCentros):
+        totales = db.session.query(Centro).count()
+        datos = Centro.query.paginate(pagina,maxCentros,False).items
+        numPaginas = Centro.query.paginate(pagina,maxCentros,False).pages
+        res = [totales,datos,numPaginas]
+        return res
+    
+    def get_by_id(id_centro):
+        try:
+            return Centro.query.filter_by(id=id_centro).first()
+        except Exception as e:
+            raise 
+
+    def create(data):
+        nuevo_centro = Centro(
+            nombre=data['nombre'],
+            direccion=data['direccion'],
+            telefono=data['telefono'],
+            hora_apertura=data['hora_apertura'],
+            hora_cierre=data['hora_cierre'],
+            id_tipo_centro=data['tipo'],
+            sitio_web=data['sitio_web'],
+            email=data['email'],
+            estado=data['estado']
+        )
+
+        try:
+            db.session.add(nuevo_centro)
+            db.session.commit()
+            return nuevo_centro
+        except Exception as e:
+            db.session.rollback()
+            raise
+            return False
