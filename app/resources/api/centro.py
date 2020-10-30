@@ -83,7 +83,7 @@ class TurnosCentro(Resource):
             return Response(json.dumps(datos), mimetype='application/json')
         else:
             try:
-                datetime.strptime(fecha, '%Y/%m/%d')
+                datetime.strptime(fecha, '%Y-%m-%d')
             except Exception as e:
                 datos = {'status':400,'body':'Bad Request','details':'Fecha Inválida'}
                 return Response(json.dumps(datos), mimetype='application/json')
