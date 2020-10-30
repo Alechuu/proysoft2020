@@ -29,9 +29,17 @@ class Centro(db.Model):
     
     def get_by_id(id_centro):
         try:
-            return Centro.query.filter_by(id=id_centro).first()
+            return Centro.query.filter_by(id=id_centro).first()            
         except Exception as e:
             raise 
+    
+
+    def get_by_id_and_date(id_centro,fecha):
+        try:
+            return Centro.query.join(Centro.turnos).filter(Centro.id==id_centro,Turno.fecha==fecha).first()      
+        except Exception as e:
+            raise 
+
 
     def create(data):
         nuevo_centro = Centro(

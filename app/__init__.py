@@ -84,7 +84,8 @@ def create_app(environment="development"):
 
     # API
     #app.add_url_rule("/api/centros","api_create_new",centroAPI.api_create_new,methods=["POST"])
-    api.add_resource(centroAPI.AllCentros, '/api/centros/pagina=<pagina>')
-    api.add_resource(centroAPI.CentroID, '/api/centros/id=<id_centro>')
+    api.add_resource(centroAPI.AllCentros, '/api/centros')
     api.add_resource(centroAPI.CentroNew, '/api/centros')
+    api.add_resource(centroAPI.CentroID, '/api/centros/id=<id_centro>')
+    api.add_resource(centroAPI.TurnosCentro, '/api/centros/<id_centro>/turnos_disponibles')
     return app
