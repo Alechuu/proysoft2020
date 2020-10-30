@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta
 
 from flask import Response, request
 from flask_restful import Resource
@@ -13,7 +14,8 @@ from app.models.centro import Centro
 
 class AllCentros(Resource):
     
-    def get(self,pagina):
+    def get(self):
+        pagina = request.args.get('pagina')
         try:
             miConfiguracion = Configuracion.get_first()
             centros = Centro.get_all_api(int(pagina),miConfiguracion.paginado)
@@ -70,6 +72,60 @@ class CentroNew(Resource):
                 return Response(json.dumps(datos), mimetype='application/json')
             
 
+class TurnosCentro(Resource):
 
+    def get(self,id_centro):
+        fecha = request.args.get('fecha')
+        if(fecha==None):
+            fecha = datetime.now().date()
+        elif(Centro.get_by_id(id_centro)==None):
+            datos = {'status':400,'body':'Bad Request','details':'Ese centro no existe'}
+            return Response(json.dumps(datos), mimetype='application/json')
+        else:
+            try:
+                datetime.strptime(fecha, '%Y/%m/%d')
+            except Exception as e:
+                datos = {'status':400,'body':'Bad Request','details':'Fecha Inválida'}
+                return Response(json.dumps(datos), mimetype='application/json')
+        try:
+            centro = Centro.get_by_id_and_date(id_centro,fecha)
+            turnos_disponibles = [
+                '9:00:00',
+                '9:30:00',
+                '10:00:00',
+                '10:30:00',
+                '11:00:00',
+                '11:30:00',
+                '12:00:00',
+                '12:30:00',
+                '13:00:00',
+                '13:30:00',
+                '14:00:00',
+                '14:30:00',
+                '15:00:00',
+                '15:30:00',
+            ]
+            if(centro != None):        
+                for turno in centro.turnos:
+                    if(str(turno.hora_inicio) in turnos_disponibles):
+                        turnos_disponibles.remove(str(turno.hora_inicio))
 
+            turnosRespuesta = []
+            for turnoLibre in turnos_disponibles:
+                hora_fin = datetime.strptime(turnoLibre, '%H:%M:%S')
+                hora_fin = (hora_fin + timedelta(minutes=30)).time()
+                turnosRespuesta.append(
+                    {
+                        'centro_id':id_centro,
+                        'hora_inicio':turnoLibre,
+                        'hora_fin':str(hora_fin),
+                        'fecha':str(fecha)
+
+                    }
+                )
+            datos = {'status':200, 'turnos': turnosRespuesta }
+            return Response(json.dumps(datos), mimetype='application/json')
+        except Exception as e:
+            datos = {'status':500,'body':'Internal Server Error'}
+            return Response(json.dumps(datos), mimetype='application/json')
    

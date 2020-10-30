@@ -3,7 +3,7 @@ import datetime
 from flask import jsonify
 
 
-def serializeSQLAlchemy(sqlresult,campos_no_deseados):
+def serializeSQLAlchemy(sqlresult,campos_no_deseados=[]):
     parsed_sql_object = json.loads("{}")
     for column in sqlresult.__table__.columns:
         if (isinstance(getattr(sqlresult, str(column.key)),datetime.time)):
