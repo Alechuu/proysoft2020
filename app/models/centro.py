@@ -61,4 +61,18 @@ class Centro(db.Model):
         except Exception as e:
             db.session.rollback()
             raise
+<<<<<<< Updated upstream
+=======
+            return False
+
+    def createTurno(turno):
+        try:
+
+            Centro.turnos.append(turno)
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            raise
+>>>>>>> Stashed changes
             return False

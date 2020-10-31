@@ -12,4 +12,18 @@ class Turno(db.Model):
 
     @staticmethod
     def get_all():
+<<<<<<< Updated upstream
         return Turno.query.all()
+=======
+        return Turno.query.all()
+
+    def new(data):
+        nuevo_turno = Turno(
+            hora_inicio = data['hora_inicio'],
+            hora_fin = data['hora_fin'],
+            fecha = data['fecha'],
+            email_visitante = data['email_visitante'],
+            telefono_visitante = data['telefono_visitante']
+        )
+        return nuevo_turno
+>>>>>>> Stashed changes
