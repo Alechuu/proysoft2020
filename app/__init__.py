@@ -82,21 +82,11 @@ def create_app(environment="development"):
 
     app.add_url_rule("/usuarios", "usuarios", mainController.usuarios)
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
     # API
     #app.add_url_rule("/api/centros","api_create_new",centroAPI.api_create_new,methods=["POST"])
     api.add_resource(centroAPI.AllCentros, '/api/centros')
     api.add_resource(centroAPI.CentroNew, '/api/centros')
     api.add_resource(centroAPI.CentroID, '/api/centros/id=<id_centro>')
-<<<<<<< Updated upstream
     api.add_resource(centroAPI.TurnosCentro, '/api/centros/<id_centro>/turnos_disponibles')
-=======
-    api.add_resource(centroAPI.TurnosCentro, '/api/centros/<id_centro>/turnous_disponibles')
     api.add_resource(centroAPI.TurnosNew, '/api/centros/<id_centro>/reserva')
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     return app

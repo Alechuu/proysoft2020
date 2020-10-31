@@ -10,7 +10,6 @@ class formTurno(FlaskForm):
     class Meta:
         csrf = False
 
-    id_centro_ayuda = IntegerField("ID Centro Ayuda",validators=[DataRequired()])
     hora_inicio = TimeField("Hora de Inicio",validators=[DataRequired()])
     hora_fin = TimeField("Hora de Fin",validators=[DataRequired()])
     fecha = DateField("Fecha de Turno",validators=[DataRequired()])

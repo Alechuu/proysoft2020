@@ -5,18 +5,13 @@ from flask import Response, request
 from flask_restful import Resource
 from flask_wtf.csrf import CSRFProtect
 
+from app import db
 from app.forms.api.centro import formCentros
-<<<<<<< Updated upstream
-from app.helpers.serialize import serializeSQLAlchemy
-from app.models.configuracion import Configuracion
-from app.models.centro import Centro
-=======
 from app.forms.api.turno import formTurno
 from app.helpers.serialize import serializeSQLAlchemy
 from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.models.turno import Turno
->>>>>>> Stashed changes
 
 
 
@@ -136,9 +131,6 @@ class TurnosCentro(Resource):
         except Exception as e:
             datos = {'status':500,'body':'Internal Server Error'}
             return Response(json.dumps(datos), mimetype='application/json')
-<<<<<<< Updated upstream
-   
-=======
     
 
 class TurnosNew(Resource):
@@ -152,7 +144,23 @@ class TurnosNew(Resource):
             try:
                 centro = Centro.get_by_id(id_centro)
                 turno = Turno.new(form.data)
-                centro.createTurno()
+                centro.turnos.append(turno)
+                db.session.commit()
+                datos_turno = {
+                    'centro_id':id_centro,
+                    'email_donante':form.data['email_visitante'],
+                    'telefono_donante':form.data['telefono_visitante'],
+                    'hora_inicio':str(form.data['hora_inicio']),
+                    'hora_fin':str(form.data['hora_fin']),
+                    'fecha':str(form.data['fecha'])
+                }
+                datos = {'status':'201 Created','body':{'atributos':datos_turno}}
+                return Response(json.dumps(datos),mimetype="application/json")
+            except AttributeError as e:
+                db.session.rollback()
+                datos = {'status':400,'body':'Bad Request','details':'Ese centro no existe'}
+                return Response(json.dumps(datos),mimetype="application/json")
             except Exception as e:
-                print(str(e))
->>>>>>> Stashed changes
+                db.session.rollback()
+                datos = {'status':500,'body':'Internal Server Error'}
+                return Response(json.dumps(datos),mimetype="application/json")
