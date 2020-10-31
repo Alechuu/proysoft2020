@@ -144,8 +144,7 @@ class TurnosNew(Resource):
             try:
                 centro = Centro.get_by_id(id_centro)
                 turno = Turno.new(form.data)
-                centro.turnos.append(turno)
-                db.session.commit()
+                Centro.agregarTurno(turno,centro)
                 datos_turno = {
                     'centro_id':id_centro,
                     'email_donante':form.data['email_visitante'],
@@ -157,10 +156,8 @@ class TurnosNew(Resource):
                 datos = {'status':'201 Created','body':{'atributos':datos_turno}}
                 return Response(json.dumps(datos),mimetype="application/json")
             except AttributeError as e:
-                db.session.rollback()
                 datos = {'status':400,'body':'Bad Request','details':'Ese centro no existe'}
                 return Response(json.dumps(datos),mimetype="application/json")
             except Exception as e:
-                db.session.rollback()
                 datos = {'status':500,'body':'Internal Server Error'}
                 return Response(json.dumps(datos),mimetype="application/json")

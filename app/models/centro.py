@@ -62,3 +62,17 @@ class Centro(db.Model):
             db.session.rollback()
             raise
             return False
+
+            
+    def agregarTurno(turno,centro):
+        try:
+            centro.turnos.append(turno)
+            db.session.commit()
+            return True
+        except AttributeError as e:
+            db.session.rollback()
+            raise e
+            return False
+        except Exception as e:
+            raise e
+            return False
