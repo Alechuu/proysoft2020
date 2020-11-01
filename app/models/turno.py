@@ -44,3 +44,16 @@ class Turno(db.Model):
         if fecha is None:
            return None
         return fecha.strftime("%Y-%m-%d")
+
+    def new(data):
+        nuevo_turno = Turno(
+            hora_inicio = data['hora_inicio'],
+            hora_fin = data['hora_fin'],
+            fecha = data['fecha'],
+            email_visitante = data['email_visitante'],
+            telefono_visitante = data['telefono_visitante']
+        )
+        return nuevo_turno
+    
+    def get_by_hour_and_date(hour,date,id_centro):
+        return Turno.query.filter(Turno.hora_inicio==hour, Turno.fecha==date, Turno.id_centro_ayuda==id_centro).first()
