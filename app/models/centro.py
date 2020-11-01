@@ -22,3 +22,7 @@ class Centro(db.Model):
     @staticmethod
     def get_all():
         return Centro.query.all()
+
+    @staticmethod
+    def get_by_id(id_centro):
+        return Centro.query.get(id_centro)

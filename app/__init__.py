@@ -9,7 +9,7 @@ from flask_wtf.csrf import CSRFProtect
 
 from config import config
 from app.db import db
-from app.resources import user, auth, configuracion, centro,profile, mainController
+from app.resources import user, auth, configuracion, centro,profile, mainController, turno
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
@@ -59,6 +59,10 @@ def create_app(environment="development"):
     #Rutas de Configuracion
     app.add_url_rule('/configuracion', "configuracion", configuracion.index)
     app.add_url_rule('/configuracion', "configuracion_save", configuracion.save, methods=["POST"])
+
+    #Rutas de Turno
+    app.add_url_rule('/turno', "turno_index", turno.index, methods=["POST"])
+    app.add_url_rule('/turno-ajax', "get_turnos_by_centro", turno.get_turnos_by_centro)
 
 
     # Handlers
