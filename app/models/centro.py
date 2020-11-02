@@ -41,7 +41,7 @@ class Centro(db.Model):
             raise 
 
 
-    def create(data):
+    def create(data,coords):
         nuevo_centro = Centro(
             nombre=data['nombre'],
             direccion=data['direccion'],
@@ -51,7 +51,9 @@ class Centro(db.Model):
             id_tipo_centro=data['tipo'],
             sitio_web=data['sitio_web'],
             email=data['email'],
-            estado=data['estado']
+            estado=data['estado'],
+            latitud=coords[0],
+            longitud=coords[1]
         )
 
         try:
