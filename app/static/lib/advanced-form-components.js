@@ -5,8 +5,9 @@
     }
     $(function(){
         window.prettyPrint && prettyPrint();
+        //Se ajusta el formato
         $('.default-date-picker').datepicker({
-            format: 'mm-dd-yyyy'
+            format: 'dd-mm-yyyy'
         });
         $('.dpYears').datepicker();
         $('.dpMonths').datepicker();
@@ -92,7 +93,12 @@ $(".form_datetime-meridian").datetimepicker({
 //datetime picker end
 
 //timepicker start
-$('.timepicker-default').timepicker();
+//*********Se agregan características para los turnos */
+$('.timepicker-default').timepicker({    
+    minuteStep: 30,
+    showSeconds: false,
+    showMeridian: false
+});
 
 
 $('.timepicker-24').timepicker({

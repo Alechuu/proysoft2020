@@ -23,6 +23,7 @@ class Centro(db.Model):
     def get_all():
         return Centro.query.all()
 
+    @staticmethod
     def get_all_api(pagina,maxCentros):
         totales = db.session.query(Centro).count()
         datos = Centro.query.paginate(pagina,maxCentros,False).items
@@ -37,14 +38,14 @@ class Centro(db.Model):
         except Exception as e:
             raise 
     
-
+    @staticmethod
     def get_by_id_and_date(id_centro,fecha):
         try:
             return Centro.query.join(Centro.turnos).filter(Centro.id==id_centro,Turno.fecha==fecha).first()      
         except Exception as e:
             raise 
 
-
+    @staticmethod
     def create(data):
         nuevo_centro = Centro(
             nombre=data['nombre'],
@@ -67,7 +68,7 @@ class Centro(db.Model):
             raise
             return False
 
-            
+    @staticmethod       
     def agregarTurno(turno,centro):
         try:
             centro.turnos.append(turno)

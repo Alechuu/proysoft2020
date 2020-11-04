@@ -5,6 +5,7 @@ from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.models.user import User
 from app.models.turno import Turno
+from datetime import datetime
 
 def index():
     if not authenticated(session):
@@ -20,11 +21,13 @@ def index():
 
 def get_turnos_by_centro():
     id_centro = request.args.get('parametro_id_centro','')
-    #start = request.args.get('start','')#el formato es UNIX_TIMESTAMP, hay que convertir
-    #end = request.args.get('end','')#el formato es UNIX_TIMESTAMP, hay que convertir
-    #hora_inicio = datetime.fromtimestamp(start)
-    #hora_fin = datetime.fromtimestamp(end)
-    #fecha = datetime.fromtimestamp(start)
-    turnos = Turno.get_by_id_centro(id_centro)
+    start = request.args.get('fecha_ini_calendario','')#el formato es YYYY-MM-DD
+    end = request.args.get('fecha_fin_calendario','')#el formato es YYYY-MM-DD
+    fecha_inicio = datetime.strptime(start, '%Y-%m-%d')
+    fecha_fin = datetime.strptime(end, '%Y-%m-%d')
+    turnos = Turno.get_by_id_centro(id_centro, fecha_inicio, fecha_fin)
     json_list=[unTurno.serializar for unTurno in turnos]
     return jsonify(json_list)
+
+def new():
+    render_template("turno/turno.html",permisos=permisos, conf=miConfiguracion, centro=centro)

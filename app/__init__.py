@@ -20,7 +20,7 @@ def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
     csrf = CSRFProtect(app)
-    bootstrap = Bootstrap(app)
+    Bootstrap(app)
     api = Api(app, decorators=[csrf.exempt])
 
     # Carga de la configuración
@@ -65,6 +65,7 @@ def create_app(environment="development"):
 
     #Rutas de Turno
     app.add_url_rule('/turno', "turno_index", turno.index, methods=["POST"])
+    app.add_url_rule('/turno/nuevo', "turno_new", turno.new, methods=["POST"])
     app.add_url_rule('/turno-ajax', "get_turnos_by_centro", turno.get_turnos_by_centro)
 
 

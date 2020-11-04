@@ -15,8 +15,8 @@ class Turno(db.Model):
         return Turno.query.all()
     
     @staticmethod
-    def get_by_id_centro(id_centro):
-        return Turno.query.filter_by(id_centro_ayuda=id_centro).all()
+    def get_by_id_centro(id_centro, fecha_inicio, fecha_fin):
+        return Turno.query.filter(Turno.fecha.between(fecha_inicio, fecha_fin)).filter_by(id_centro_ayuda=id_centro).all()
 
     @property
     def serializar(self):
@@ -45,6 +45,7 @@ class Turno(db.Model):
            return None
         return fecha.strftime("%Y-%m-%d")
 
+    @staticmethod
     def new(data):
         nuevo_turno = Turno(
             hora_inicio = data['hora_inicio'],
@@ -55,5 +56,6 @@ class Turno(db.Model):
         )
         return nuevo_turno
     
+    @staticmethod
     def get_by_hour_and_date(hour,date,id_centro):
         return Turno.query.filter(Turno.hora_inicio==hour, Turno.fecha==date, Turno.id_centro_ayuda==id_centro).first()

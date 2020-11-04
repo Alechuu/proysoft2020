@@ -3,7 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
      -----------------------------------------------------------------*/
      function crea_query_string() {        
         var id_centro = document.getElementById("centro_id")      
-        return "parametro_id_centro=" + encodeURIComponent(id_centro.value);
+        return  encodeURIComponent(id_centro.value);
+      }
+
+      function formatear_fecha(fecha){
+          //Formato YYYY-MM-DD para parsear fecha en servidor de taco
+            var dia = fecha.getDate() < 10 ? '0'+fecha.getDate().toString():fecha.getDate().toString();
+            var mes = fecha.getMonth().toString();
+            var year = fecha.getFullYear().toString(); 
+            return year+'-'+mes+'-'+dia;   
       }
 
     $('#calendar').fullCalendar({
@@ -12,13 +20,18 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right:'month,basicWeek,basicDay'
         },
-		initialView: 'timeGridWeek',
+		initialView: 'monthView',
         editable: true, 
         locale: 'es',       
         events: function (start, end, callback) {
             $.ajax({
                 url: "/turno-ajax?",
-                data: crea_query_string(),
+                data: {
+                    parametro_id_centro: crea_query_string(),
+                    //Mandamos las fechas en isoformat(YYYY-MM-DD)
+                    fecha_ini_calendario: formatear_fecha(start),
+                    fecha_fin_calendario: formatear_fecha(end)               
+                },
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 crossDomain:true,
@@ -30,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                            title: result[i].email_visitante + " " + result[i].hora_inicio.slice(10)+ " - " +result[i].hora_fin.slice(10),
                            start: result[i].hora_inicio,
-                           end: result[i].hora_fin                     
-
+                           end: result[i].hora_fin,                   
+                           editable: false
                        })
                    }
                    callback(turnos);                      
@@ -45,28 +58,33 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         eventClick: function(calEvent, jsEvent, view) {
 
-            alert('Event: ' + calEvent.title);
-            alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-            alert('View: ' + view.name);
-        
-            // change the border color just for fun
-            $(this).css('border-color', 'red');
-        
-          },
-          dayClick: function(date, allDay, jsEvent, view) {
+            var fecha = calEvent.start;
+            var dia = fecha.getDate() < 10 ? '0'+fecha.getDate().toString():fecha.getDate().toString();
+            var mes = fecha.getMonth().toString();
+            var year = fecha.getFullYear().toString();
+            var correo = calEvent.title.substring(0,calEvent.title.indexOf(' '))
 
-            if (allDay) {
-              alert('Clicked on the entire day: ' + date);
-            }else{
-              alert('Clicked on the slot: ' + date);
-            }
-        
-            alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-        
-            alert('Current view: ' + view.name);
+            var h = calEvent.start.getHours() < 10 ? '0' + (calEvent.start.getHours().toString()) :calEvent.start.getHours().toString();
+            var m = calEvent.start.getMinutes() == 0 ? calEvent.start.getMinutes().toString() + '0': calEvent.start.getMinutes().toString();
+            var h_inicio = h + ':' + m; 
             
-            $("#exampleModal").modal("show");
-        
+            h = calEvent.end.getHours() < 10 ? '0' + (calEvent.end.getHours().toString()) :calEvent.end.getHours().toString();
+            m = calEvent.end.getMinutes() == 0 ? calEvent.end.getMinutes().toString() + '0': calEvent.end.getMinutes().toString();
+            var h_fin = h + ':' + m;
+
+            $('#hora_inicio').val(h_inicio);
+            $('#hora_fin').val(h_fin);
+            $("#email").val(correo)
+            $("#fecha_turno").val(dia+'-'+mes+'-'+year)
+
+            $("#exampleModal").modal("show");                     
+          },
+          dayClick: function(date, allDay, jsEvent, view) {            
+            var d = date.getDate() < 10 ? '0'+date.getDate().toString():date.getDate().toString();
+            var m = date.getMonth().toString();
+            var y = date.getFullYear().toString();
+            $("#fecha_turno").val(d+'-'+m+'-'+y)
+            $("#exampleModal").modal("show");                    
           }
     });
 });
