@@ -8,6 +8,7 @@ from flask_wtf.csrf import CSRFProtect
 from app.forms.api.centro import formCentros
 from app.forms.api.turno import formTurno
 from app.helpers.serialize import serializeSQLAlchemy
+from app.helpers.geocoder import geocoder as Geocoder
 from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.models.turno import Turno
@@ -50,26 +51,25 @@ class CentroID(Resource):
         finally:
             return Response(json.dumps(datos), mimetype='application/json')
 
-#def api_create_new():
-#    print(request.form)
 
 class CentroNew(Resource):
 
     def post(self):
         form = formCentros(request.form)
         form.estado.data = False
-        # Acá faltan los campos de Latitud, Longitud, id_municipio e id_tipo_centro (tipo centro se manda un id a mano pero luego no va a ser asi)
         if(not form.validate()):
             datos = {'status':400,'body':'Bad Request'}
             return Response(json.dumps(datos), mimetype='application/json')
         else:
             try:
-                nuevo_centro = Centro.create(form.data)
+                coords = Geocoder(form.data['direccion'])
+                nuevo_centro = Centro.create(form.data,coords)
+                #Acá lo unico que falta es mandar el municipio consultando a la API de la catedra. Pero eso se va a hacer desde el front.
+                #Por eso no lo implento acá todavia.
                 campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','id_municipio']
                 datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
-                print(str(e))
                 datos = {'status':500,'body':'Internal Server Error'}
                 return Response(json.dumps(datos), mimetype='application/json')
             
