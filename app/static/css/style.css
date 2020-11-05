@@ -112,8 +112,8 @@ a, a:hover, a:focus {
 
 .btn-theme02 {
   color: #fff;
-  background-color: #ac92ec;
-  border-color: #967adc;
+  background-color: #009AAE;
+  border-color: #009AAE;
 }
 .btn-theme02:hover,
 .btn-theme02:focus,
@@ -121,8 +121,8 @@ a, a:hover, a:focus {
 .btn-theme02.active,
 .open .dropdown-toggle.btn-theme02 {
   color: #fff;
-  background-color: #967adc;
-  border-color: #967adc;
+  background-color: #009AAE;
+  border-color: #009AAE;
 }
 
 .btn-theme03 {
@@ -142,8 +142,8 @@ a, a:hover, a:focus {
 
 .btn-theme04 {
   color: #fff;
-  background-color: #ed5565;
-  border-color: #da4453;
+  background-color: #009AAE;
+  border-color: #009AAE;
 }
 .btn-theme04:hover,
 .btn-theme04:focus,
@@ -151,8 +151,8 @@ a, a:hover, a:focus {
 .btn-theme04.active,
 .open .dropdown-toggle.btn-theme04 {
   color: #fff;
-  background-color: #da4453;
-  border-color: #da4453;
+  background-color: #009AAE;
+  border-color: #009AAE;
 }
 
 .btn-clear-g {
