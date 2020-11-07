@@ -87,4 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
             $("#exampleModal").modal("show");                    
           }
     });
+
+    $("#cerrar").click(function(){
+        //Borro los datos de la ventana modal
+        $('#hora_inicio').val("");
+            $('#hora_fin').val("");
+            $("#email").val("")
+            $("#fecha_turno").val("")
+    });
 });
