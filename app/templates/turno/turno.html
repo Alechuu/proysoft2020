@@ -52,8 +52,12 @@
                   <input id="email"type="email" class="form-control" name="email" required >                  
                 </div>
                 <div class="form-group">
+                  <label>Telefono:</label>
+                  <input id="telefono"type="tel" class="form-control" name="telefono" required >                  
+                </div>
+                <div class="form-group">
                   <label>Fecha</label>
-                  <input id="fecha_turno" class="form-control default-date-picker" size="16" type="text" value="">                    
+                  <input id="fecha_turno" class="form-control default-date-picker" size="16" type="text">                    
                 </div>
                 <div class="form-group">
                   <label>Hora Inicio</label>
@@ -78,7 +82,7 @@
             </div>
             <div class="modal-footer">
               <button id="cerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary">Guardar cambios</button>
+              <button id="guardar"type="button" class="btn btn-primary">Guardar cambios</button>
             </div>
           
           </div>
@@ -106,6 +110,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/moment.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-timepicker/js/bootstrap-timepicker.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{ url_for('static', filename='lib/advanced-form-components.js')}}"></script>
   {% endblock %}
 
