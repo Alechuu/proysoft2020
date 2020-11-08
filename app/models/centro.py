@@ -49,7 +49,7 @@ class Centro(db.Model):
     def create(data,coords):
         nuevo_centro = Centro(
             nombre=data['nombre'],
-            direccion=data['direccion'],
+            direccion=data['calleynumero'],
             telefono=data['telefono'],
             hora_apertura=data['hora_apertura'],
             hora_cierre=data['hora_cierre'],

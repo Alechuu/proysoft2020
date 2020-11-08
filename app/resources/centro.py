@@ -28,9 +28,18 @@ def new():
         abort(401)
     miConfiguracion = Configuracion.get_first() 
     permisos = get_permisos(User.find_by_username(session.get("user")))
+    URL= 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135'
 
+     
+    # sending get request and saving the response as response object 
+    r = requests.get(url = URL) 
+    data = r.json()
+    municipios = []
+    for municipio in data['data']['Town']:
+        municipios.append(data['data']['Town'][municipio]['name'])
+        
     if "centro_new" in permisos:
-        return render_template("centro/new_centro.html",permisos=permisos, conf=miConfiguracion) #centros=centros
+        return render_template("centro/new_centro.html",permisos=permisos, conf=miConfiguracion, municipios = municipios) #centros=centros
     else:
         abort(401)
 
@@ -45,7 +54,9 @@ def create():
     permisos = get_permisos(usuario)
     if "centro_new" in permisos:
         active_page="centro_new"
-        
+        if(request.form.get('nombre') == 'error'):
+            notificacion="¡Prueba de Error!"
+            return render_template("centro/centro_new.html", permisos=permisos,conf=miConfiguracion, active_page=active_page,notificacion=notificacion)
         try:
             Centro.create(request.form)
             notificacion="¡Se registró exitosamente el Centro "+request.form.get('nombre')+"! Puede visualizarlo en el listado."
