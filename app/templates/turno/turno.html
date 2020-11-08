@@ -45,24 +45,24 @@
               <h5 class="modal-title" id="exampleModalLabel">Turno</h5>              
             </div>
             <div class="modal-body">
-              <form action="{{ url_for('turno_new') }}" method="POST">
+              <form id="nuevoTurno" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <div class="form-group">
                   <label>Email:</label>
-                  <input id="email"type="email" class="form-control" name="email" required >                  
+                  <input id="email" type="email" class="form-control" name="email" required >                  
                 </div>
                 <div class="form-group">
                   <label>Telefono:</label>
-                  <input id="telefono"type="tel" class="form-control" name="telefono" required >                  
+                  <input id="telefono" type="tel" class="form-control" name="telefono" required >                  
                 </div>
                 <div class="form-group">
                   <label>Fecha</label>
-                  <input id="fecha_turno" class="form-control default-date-picker" size="16" type="text">                    
+                  <input id="fecha_turno" class="form-control default-date-picker" size="16" type="text" disabled>                    
                 </div>
                 <div class="form-group">
                   <label>Hora Inicio</label>
                     <div class="input-group bootstrap-timepicker">
-                      <input id="hora_inicio"type="text" class="form-control timepicker-default">
+                      <input id="hora_inicio" type="text" class="form-control timepicker-default" required>
                       <span class="input-group-btn">
                         <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                         </span>
@@ -71,19 +71,20 @@
                 <div class="form-group">
                   <label>Hora Fin</label>
                     <div class="input-group bootstrap-timepicker">
-                      <input id="hora_fin" type="text" class="form-control timepicker-default">
+                      <input id="hora_fin" type="text" class="form-control timepicker-default" required>
                       <span class="input-group-btn">
                         <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                         </span>
                     </div>
                 </div>
+                <div class="modal-footer">
+                  <button id="cerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <button id="guardar" type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
               </form>
         <!--  TIME PICKERS -->
             </div>
-            <div class="modal-footer">
-              <button id="cerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button id="guardar"type="button" class="btn btn-primary">Guardar cambios</button>
-            </div>
+            
           
           </div>
         </div>

@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#telefono').val("");
     });
 
-    $("#guardar").click(function(){
+    $("#nuevoTurno").submit(function(){
 
         const formData = new FormData();
         formData.append('hora_inicio', $('#hora_inicio').val());
