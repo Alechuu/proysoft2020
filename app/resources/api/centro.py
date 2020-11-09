@@ -64,9 +64,7 @@ class CentroNew(Resource):
             try:
                 coords = Geocoder(form.data['direccion'])
                 nuevo_centro = Centro.create(form.data,coords)
-                #Acá lo unico que falta es mandar el municipio consultando a la API de la catedra. Pero eso se va a hacer desde el front.
-                #Por eso no lo implento acá todavia.
-                campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','id_municipio']
+                campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','municipio']
                 datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:

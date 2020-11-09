@@ -12,6 +12,7 @@ class formCentros(FlaskForm):
     
     nombre = StringField("Nombre Centro", validators=[DataRequired(), Length(max=255)])
     direccion = StringField("Dirección Centro", validators=[DataRequired(), Length(max=255)])
+    municipio = StringField("Municipio Centro",validators=[DataRequired(),Length(max=255)])
     telefono = StringField("Teléfono Centro", validators=[DataRequired(), Length(max=20)])
     hora_apertura = TimeField("Hora de Apertura", validators=[DataRequired()])
     hora_cierre = TimeField("Hora de Cierre", validators=[DataRequired()])
