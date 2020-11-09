@@ -67,14 +67,14 @@
                     <div class="col-lg-5">
                       <div class="input-group date">
                         <div class="input-group" id="hora_apertura">
-                          <input type="time" class="form-control timepicker-default dpd1" id="hora_apertura" required name="hora #hora_apertura">
+                          <input type="time" class="form-control timepicker-default dpd1" id="input_hora_apertura" required>
                           <span class="input-group-btn">
                             <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span>
                         </div>
                         <span class="input-group-addon">Hasta</span>
                         <div class="input-group " id="hora_cierre">
-                          <input type="time" class="form-control timepicker-default dpd2" id="hora_cierre" name="hora_cierre" required>
+                          <input type="time" class="form-control timepicker-default dpd2" id="input_hora_cierre" name="hora_cierre" required>
                           <span class="input-group-btn">
                             <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span>
@@ -263,6 +263,32 @@
   } */
   // do something
 
+ </script>
+ <script>
+
+   function crearCentro(){
+    const formData = new FormData();
+    formData.append('nombre', $('#nombre').val());
+    formData.append('telefono', $('#telefono').val());
+    formData.append('hora_apertura',  $('#input_hora_apertura').val());
+    formData.append('hora_cierre',  $('#input_hora_cierre').val());
+    formData.append('tipo', $("#id_tipo_centro").val());
+    formData.append('email', $("#email").val());
+    formData.append('sitio_web', $('#sitio_web').val());
+    formData.append('direccion', $('#calleynumero').val());
+    //formData.append('estado', $('#estado').val());
+
+    axios.post('/api/centros', formData,{
+      headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+    }).then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });;
+};
  </script>
 
 
