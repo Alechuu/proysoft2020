@@ -67,14 +67,14 @@
                     <div class="col-lg-5">
                       <div class="input-group date">
                         <div class="input-group" id="hora_apertura">
-                          <input type="text" class="form-control timepicker-default dpd1" required name="hora #hora_apertura">
+                          <input type="time" class="form-control timepicker-default dpd1" id="hora_apertura" required name="hora #hora_apertura">
                           <span class="input-group-btn">
                             <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span>
                         </div>
                         <span class="input-group-addon">Hasta</span>
                         <div class="input-group " id="hora_cierre">
-                          <input type="text" class="form-control timepicker-default dpd2" name="hora_cierre" required>
+                          <input type="time" class="form-control timepicker-default dpd2" id="hora_cierre" name="hora_cierre" required>
                           <span class="input-group-btn">
                             <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span>
@@ -159,11 +159,11 @@
                 
                   <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
-                      <button class="btn btn-theme" type="submit" id="crear" >Crear</button>
                       <button class="btn btn-theme04" type="button">Cancelar</button>
                     </div>
                   </div>
                 </form>
+                <button class="btn btn-theme" id="createButton" onclick="crearCentro()" >Crear</button>
                 <button onclick="buscarDireccion()">test</button>
               </div>
             </div>
@@ -196,7 +196,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"type="text/javascript" charset="utf-8"></script>
 
@@ -264,138 +264,6 @@
   // do something
 
  </script>
- 
-<!-- <script>
-  async function fetchCentro() {
-    const datos = new URLSearchParams(new FormData(document.getElementById("signupForm")));
-    const respose = await fetch('/api/centros', {
-     method:'POST',
-     body: datos,
-   }).then(res => res.json());
-   console.log(respose);
-} -->
-
-
-
-<script>
- $("#crear").onclick(function(){
-const datos = new FormData(document.getElementById("signupForm"));
-fetch('/api/centros', {
-  method:'POST',
-  body: datos,
-}).then(res => res.json())
-.then(data => console.log(data))
- });
-
-</script>
-
-
-<!-- <script>
-  $("#signupForm").submit(function(){
-  const axios = require('axios');
-
-async function makeRequest() {
-
-    
-  const formData = new FormData();
-  formData.append('nombre', $('#nombre').val());
-  formData.append('telefono', $('#telefono').val());
-  formData.append('hora_apertura',  $('#hora_apertura').val());
-  formData.append('hora_cierre',  $('#hora_cierre').val());
-  formData.append('tipo', $("#tipo").val());
-  formData.append('email', $("#email").val());
-  formData.append('sitio_web', $('#sitio_web').val());
-  formData.append('calleynumero', $('#calleynumero').val());
-  formData.append('estado', $('#estado').val());
-
-    const config = {
-        method: 'post',
-        url: 'api/centros/crear',
-        headers: { 'Content-Type': 'multipart/form-data' },
-        body: formData,
-    }
-
-    let res = await axios(config)
-
-    console.log(res.request._header);
-}});
-
-</script>
-
- -->
-<!-- 
-<script>
-  $("#signupForm").submit(function(){
-  const axios = require('axios').default;
-
-  const formData = new FormData();
-  formData.append('nombre', $('#nombre').val());
-  formData.append('telefono', $('#telefono').val());
-  formData.append('hora_apertura',  $('#hora_apertura').val());
-  formData.append('hora_cierre',  $('#hora_cierre').val());
-  formData.append('tipo', $("#tipo").val());
-  formData.append('email', $("#email").val());
-  formData.append('sitio_web', $('#sitio_web').val());
-  formData.append('calleynumero', $('#calleynumero').val());
-  formData.append('estado', $('#estado').val());
-
-
-const sendPostRequest = async () => {
-    try {
-        const resp = await axios.post('api/centros/crear', formData);
-        console.log(resp.data);
-    } catch (err) {
-        // Handle Error Here
-        console.error(err);
-    }
-};
-});
-
-</script>
- -->
-
-<!-- 
- <script>
-  $("#signupForm").submit(function(){
-  const axios = require('axios').default;
-
-  const formData = new FormData();
-  formData.append('nombre', $('#nombre').val());
-  formData.append('telefono', $('#telefono').val());
-  formData.append('hora_apertura',  $('#hora_apertura').val());
-  formData.append('hora_cierre',  $('#hora_cierre').val());
-  formData.append('tipo', $("#tipo").val());
-  formData.append('email', $("#email").val());
-  formData.append('sitio_web', $('#sitio_web').val());
-  formData.append('calleynumero', $('#calleynumero').val());
-  formData.append('estado', $('#estado').val());
-
-  const sendPostRequest = async () => {
-    try {
-        const resp = await axios.post('api/centros/crear', formData,{
-    headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-  } );
-        console.log(resp.data);
-    } catch (err) {
-        // Handle Error Here
-        console.error(err);
-    }
-};
-/* 
- axios.post('/api/centros', formData,{
-    headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-  }).then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });; */
-});
- </script> -->
 
 
 

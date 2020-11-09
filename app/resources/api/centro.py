@@ -58,6 +58,7 @@ class CentroNew(Resource):
         form = formCentros(request.form)
         form.estado.data = False
         if(not form.validate()):
+            breakpoint()
             datos = {'status':400,'body':'Bad Request'}
             return Response(json.dumps(datos), mimetype='application/json')
         else:
@@ -70,6 +71,7 @@ class CentroNew(Resource):
                 datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
+                #breakpoint()
                 datos = {'status':500,'body':'Internal Server Error'}
                 return Response(json.dumps(datos), mimetype='application/json')
             
