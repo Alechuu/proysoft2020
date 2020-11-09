@@ -40,7 +40,7 @@
             <div class="form-panel">
               <div class="form">
                 <form class="cmxform form-horizontal style-form" id="signupForm" >
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                  <!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> -->
                   <div class="form-group ">
                     <label for="nombre" class="control-label col-lg-2">Nombre</label>
                     <div class="col-lg-10">
@@ -200,6 +200,11 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"type="text/javascript" charset="utf-8"></script>
 
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+
+
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script>
       $('#hora_apertura').datetimepicker({
@@ -259,9 +264,69 @@
   // do something
 
  </script>
- <script>
-   $("#signupForm").submit(function(){
+ 
+<!-- <script>
+  async function fetchCentro() {
+    const datos = new URLSearchParams(new FormData(document.getElementById("signupForm")));
+    const respose = await fetch('/api/centros', {
+     method:'POST',
+     body: datos,
+   }).then(res => res.json());
+   console.log(respose);
+} -->
 
+
+
+<script>
+ $("#crear").onclick(function(){
+const datos = new FormData(document.getElementById("signupForm"));
+fetch('/api/centros', {
+  method:'POST',
+  body: datos,
+}).then(res => res.json())
+.then(data => console.log(data))
+ });
+
+</script>
+
+
+<!-- <script>
+  $("#signupForm").submit(function(){
+  const axios = require('axios');
+
+async function makeRequest() {
+
+    
+  const formData = new FormData();
+  formData.append('nombre', $('#nombre').val());
+  formData.append('telefono', $('#telefono').val());
+  formData.append('hora_apertura',  $('#hora_apertura').val());
+  formData.append('hora_cierre',  $('#hora_cierre').val());
+  formData.append('tipo', $("#tipo").val());
+  formData.append('email', $("#email").val());
+  formData.append('sitio_web', $('#sitio_web').val());
+  formData.append('calleynumero', $('#calleynumero').val());
+  formData.append('estado', $('#estado').val());
+
+    const config = {
+        method: 'post',
+        url: 'api/centros/crear',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body: formData,
+    }
+
+    let res = await axios(config)
+
+    console.log(res.request._header);
+}});
+
+</script>
+
+ -->
+<!-- 
+<script>
+  $("#signupForm").submit(function(){
+  const axios = require('axios').default;
 
   const formData = new FormData();
   formData.append('nombre', $('#nombre').val());
@@ -274,7 +339,52 @@
   formData.append('calleynumero', $('#calleynumero').val());
   formData.append('estado', $('#estado').val());
 
-  axios.post('/api/centros', formData,{
+
+const sendPostRequest = async () => {
+    try {
+        const resp = await axios.post('api/centros/crear', formData);
+        console.log(resp.data);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
+};
+});
+
+</script>
+ -->
+
+<!-- 
+ <script>
+  $("#signupForm").submit(function(){
+  const axios = require('axios').default;
+
+  const formData = new FormData();
+  formData.append('nombre', $('#nombre').val());
+  formData.append('telefono', $('#telefono').val());
+  formData.append('hora_apertura',  $('#hora_apertura').val());
+  formData.append('hora_cierre',  $('#hora_cierre').val());
+  formData.append('tipo', $("#tipo").val());
+  formData.append('email', $("#email").val());
+  formData.append('sitio_web', $('#sitio_web').val());
+  formData.append('calleynumero', $('#calleynumero').val());
+  formData.append('estado', $('#estado').val());
+
+  const sendPostRequest = async () => {
+    try {
+        const resp = await axios.post('api/centros/crear', formData,{
+    headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+  } );
+        console.log(resp.data);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
+};
+/* 
+ axios.post('/api/centros', formData,{
     headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -283,9 +393,9 @@
   })
   .catch(function (error) {
     console.log(error);
-  });;
+  });; */
 });
- </script>
+ </script> -->
 
 
 
