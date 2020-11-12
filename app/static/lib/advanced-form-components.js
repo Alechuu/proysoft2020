@@ -94,7 +94,8 @@ $(".form_datetime-meridian").datetimepicker({
 
 //timepicker start
 //*********Se agregan características para los turnos */
-$('.timepicker-default').timepicker({    
+$('.timepicker-default').timepicker({ 
+    autoclose: true,   
     minuteStep: 30,
     showSeconds: false,
     showMeridian: false

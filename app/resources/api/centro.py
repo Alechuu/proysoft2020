@@ -164,3 +164,18 @@ class TurnosNew(Resource):
             except Exception as e:
                 datos = {'status':500,'body':'Internal Server Error'}
                 return Response(json.dumps(datos),mimetype="application/json")
+
+class TurnosCentroRangoFecha(Resource):
+
+    def get(self):
+        id_centro = request.args.get('id_centro')
+        start = request.args.get('fecha_ini_calendario')
+        end = request.args.get('fecha_fin_calendario')
+        fecha_inicio = datetime.strptime(start, '%Y-%m-%d')
+        fecha_fin = datetime.strptime(end, '%Y-%m-%d')
+        turnos = Turno.get_by_id_centro(id_centro, fecha_inicio, fecha_fin)
+        lista_turno=[unTurno.serializar for unTurno in turnos]
+        datos = {'status':'200 OK','body':{'atributos':lista_turno}}
+        return Response(json.dumps(datos),mimetype="application/json")
+        
+        
