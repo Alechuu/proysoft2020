@@ -10,8 +10,8 @@ class Centro(db.Model):
     telefono = db.Column(db.String(20),nullable=False)
     hora_apertura = db.Column(db.Time, nullable=True)
     hora_cierre = db.Column(db.Time, nullable=True)
-    id_tipo_centro = db.Column(db.Integer, nullable=True)
-    id_municipio = db.Column(db.Integer, nullable=True)
+    tipo_centro = db.Column(db.String(255), nullable=True)
+    municipio = db.Column(db.String(255), nullable=True)
     sitio_web = db.Column(db.String(60),nullable=True)
     email = db.Column(db.String(255), nullable=True)
     estado = db.Column(db.Boolean, default=False)
@@ -49,11 +49,12 @@ class Centro(db.Model):
     def create(data,coords):
         nuevo_centro = Centro(
             nombre=data['nombre'],
-            direccion=data['calleynumero'],
+            direccion=data['direccion'],
+            municipio=data['municipio'],
             telefono=data['telefono'],
             hora_apertura=data['hora_apertura'],
             hora_cierre=data['hora_cierre'],
-            id_tipo_centro=data['tipo'],
+            tipo_centro=data['tipo'],
             sitio_web=data['sitio_web'],
             email=data['email'],
             estado=data['estado'],
