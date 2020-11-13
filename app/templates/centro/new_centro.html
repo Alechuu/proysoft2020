@@ -159,7 +159,7 @@
                   
             
                     <div class="col-lg-offset-2 col-lg-10">
-                      <button class="btn btn-theme" id="createButton" onclick="crearCentro()" >Crear</button>
+                      <button class="btn btn-theme" id="createButton" onclick="chequearCampos()" >Crear</button>
                       <button class="btn btn-theme04" id="verDir" onclick="buscarDireccion()" >Ver en mapa</button>
                     </div>
 
@@ -267,74 +267,78 @@
   // do something
 
  </script>
- <script>
 
-   function crearCentro(){
-    const formData = new FormData();
-    formData.append('nombre', $('#nombre').val());
-    formData.append('telefono', $('#telefono').val());
-    formData.append('hora_apertura',  $('#input_hora_apertura').val());
-    formData.append('hora_cierre',  $('#input_hora_cierre').val());
-    formData.append('tipo', $("#tipo_centro").val());
-    formData.append('municipio', $("#municipio").val());
-    formData.append('email', $("#email").val());
-    formData.append('sitio_web', $('#sitio_web').val());
-    formData.append('direccion', $('#calleynumero').val());
-    //formData.append('estado', $('#estado').val());
+<script>
 
-    axios.post('/api/centros', formData,{
-      headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-    }).then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });;
+  function crearCentro(){
+   const formData = new FormData();
+   formData.append('nombre', $('#nombre').val());
+   formData.append('telefono', $('#telefono').val());
+   formData.append('hora_apertura',  $('#input_hora_apertura').val());
+   formData.append('hora_cierre',  $('#input_hora_cierre').val());
+   formData.append('tipo', $("#tipo_centro").val());
+   formData.append('municipio', $("#municipio").val());
+   formData.append('email', $("#email").val());
+   formData.append('sitio_web', $('#sitio_web').val());
+   formData.append('direccion', $('#calleynumero').val());
+   //formData.append('estado', $('#estado').val());
+
+   axios.post('/api/centros', formData,{
+     headers: {
+         'Content-Type': 'multipart/form-data'
+       }
+   }).then(function (response) {
+     console.log(response);
+   })
+   .catch(function (error) {
+     console.log(error);
+   });;
 };
- </script>
+</script>
+
+<script>
+  function chequearEmail(){
+
+  $("#email").keyup(function(){
+    var email = $("#email").val();
+    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!filter.test(email) && (email =! "")) {
+      //alert('Please provide a valid email address');
+      $("#error_email").text(email+" No es valido");
+      email.focus;
+      return false;
+   } else {
+       $("#error_email").text("");
+       return true;
+   }
+});
+}
+</script>
+
+<script>
+  function chequearCampos(){
+    if( ($("#nombre").val() == '') ||
+        ($("#telefono").val() == '') ||
+        ($("#input_hora_apertura").val() == '') || 
+        ($("#input_hora_cierre").val() == '') ||
+        ($("#tipo_centro").val() == '') || 
+        ($("#municipio").val() == '') ||
+        ($("#sitio_web").val() == '') ||
+        ($("#calleynumero").val() == '')){
+          alert("Campo vacio");
+        }else{
+          crearCentro();
+        }
+        
+  }
+</script>
+
+ 
+
+
+ 
 
 <!--  <script>
-   const inputSelector = ':input[required]:visible';
-  function checkForm() {
-  // here, "this" is an input element
-  var isValidForm = true;
-  $('form').find(inputSelector).each(function() {
-    if (!'form'.value.trim()) {
-      isValidForm = false;
-    }
-  });
-  $('form').find('.createButton').prop('disabled', !isValidForm);
-  return isValidForm;
-}
-$('.createButton').closest('form')
-  // in a user hacked to remove "disabled" attribute, also monitor the submit event
-  .submit(function() {
-    // launch checkForm for the first encountered input,
-    // use its return value to prevent default if form is not valid
-    return checkForm.apply($(this).find(':input')[0]);
-  })
-  .find(inputSelector).keyup(checkForm).keyup();
- </script>
- -->
-
- <script>
-   $("#email").keyup(function(){
-     var email = $("#email").val();
-     var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-     if (!filter.test(email) && (email =! "")) {
-       //alert('Please provide a valid email address');
-       $("#error_email").text(email+" No es valido");
-       email.focus;
-       //return false;
-    } else {
-        $("#error_email").text("");
-    }
- });
- </script>
-
- <script>
   $("#createButton").prop("disabled", true);
   
    $("#nombre").on("keyup", function() {
@@ -353,21 +357,6 @@ $('.createButton').closest('form')
 });
 
  </script>
-
-
-
-<!--  <script>
-  let input = document.querySelector(".input");
-  let button = document.querySelector(".createButton");
-  button.disabled = true;
-  input.addEventListener("change", stateHandle);
-  function stateHandle() {
-    if (document.querySelector(".input").value === "") {
-      button.disabled = true;
-    } else {
-      button.disabled = false;
-    }
-  }
-  </script> -->
+ -->
 
 {% endblock %}
