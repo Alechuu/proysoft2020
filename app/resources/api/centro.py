@@ -41,7 +41,7 @@ class CentroID(Resource):
     def get(self,id_centro):
         try:
             centro = Centro.get_by_id(id_centro)
-            campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','id_municipio']
+            campos_no_deseados = ['latitud','longitud','tipo_centro','estado','municipio']
             datos = {'status':200,'atributos':serializeSQLAlchemy(centro,campos_no_deseados)}
         except Exception as e:
             if ('__table__' in str(e)): 
@@ -58,7 +58,7 @@ class CentroNew(Resource):
         form = formCentros(request.form)
         form.estado.data = False
         if(not form.validate()):
-            breakpoint()
+            #breakpoint()
             datos = {'status':400,'body':'Bad Request'}
             return Response(json.dumps(datos), mimetype='application/json')
         else:
@@ -67,11 +67,11 @@ class CentroNew(Resource):
                 nuevo_centro = Centro.create(form.data,coords)
                 #Acá lo unico que falta es mandar el municipio consultando a la API de la catedra. Pero eso se va a hacer desde el front.
                 #Por eso no lo implento acá todavia.
-                campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','id_municipio']
+                campos_no_deseados = ['latitud','longitud','tipo_centro','estado','municipio']
                 datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
-                #breakpoint()
+                breakpoint()
                 datos = {'status':500,'body':'Internal Server Error'}
                 return Response(json.dumps(datos), mimetype='application/json')
             

@@ -104,7 +104,7 @@ $('.timepicker-default').timepicker({
 
 $('.timepicker-24').timepicker({
     autoclose: true,
-    minuteStep: 1,
+    minuteStep: 30,
     showSeconds: true,
     showMeridian: false
 });

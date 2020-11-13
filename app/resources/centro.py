@@ -37,7 +37,7 @@ def new():
     municipios = []
     for municipio in data['data']['Town']:
         municipios.append(data['data']['Town'][municipio]['name'])
-        
+       
     if "centro_new" in permisos:
         return render_template("centro/new_centro.html",permisos=permisos, conf=miConfiguracion, municipios = municipios) #centros=centros
     else:
