@@ -9,7 +9,7 @@ class Centro(db.Model):
     direccion = db.Column(db.String(255),nullable=False)
     telefono = db.Column(db.String(20),nullable=False)
     hora_apertura = db.Column(db.Time, nullable=True)
-    hora_cierre = db.Column(db.Time,nullable=False)
+    hora_cierre = db.Column(db.Time, nullable=True)
     tipo_centro = db.Column(db.String(255), nullable=True)
     municipio = db.Column(db.String(255), nullable=True)
     sitio_web = db.Column(db.String(60),nullable=True)

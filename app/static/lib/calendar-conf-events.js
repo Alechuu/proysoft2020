@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $("#guardar").prop("disabled", false);
   });
 
-  $("#nuevoTurno").submit(function () {
+  $("#guardar").click(function () {
 
     const formData = new FormData();
     formData.append('hora_inicio', $('#hora_inicio').val());

@@ -57,7 +57,7 @@
             </div>
             <div class="modal-body">
               <form id="nuevoTurno" method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> -->
                 <div class="form-group">
                   <label>Email:</label>
                   <input id="email" type="email" class="form-control" name="email" required >                  
@@ -88,11 +88,12 @@
                         </span>
                     </div>
                 </div>
+              </form>
                 <div class="modal-footer">
                   <button id="cerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  <button id="guardar" type="submit" class="btn btn-primary">Guardar cambios</button>
+                  <button id="guardar" type="button" class="btn btn-primary">Guardar cambios</button>
                 </div>
-              </form>
+              
         <!--  TIME PICKERS -->
             </div>
             

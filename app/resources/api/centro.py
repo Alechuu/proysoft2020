@@ -65,8 +65,6 @@ class CentroNew(Resource):
             try:
                 coords = Geocoder(form.data['direccion'])
                 nuevo_centro = Centro.create(form.data,coords)
-                #Acá lo unico que falta es mandar el municipio consultando a la API de la catedra. Pero eso se va a hacer desde el front.
-                #Por eso no lo implento acá todavia.
                 campos_no_deseados = ['latitud','longitud','tipo_centro','estado','municipio']
                 datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
@@ -147,6 +145,15 @@ class TurnosNew(Resource):
                 if(centro==None):
                     datos = {'status':400,'body':'Bad Request','details':'Ese centro no existe'}
                     return Response(json.dumps(datos),mimetype="application/json")
+                #Armo fecha y hora con los argumentos del request para controlar que el turno se cree 
+                #en el futuro
+                #form.data['fecha'] es de clase 'datetime.date' y form.data['hora_inicio'] es de clase 'datetime.time'
+                #combino amgbos datos para generar un datetime
+                fh_turno = datetime.combine(form.data['fecha'], form.data['hora_inicio'])                
+                now = datetime.now()
+                if(now > fh_turno):
+                    datos = {'status':400,'body':'Bad Request','details':'Verifique que la fecha y/o la hora del turno sean posteriores a este momento'}
+                    return Response(json.dumps(datos),mimetype="application/json")
                 if(Turno.get_by_hour_and_date(form.data['hora_inicio'],form.data['fecha'],id_centro)==None):  
                     turno = Turno.new(form.data)
                     Centro.agregarTurno(turno,centro)
@@ -170,14 +177,33 @@ class TurnosNew(Resource):
 class TurnosCentroRangoFecha(Resource):
 
     def get(self):
-        id_centro = request.args.get('id_centro')
-        start = request.args.get('fecha_ini_calendario')
-        end = request.args.get('fecha_fin_calendario')
-        fecha_inicio = datetime.strptime(start, '%Y-%m-%d')
-        fecha_fin = datetime.strptime(end, '%Y-%m-%d')
-        turnos = Turno.get_by_id_centro(id_centro, fecha_inicio, fecha_fin)
-        lista_turno=[unTurno.serializar for unTurno in turnos]
-        datos = {'status':'200 OK','body':{'atributos':lista_turno}}
-        return Response(json.dumps(datos),mimetype="application/json")
-        
+        try:
+            id_centro = request.args.get('id_centro', type=int)
+            if(not id_centro):
+                datos = {'status':400,'body':'Bad Request','details':'Debe indicar el id del centro y su tipo es un entero'}
+                return Response(json.dumps(datos),mimetype="application/json")
+            start = request.args.get('fecha_ini_calendario', type=str)
+            if(not start):
+                datos = {'status':400,'body':'Bad Request','details':'Debe indicar una fecha de inicio de tipo string en formato YYYY-MM-dd'}
+                return Response(json.dumps(datos),mimetype="application/json")
+            end = request.args.get('fecha_fin_calendario', type=str)
+            if(not end):
+                datos = {'status':400,'body':'Bad Request','details':'Debe indicar una fecha de fin de tipo string en formato YYYY-MM-dd'}
+                return Response(json.dumps(datos),mimetype="application/json")            
+            centro = Centro.get_by_id(id_centro)
+            if(centro==None):
+                datos = {'status':400,'body':'Bad Request','details':'Ese centro no existe'}
+                return Response(json.dumps(datos),mimetype="application/json")            
+            fecha_inicio = datetime.strptime(start, '%Y-%m-%d')
+            fecha_fin = datetime.strptime(end, '%Y-%m-%d')
+            if(fecha_inicio > fecha_fin):
+                datos = {'status':400,'body':'Bad Request','details':'Rango incorrecto. La fecha de inicio no puede ser mayor a al fecha de fin'}
+                return Response(json.dumps(datos),mimetype="application/json")
+            turnos = Turno.get_by_id_centro(id_centro, fecha_inicio, fecha_fin)
+            lista_turno=[unTurno.serializar for unTurno in turnos]
+            datos = {'status':'200 OK','body':{'atributos':lista_turno}}
+            return Response(json.dumps(datos),mimetype="application/json")
+        except Exception as e:
+                datos = {'status':500,'body':'Internal Server Error'}
+                return Response(json.dumps(datos),mimetype="application/json")
         
