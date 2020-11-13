@@ -17,6 +17,7 @@ class Centro(db.Model):
     estado = db.Column(db.Boolean, default=False)
     latitud = db.Column(db.Numeric(9,6), nullable=True)
     longitud = db.Column(db.Numeric(9,6), nullable=True)
+    path_pdf = db.Column(db.String(400), nullable=False)
     turnos = db.relationship("Turno", backref='centro', lazy=True)
 
     @staticmethod

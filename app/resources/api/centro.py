@@ -1,4 +1,4 @@
-import json
+import json, os
 from datetime import datetime, timedelta
 
 from flask import Response, request
@@ -56,6 +56,11 @@ class CentroNew(Resource):
 
     def post(self):
         form = formCentros(request.form)
+        pdf_visita = request.files['path_pdf']
+        # Apendo el path del archivo al formulario
+        form.path_pdf.data = os.getcwd()+"/app/static/uploads/"+pdf_visita.filename
+        # Guardo el archivo
+        pdf_visita.save(os.getcwd()+"/app/static/uploads/"+pdf_visita.filename)
         form.estado.data = False
         if(not form.validate()):
             datos = {'status':400,'body':'Bad Request'}
@@ -64,7 +69,7 @@ class CentroNew(Resource):
             try:
                 coords = Geocoder(form.data['direccion'])
                 nuevo_centro = Centro.create(form.data,coords)
-                campos_no_deseados = ['latitud','longitud','id_tipo_centro','estado','municipio']
+                campos_no_deseados = ['latitud','longitud','tipo_centro','estado','municipio']
                 datos = {'status':'201 Created','body':{'atributos':serializeSQLAlchemy(nuevo_centro,campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
