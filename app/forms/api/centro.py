@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 
-from wtforms import StringField, IntegerField, BooleanField, SubmitField, TimeField
+from wtforms import StringField, IntegerField, BooleanField, SubmitField, TimeField, FileField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email, Length, NumberRange
 
@@ -20,4 +20,5 @@ class formCentros(FlaskForm):
     sitio_web = StringField("Sitio Web de Centro", validators=[DataRequired(), Length(max=60)])
     email = EmailField("Email de Centro", validators=[DataRequired(),Email(), Length(max=255)])
     estado = BooleanField("Centro Habilitado")
+    path_pdf = StringField("PDF Visita",validators=[DataRequired(),Length(max=400)])
 

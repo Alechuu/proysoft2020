@@ -1,4 +1,4 @@
-import json
+import json, os
 from datetime import datetime, timedelta
 
 from flask import Response, request
@@ -56,6 +56,11 @@ class CentroNew(Resource):
 
     def post(self):
         form = formCentros(request.form)
+        pdf_visita = request.files['path_pdf']
+        # Apendo el path del archivo al formulario
+        form.path_pdf.data = os.getcwd()+"/app/static/uploads/"+pdf_visita.filename
+        # Guardo el archivo
+        pdf_visita.save(os.getcwd()+"/app/static/uploads/"+pdf_visita.filename)
         form.estado.data = False
         if(not form.validate()):
             #breakpoint()
