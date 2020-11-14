@@ -44,6 +44,37 @@ def new():
         abort(401)
 
 
+def cambiarEstado():
+    if not authenticated(session):
+        abort(401)
+    miConfiguracion = Configuracion.get_first() 
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    if "centro_update" in permisos:
+        usuarios=User.all()
+        Centro.cambiarEstado(request.form.get("id_centro"))
+        centros = Centro.get_all()
+        notificacion = "¡Se actualizó con éxito el estado del Centro "+request.form.get("nombre")+"!"
+        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+    else:
+        abort(401)
+
+def update():
+    if not authenticated(session):
+        abort(401)
+    miConfiguracion = Configuracion.get_first() 
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    if "centro_update" in permisos:
+        usuarios=User.all()
+        Centro.update(request.form)
+        centros = Centro.get_all()
+        notificacion = "¡Se actualizó con éxito la información del Centro "
+        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+    else:
+        abort(401)
+
+        
 
 def create():
     if not authenticated(session):
@@ -68,4 +99,19 @@ def create():
             if "for key 'username'" in str(e):
                 notificacion="Ya existe un Centro con el nombre: "+request.form.get('nombre')+". Por favor, elija otro."
                 return render_template("centro/centro_new.html", permisos=permisos,notificacion=notificacion, conf=miConfiguracion, active_page=active_page,centro_data=request.form)
-     
+    
+   
+def delete():
+    if not authenticated(session):
+        abort(401)
+    miConfiguracion = Configuracion.get_first()  
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    if "centro_destroy" in permisos:
+        usuarios = User.all()
+        Centro.delete(request.form.get("id_centro"))
+        centros = Centro.get_all()
+        notificacion = "¡Se eliminó con éxito al Centro "+request.form.get('nombre')+"!"
+        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+    else:
+        abort(401)
