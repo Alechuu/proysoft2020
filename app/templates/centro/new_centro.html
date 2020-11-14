@@ -7,6 +7,17 @@
   <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet"> -->
   <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
   <link href="{{ url_for('static', filename='lib/bootstrap-fileupload/bootstrap-fileupload.css')}}" rel="stylesheet" />
+
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css"> -->
+  
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-timepicker/compiled/timepicker.css')}}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-datetimepicker/datertimepicker.css')}}" />
+
+
   <meta name="viewport" content="initial-scale=1.0, width=device-width" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -65,22 +76,25 @@
                   <div class="form-group">
                     <label class="control-label col-lg-2">Franja Horaria Desde</label>
                     <div class="col-lg-5">
-                      <div class="input-group">
-                        <div class="input-group" id="hora_apertura">
-                          <input type="time" class="form-control timepicker-24 dpd1" id="input_hora_apertura" required>
-                        
+                      <div class="input-group  bootstrap-timepicker">
+                        <div class="input-group bootstrap-timepicker">
+                          <input id="input_hora_apertura" type="text" class="form-control timepicker-default" required>
+                          <span class="input-group-btn">
+                            <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
+                            </span>
                         </div>
                         <span class="input-group-addon">Hasta</span>
-                        <div class="input-group " id="hora_cierre">
-                          <input type="time" class="form-control timepicker-24 dpd2" id="input_hora_cierre" name="hora_cierre" required>
-                          <!-- <span class="input-group-btn"></span>
-                            <button class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
-                            </span> -->
+                        <div class="input-group bootstrap-timepicker">
+                          <input id="input_hora_cierre" type="text" class="form-control timepicker-default" required>
+                          <span class="input-group-btn">
+                            <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
+                            </span>
                         </div>
                       </div>
                       <span class="help-block">Selecciona un horario</span>
                     </div>
                   </div>
+
                   
                   <div class="form-group ">
                     <label for="tipo_centro" class="control-label col-lg-2">Tipo</label>
@@ -117,11 +131,11 @@
                   <div class="form-group">
                     <label class="control-label col-lg-2">Archivo</label>
                     <div class="controls col-lg-10">
-                      <div class="fileupload fileupload-new" data-provides="fileupload">
+                      <div class="fileupload fileupload-new"id="path_pdf" data-provides="fileupload">
                         <span class="btn btn-theme02 btn-file">
                           <span class="fileupload-new"><i class="fa fa-paperclip"></i> Selecciona un PDF</span>
                         <span class="fileupload-exists"><i class="fa fa-undo"></i> Cambiar</span>
-                        <input type="file" class="default" />
+                        <input type="file" class="default"  accept="application/pdf"/>
                         </span>
                         <span class="fileupload-preview" style="margin-left:5px;"></span>
                         <a href="advanced_form_components.html#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none; margin-left:5px;"></a>
@@ -155,7 +169,7 @@
                       </div>
                     </div>
                   </div>
-                  <input type="hidden" name="estado" value="En confirmacion"
+                  <input type="hidden" name="estado" value="1"
                   
             
                     <div class="col-lg-offset-2 col-lg-10">
@@ -195,21 +209,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script src="{{ url_for('static', filename='lib/jquery-ui-1.9.2.custom.min.js')}}"></script>      
+    <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>  
+    <script src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>   
+    <script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script> 
+    <script src="{{ url_for('static', filename='lib/jquery.nicescroll.js')}}"></script>     
+    
+    
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/date.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+    
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-timepicker/js/bootstrap-timepicker.js')}}"></script>
+
+    <script src="{{ url_for('static', filename='lib/advanced-form-components.js')}}"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"type="text/javascript" charset="utf-8"></script>
 
     <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
 
 
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-    <script>
+    <!-- <script>
       $('#hora_apertura').datetimepicker({
           format: 'hh:mm',
           stepping: 30,
@@ -222,7 +252,7 @@
           stepping: 30,
       });
      
-  </script>
+  </script> -->
 
    <!-- Make sure you put this AFTER Leaflet's CSS -->
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
@@ -281,6 +311,8 @@
    formData.append('email', $("#email").val());
    formData.append('sitio_web', $('#sitio_web').val());
    formData.append('direccion', $('#calleynumero').val());
+   formData.append('path_pdf', $('input[type=file]')[0].files[0]);
+   
    //formData.append('estado', $('#estado').val());
 
    axios.post('/api/centros', formData,{
@@ -289,6 +321,12 @@
        }
    }).then(function (response) {
      console.log(response);
+     if (response.status == 200)
+     {
+       window.location.href='/centros'
+     }else{
+       alert('Error al enviar el formulario')
+     }
    })
    .catch(function (error) {
      console.log(error);
@@ -296,6 +334,22 @@
 };
 </script>
 
+<script>
+  function chequearEmail(){
+    var email = document.getElementById("email").value;
+    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!filter.test(email) || (email == '')) {
+      //alert('Mail invalido');
+      //$("#error_email").text(email+" No es valido");
+      email.focus;
+      return false;
+   } else {
+       $("#error_email").text("");
+       return true;
+   }
+}
+</script>
+<!-- 
 <script>
   function chequearEmail(){
 
@@ -313,19 +367,61 @@
    }
 });
 }
+</script> -->
+
+
+<script>
+    function chequearTelefono(){
+    var tel = document.getElementById('telefono').value;
+    var filter = /^\d+$/;
+    if (!filter.test(tel) && (tel =! "")) {
+      //alert('Please provide a valid email address');
+      //alert('Ingrese solo numeros en el Telefono')
+      tel.focus;
+      return false;
+   } else {
+       return true;
+   }
+}
+</script>
+
+
+<script>
+  function chequearHorario(){
+  var aper = document.getElementById('input_hora_apertura').value;
+  var cier = document.getElementById('input_hora_cierre').value;
+
+  if ( (aper == '') || (cier == '' ) || (aper > cier)) {
+    //alert('Please provide a valid email address');
+    cier.focus;
+    return false;
+ } else {
+     return true;
+ }
+}
 </script>
 
 <script>
   function chequearCampos(){
+    if(!chequearEmail()){
+      alert('Email Invalido')
+      return false;
+    }
+    if(!chequearTelefono()){
+      alert('Ingrese solo numeros en el telefono')
+      return false;
+    }
+    if(!chequearHorario()){
+      alert('Franja Horaria Invalidad')
+      return false;
+    }
     if( ($("#nombre").val() == '') ||
-        ($("#telefono").val() == '') ||
-        ($("#input_hora_apertura").val() == '') || 
-        ($("#input_hora_cierre").val() == '') ||
         ($("#tipo_centro").val() == '') || 
         ($("#municipio").val() == '') ||
         ($("#sitio_web").val() == '') ||
         ($("#calleynumero").val() == '')){
           alert("Campo vacio");
+          return false;
         }else{
           crearCentro();
         }

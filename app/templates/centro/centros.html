@@ -39,7 +39,7 @@
          </div>
          <div class="panel-body">
            <div class="table-responsive">
-               <table id="tablaUsers" class="table table-striped table-bordered" style="font-size:14px">
+               <table id="tablaCentros" class="table table-striped table-bordered" style="font-size:14px">
                  <thead>
                    <tr>                     
                     <thead>
@@ -68,9 +68,9 @@
                         <td>{{centro.sitio_web}}</td>  
                         <td>{{centro.email}}</td>
                         {% if centro.estado%}
-                          <td>Publicado</td>
+                          <td>Publicado <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modalEstado{{ centro.id }}" style="size:12px;font-size: 15px;"></button></td>
                         {% else %}
-                          <td>Despublicado</td>
+                          <td>Despublicado <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modalEstado{{ centro.id }}" style="size:12px;font-size: 15px;"></button></td>
                         {% endif %}                      
                         <td>
                            <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('turno_index') }}" novalidate>                      
@@ -91,6 +91,32 @@
    </div>
    <!-- /row -->
  </section>
+ {% for centro in centros %}
+    <div id="modalEstado{{centro.id}}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          {% if centro.estado == 1 %}
+            <h4 class="modal-title">¿Desea deshabilitar al Centro {{centro.nombre}}?</h4>
+          {% else %}
+            <h4 class="modal-title">¿Desea habilitar al Centro {{centro.nombre}}?</h4>
+          {% endif %}
+          </div>
+          <div class="modal-body">
+            <br>
+            <form action="" method="POST">
+            
+            <button type="submit" class="btn btn-primary">Sí</button>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
  <!-- /wrapper -->
 </section>
   <!-- /main -->
@@ -114,8 +140,37 @@
 <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js"></script>
 
+<script>
+  $(document).ready(function() {
+    tabla = $('#tablaCentros').DataTable({
+    "language":{
+      "info": "Mostrando página _PAGE_ de _PAGES_",
+      "zeroRecords": "No se encontraron Usuarios.",
+      "paginate": {
+        "first":"Primero",
+        "last": "Último",
+        "next": "Siguiente",
+        "previous":"Anterior"
+    },
+      },
+    "dom":"lrtip",
+    "bLengthChange": false, //Este parametro controla si el usuario puede cambiar el paginado
+    "iDisplayLength":  {{conf.paginado}}, //Este es el paginado por Default
+    "columnDefs": [ {
+      "targets": 6,
+      "orderable": false
+    }]  
+    }); 
+    $('#inputSearch').keyup(function(){
+      tabla.search($(this).val()).draw() ;
+    })
+  } );
+</script>
+
+
 <script src="{{ url_for('static', filename='lib/jquery-ui-1.9.2.custom.min.js')}}"></script>
 <script src="{{ url_for('static', filename='lib/fullcalendar/fullcalendar.min.js')}}"></script>
 <!--script for this page-->
 <script src="{{ url_for('static', filename='lib/calendar-conf-events.js')}}"></script>
+
 {% endblock %}
