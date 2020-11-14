@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
           $("#telefono").prop("disabled", true);
           $("#guardar").prop("disabled", true);
         }
+        $("#bloque-notificacion").hide();
         $("#exampleModal").modal("show");
       },
 
@@ -176,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
           //no importa sobre qué vista se de click, la fecha queda no editable.
           $("#fecha_turno").val(y + '-' + m + '-' + d);
           $("#fecha_turno").prop("disabled", true);
+          $("#bloque-notificacion").hide();
           $("#exampleModal").modal("show");
         }
       }
@@ -201,26 +203,31 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }).then(function (response) {
       console.log(response);
-      var calendarEl = document.getElementById('calendar');
-      var calendar = obtenerCalendario(calendarEl);
-      calendar.render();
-      //Cierro y limpio la  ventana modal
-      $('#exampleModal').modal('hide');
-      $('#hora_inicio').val("");
-      $('#hora_fin').val("");
-      $("#email").val("");
-      $("#fecha_turno").val("");
-      $('#telefono').val("");
+      if (response.data.status == "400" || response.data.status == "500") {        
+        $("#notificacion-turno").text(response.data.details);
+        $("#bloque-notificacion").show();        
+      } else {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = obtenerCalendario(calendarEl);
+        calendar.render();
+        //Cierro y limpio la  ventana modal
+        $('#exampleModal').modal('hide');
+        $('#hora_inicio').val("");
+        $('#hora_fin').val("");
+        $("#email").val("");
+        $("#fecha_turno").val("");
+        $('#telefono').val("");
 
-      $("#hora_inicio").prop("disabled", false);
-      $("#hora_inicio_button").prop("disabled", false);
-      $("#hora_fin").prop("disabled", false);
-      $("#hora_fin_button").prop("disabled", false);
-      $("#email").prop("disabled", false);
-      $("#fecha_turno").prop("disabled", false);
-      $("#telefono").prop("disabled", false);
-      $("#guardar").prop("disabled", false);
-      $("#guardar").prop("disabled", false);
+        $("#hora_inicio").prop("disabled", false);
+        $("#hora_inicio_button").prop("disabled", false);
+        $("#hora_fin").prop("disabled", false);
+        $("#hora_fin_button").prop("disabled", false);
+        $("#email").prop("disabled", false);
+        $("#fecha_turno").prop("disabled", false);
+        $("#telefono").prop("disabled", false);
+        $("#guardar").prop("disabled", false);
+        $("#guardar").prop("disabled", false);
+      }
     })
       .catch(function (error) {
         console.log(error);
