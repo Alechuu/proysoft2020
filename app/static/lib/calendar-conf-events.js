@@ -172,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
             //no importa sobre qué vista se de click, la fecha queda no editable.
             $("#fecha_turno").val(y + '-' + m + '-' + d);
             $("#fecha_turno").prop("disabled", true);
+            $("#bloque-notificacion").hide();
             $("#borrar").hide();
             $("#exampleModal").modal("show");
           }
