@@ -374,7 +374,7 @@
     function chequearTelefono(){
     var tel = document.getElementById('telefono').value;
     var filter = /^\d+$/;
-    if (!filter.test(tel) && (tel =! "")) {
+    if (!filter.test(tel) && (tel =! "") && (tel.length < 20)) {
       //alert('Please provide a valid email address');
       //alert('Ingrese solo numeros en el Telefono')
       tel.focus;

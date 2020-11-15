@@ -183,20 +183,20 @@
                     <label>Mail:</label>
                     <input type="email" class="form-control" name="email" value="{{ centro.email }}" required >
                   </div>
-                  <!-- <div class="form-group ">
+                  <div class="form-group ">
                     <label>Municipio</label>
                         <select id="municipio" name="municipio" class="form-control" >
                           {%for municipio in municipios %}
-                          <option  value="{{centro.municipio}}">{{ municipio }}</option> 
+                          <option  value="{{municipio}}">{{ municipio }}</option> 
                           {% endfor %}
                         </select>
-                  </div> -->
+                  </div>
                   
 
-                  <!-- <div class="form-group">
+                  <div class="form-group">
                     <label>Direccion:</label>
                     <input type="text" class="form-control" name="direccion" value="{{ centro.direccion }}" required >
-                  </div> -->
+                  </div>
                   <hr>
                   <div class="form-group">
                      <button class="btn btn-primary"  type="submit">Actualizar</button>
