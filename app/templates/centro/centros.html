@@ -166,14 +166,14 @@
                     <label>Horario:</label>
                       <div class="input-group" style="display:flex;flex-direction:row;flex-wrap:wrap">
                         <div class="input-group">
-                          <input type="time" name="hora_apertura" value="{{centro.hora_apertura}}" required>
+                          <input type="time" step="1800" name="hora_apertura" value="{{centro.hora_apertura}}" required>
 {#                           <span class="input-group-btn">
                             <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span> #}
                         </div>
                         <span class="input-group-addon" style="width:70px;padding-bottom:0">Hasta</span>
                         <div class="input-group">
-                          <input type="time" name="hora_cierre" value="{{centro.hora_cierre}}"  required>
+                          <input type="time" step="1800" name="hora_cierre" value="{{centro.hora_cierre}}"  required>
 {#                           <span class="input-group-btn">
                             <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span> #}
