@@ -61,10 +61,10 @@
                           <td>{{turno.fecha}}</td>
                           <td>{{turno.hora_inicio}}</td>
                           <td>{{turno.hora_fin}}</td>
-                          <td>{{centros[turno.id_centro_ayuda].nombre}}</td>
+                          <td>{{turno.centro.nombre}}</td>
                           <td>
                             <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('turno_index') }}" novalidate>                      
-                            <input type="hidden" name="id_centro" value="{{ centros[turno.id_centro_ayuda].id }}" />
+                            <input type="hidden" name="id_centro" value="{{ turno.id_centro_ayuda }}" />
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />                           
                             <button type="submit" class="btn btn-primary btn-xs">Ver</button>
                             </form>

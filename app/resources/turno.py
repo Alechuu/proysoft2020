@@ -47,8 +47,7 @@ def listarTurnos():
     permisos = get_permisos(usuario)
     active_page = "turnos_index"
     if "turnos_index" in permisos: 
-        turnos = Turno.get_all()
-        centros = Centro.get_all()
-        return render_template("turno/list_turnos.html", centros=centros ,turnos=turnos, permisos=permisos, conf=miConfiguracion, active_page=active_page)
+        turnos = Turno.get_all()        
+        return render_template("turno/list_turnos.html" ,turnos=turnos, permisos=permisos, conf=miConfiguracion, active_page=active_page)
     else:
         abort(401)
