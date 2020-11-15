@@ -114,10 +114,12 @@ class Centro(db.Model):
 
     @staticmethod 
     def delete(id_centro):
-        # User.query.filter_by(id=id_usuario).delete()
         micentro = db.session.query(Centro).filter(Centro.id==id_centro).first()
-        db.session.delete(micentro)
-        db.session.commit()
-        return True
+        if(micentro.turnos == []):
+            db.session.delete(micentro)
+            db.session.commit()
+            return True
+        else:
+            return False
 
 
