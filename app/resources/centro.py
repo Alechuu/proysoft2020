@@ -1,3 +1,6 @@
+import requests
+import os
+
 from flask import redirect, render_template, request, url_for, session, abort
 
 from app.db import connection
@@ -7,7 +10,7 @@ from app.models.centro import Centro
 from app.models.turno import Turno
 from app.helpers.auth import authenticated
 from app.helpers.autorizacion import get_permisos
-import requests
+
 
 
 def index():
@@ -108,7 +111,13 @@ def update():
     if "centro_update" in permisos:
         usuarios=User.all()
         centros = Centro.get_all()
-        Centro.update(request.form)
+        pdf_visita = request.files['path_pdf']
+        if(pdf_visita.filename != ""):   
+            nuevo_path = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
+            pdf_visita.save(os.getcwd()+"/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))
+        else:
+            nuevo_path = "NO_UPDATE_PDF"
+        Centro.update(request.form,nuevo_path)
         notificacion = "¡Se actualizó con éxito la información del Centro " +request.form.get("nombre")+"!"
         return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)
         """ try:
