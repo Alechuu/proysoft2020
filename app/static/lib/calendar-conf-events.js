@@ -109,13 +109,13 @@ document.addEventListener('DOMContentLoaded', function () {
         var diaActual = new Date();
         if (fecha < diaActual) {
           $("#hora_inicio").prop("disabled", true);
-          $("#hora_inicio_button").prop("disabled", true);          
+          $("#hora_inicio_button").prop("disabled", true);
           $("#email").prop("disabled", true);
           $("#fecha_turno").prop("disabled", true);
           $("#telefono").prop("disabled", true);
           $("#guardar").prop("disabled", true);
           $("#borrar").hide();
-        } else {          
+        } else {
           $("#borrar").show();
         }
         $("#bloque-notificacion").hide();
@@ -197,93 +197,103 @@ document.addEventListener('DOMContentLoaded', function () {
   $("#cerrar").click(cerrarVentanaTurno());
 
   $("#guardar").click(function () {
+    //valido que los campos estén completos
+    if ($('#hora_inicio').val() == "" ||
+      $('#hora_fin').val() == "" ||
+      $("#fecha_turno").val() == "" ||
+      $("#email").val() == "" ||
+      $('#telefono').val() == "") {
+      $("#notificacion-turno").text("Debe completar todos los campos del formulario");
+      $("#bloque-notificacion").show();
+    } else {
+      //Todos los datos completos. Listos para el post
+      const formData = new FormData();
+      formData.append('hora_inicio', $('#hora_inicio').val());
+      formData.append('hora_fin', $('#hora_fin').val());
+      formData.append('fecha', $("#fecha_turno").val());
+      formData.append('email_visitante', $("#email").val());
+      formData.append('telefono_visitante', $('#telefono').val());
 
-    const formData = new FormData();
-    formData.append('hora_inicio', $('#hora_inicio').val());
-    formData.append('hora_fin', $('#hora_fin').val());
-    formData.append('fecha', $("#fecha_turno").val());
-    formData.append('email_visitante', $("#email").val());
-    formData.append('telefono_visitante', $('#telefono').val());
+      //pregunto por el id del turno si existe para determinar si es nuevo turno o edición de uno
+      if ($('#id_turno').val() != '') {
+        //********* EDICION DE TURNO **********/
+        formData.append('id_turno', $('#id_turno').val());
+        axios.post('/api/centros/' + crea_query_string() + '/modificar-reserva', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (response) {
+          console.log(response);
+          if (response.data.status == "400" || response.data.status == "500") {
+            $("#notificacion-turno").text(response.data.details);
+            $("#bloque-notificacion").show();
+          } else {
+            $("#notificacion-global-turno").text(response.data.details);
+            $('#notificacion-global').show();
+            var calendarEl = document.getElementById('calendar');
+            var calendar = obtenerCalendario(calendarEl);
+            calendar.render();
+            //Cierro y limpio la  ventana modal
+            $('#exampleModal').modal('hide');
+            $('#id_turno').val("");
+            $('#hora_inicio').val("");
+            $('#hora_fin').val("");
+            $("#email").val("");
+            $("#fecha_turno").val("");
+            $('#telefono').val("");
 
-    //pregunto por el id del turno si existe para determinar si es nuevo turno o edición de uno
-    if($('#id_turno').val() != '' || $('#id_turno').val() != null){
-      //********* EDICION DE TURNO **********/
-      formData.append('id_turno', $('#id_turno').val());
-      axios.post('/api/centros/' + crea_query_string() + '/modificar-reserva', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(function (response) {
-        console.log(response);
-        if (response.data.status == "400" || response.data.status == "500") {
-          $("#notificacion-turno").text(response.data.details);
-          $("#bloque-notificacion").show();
-        } else {
-          $("#notificacion-global-turno").text(response.data.details);
-          $('#notificacion-global').show();
-          var calendarEl = document.getElementById('calendar');
-          var calendar = obtenerCalendario(calendarEl);
-          calendar.render();
-          //Cierro y limpio la  ventana modal
-          $('#exampleModal').modal('hide');
-          $('#id_turno').val("");
-          $('#hora_inicio').val("");
-          $('#hora_fin').val("");
-          $("#email").val("");
-          $("#fecha_turno").val("");
-          $('#telefono').val("");
-  
-          $("#hora_inicio").prop("disabled", false);
-          $("#hora_inicio_button").prop("disabled", false);
-          $("#hora_fin").prop("disabled", false);
-          $("#hora_fin_button").prop("disabled", false);
-          $("#email").prop("disabled", false);
-          $("#fecha_turno").prop("disabled", false);
-          $("#telefono").prop("disabled", false);
-          $("#guardar").prop("disabled", false);
-          $("#guardar").prop("disabled", false);
-        }
-      }).catch(function (error) {
+            $("#hora_inicio").prop("disabled", false);
+            $("#hora_inicio_button").prop("disabled", false);
+            $("#hora_fin").prop("disabled", false);
+            $("#hora_fin_button").prop("disabled", false);
+            $("#email").prop("disabled", false);
+            $("#fecha_turno").prop("disabled", false);
+            $("#telefono").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+          }
+        }).catch(function (error) {
           console.log(error);
         });
-    }else{//********* NUEVO TURNO **********/
-    axios.post('/api/centros/' + crea_query_string() + '/reserva', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(function (response) {
-      console.log(response);
-      if (response.data.status == "400" || response.data.status == "500") {
-        $("#notificacion-turno").text(response.data.details);
-        $("#bloque-notificacion").show();
-      } else {
-        $("#notificacion-global-turno").text(response.data.details);
-        $('#notificacion-global').show();
-        var calendarEl = document.getElementById('calendar');
-        var calendar = obtenerCalendario(calendarEl);
-        calendar.render();
-        //Cierro y limpio la  ventana modal
-        $('#exampleModal').modal('hide');
-        $('#id_turno').val("");
-        $('#hora_inicio').val("");
-        $('#hora_fin').val("");
-        $("#email").val("");
-        $("#fecha_turno").val("");
-        $('#telefono').val("");
+      } else {//********* NUEVO TURNO **********/
+        axios.post('/api/centros/' + crea_query_string() + '/reserva', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (response) {
+          console.log(response);
+          if (response.data.status == "400" || response.data.status == "500") {
+            $("#notificacion-turno").text(response.data.details);
+            $("#bloque-notificacion").show();
+          } else {
+            $("#notificacion-global-turno").text(response.data.details);
+            $('#notificacion-global').show();
+            var calendarEl = document.getElementById('calendar');
+            var calendar = obtenerCalendario(calendarEl);
+            calendar.render();
+            //Cierro y limpio la  ventana modal
+            $('#exampleModal').modal('hide');
+            $('#id_turno').val("");
+            $('#hora_inicio').val("");
+            $('#hora_fin').val("");
+            $("#email").val("");
+            $("#fecha_turno").val("");
+            $('#telefono').val("");
 
-        $("#hora_inicio").prop("disabled", false);
-        $("#hora_inicio_button").prop("disabled", false);
-        $("#hora_fin").prop("disabled", false);
-        $("#hora_fin_button").prop("disabled", false);
-        $("#email").prop("disabled", false);
-        $("#fecha_turno").prop("disabled", false);
-        $("#telefono").prop("disabled", false);
-        $("#guardar").prop("disabled", false);
-        $("#guardar").prop("disabled", false);
+            $("#hora_inicio").prop("disabled", false);
+            $("#hora_inicio_button").prop("disabled", false);
+            $("#hora_fin").prop("disabled", false);
+            $("#hora_fin_button").prop("disabled", false);
+            $("#email").prop("disabled", false);
+            $("#fecha_turno").prop("disabled", false);
+            $("#telefono").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+          }
+        }).catch(function (error) {
+          console.log(error);
+        });
       }
-    }).catch(function (error) {
-        console.log(error);
-      });
     }
   });
 
@@ -330,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
   //calculo y completo la hora de fin cuando ponen la hora de inicio.
   $("#hora_inicio").change(function () {
     var horaInicio = $("#hora_inicio").val();
-    if (horaInicio != null || horaInicio != "") {
+    if (horaInicio != "") {
       //hora y minutos son enteros(necesarios para poder sumar)
       var hora = parseInt(horaInicio.substring(0, 2), 10);
       var minutos = parseInt(horaInicio.substring(3, 5), 10);
