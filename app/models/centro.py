@@ -98,13 +98,13 @@ class Centro(db.Model):
     @staticmethod
     def update(data):       
         try:
-            coords = Geocoder(form.data['direccion'])
             micentro = db.session.query(Centro).filter(Centro.id==data.get('id_centro')).first()
             micentro.nombre = data.get("nombre")
             micentro.telefono = data.get("telefono")
             micentro.tipo_centro = data.get("tipo_centro")
             micentro.sitio_web = data.get("sitio_web")
             micentro.direccion = data.get("direccion")
+            coords = Geocoder(micentro.direccion)
             micentro.email = data.get("email")
             micentro.municipio = data.get("municipio")
             micentro.hora_apertura = data.get("hora_apertura")
