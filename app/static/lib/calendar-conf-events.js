@@ -205,6 +205,48 @@ document.addEventListener('DOMContentLoaded', function () {
     formData.append('email_visitante', $("#email").val());
     formData.append('telefono_visitante', $('#telefono').val());
 
+    //pregunto por el id del turno si existe para determinar si es nuevo turno o edición de uno
+    if($('#id_turno').val() != '' || $('#id_turno').val() != null){
+      //********* EDICION DE TURNO **********/
+      formData.append('id_turno', $('#id_turno').val());
+      axios.post('/api/centros/' + crea_query_string() + '/modificar-reserva', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        console.log(response);
+        if (response.data.status == "400" || response.data.status == "500") {
+          $("#notificacion-turno").text(response.data.details);
+          $("#bloque-notificacion").show();
+        } else {
+          $("#notificacion-global-turno").text(response.data.details);
+          $('#notificacion-global').show();
+          var calendarEl = document.getElementById('calendar');
+          var calendar = obtenerCalendario(calendarEl);
+          calendar.render();
+          //Cierro y limpio la  ventana modal
+          $('#exampleModal').modal('hide');
+          $('#id_turno').val("");
+          $('#hora_inicio').val("");
+          $('#hora_fin').val("");
+          $("#email").val("");
+          $("#fecha_turno").val("");
+          $('#telefono').val("");
+  
+          $("#hora_inicio").prop("disabled", false);
+          $("#hora_inicio_button").prop("disabled", false);
+          $("#hora_fin").prop("disabled", false);
+          $("#hora_fin_button").prop("disabled", false);
+          $("#email").prop("disabled", false);
+          $("#fecha_turno").prop("disabled", false);
+          $("#telefono").prop("disabled", false);
+          $("#guardar").prop("disabled", false);
+          $("#guardar").prop("disabled", false);
+        }
+      }).catch(function (error) {
+          console.log(error);
+        });
+    }else{//********* NUEVO TURNO **********/
     axios.post('/api/centros/' + crea_query_string() + '/reserva', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -215,11 +257,14 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#notificacion-turno").text(response.data.details);
         $("#bloque-notificacion").show();
       } else {
+        $("#notificacion-global-turno").text(response.data.details);
+        $('#notificacion-global').show();
         var calendarEl = document.getElementById('calendar');
         var calendar = obtenerCalendario(calendarEl);
         calendar.render();
         //Cierro y limpio la  ventana modal
         $('#exampleModal').modal('hide');
+        $('#id_turno').val("");
         $('#hora_inicio').val("");
         $('#hora_fin').val("");
         $("#email").val("");
@@ -236,10 +281,10 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#guardar").prop("disabled", false);
         $("#guardar").prop("disabled", false);
       }
-    })
-      .catch(function (error) {
+    }).catch(function (error) {
         console.log(error);
       });
+    }
   });
 
   $("#borrar").click(function () {
@@ -260,6 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
       calendar.render();
       //Cierro y limpio la  ventana modal
       $('#exampleModal').modal('hide');
+      $('#id_turno').val("");
       $('#hora_inicio').val("");
       $('#hora_fin').val("");
       $("#email").val("");
@@ -322,6 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function cerrarVentanaTurno() {
   return function () {
+    $('#id_turno').val("");
     $('#hora_inicio').val("");
     $('#hora_fin').val("");
     $("#email").val("");

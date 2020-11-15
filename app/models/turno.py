@@ -15,6 +15,10 @@ class Turno(db.Model):
         return Turno.query.all()
     
     @staticmethod
+    def get_by_id(id_turno):
+        return Turno.query.get(id_turno)
+    
+    @staticmethod
     def get_by_id_centro(id_centro, fecha_inicio, fecha_fin):
         return Turno.query.filter(Turno.fecha.between(fecha_inicio, fecha_fin)).filter_by(id_centro_ayuda=id_centro).all()
 
@@ -64,5 +68,15 @@ class Turno(db.Model):
     def borrar_turno(id_turno):
         turno = Turno.query.get(id_turno)
         db.session.delete(turno)
+        db.session.commit()
+        return True
+
+    @staticmethod
+    def update(unTurno, data):
+        unTurno.hora_inicio = data['hora_inicio'],
+        unTurno.hora_fin = data['hora_fin'],
+        unTurno.fecha = data['fecha'],
+        unTurno.email_visitante = data['email_visitante'],
+        unTurno.telefono_visitante = data['telefono_visitante']
         db.session.commit()
         return True
