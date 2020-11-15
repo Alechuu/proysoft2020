@@ -70,7 +70,6 @@ class CentroNew(Resource):
                         (pdf_visita.filename).replace(" ", ""))
         form.estado.data = False
         if(not form.validate()):
-            # breakpoint()
             datos = {'status': 400, 'body': 'Bad Request'}
             return Response(json.dumps(datos), mimetype='application/json')
         else:
@@ -83,7 +82,6 @@ class CentroNew(Resource):
                     'atributos': serializeSQLAlchemy(nuevo_centro, campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
-                breakpoint()
                 datos = {'status': 500, 'body': 'Internal Server Error'}
                 return Response(json.dumps(datos), mimetype='application/json')
 

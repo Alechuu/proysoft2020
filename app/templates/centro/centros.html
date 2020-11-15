@@ -151,7 +151,7 @@
                <h4 class="modal-title">Actualizar Informacion de {{ centro.nombre }}</h4> 
             </div>
             <div class="modal-body">
-               <form action="{{ url_for('centro_update') }}" method="POST">
+               <form action="{{ url_for('centro_update') }}" method="POST" enctype="multipart/form-data" >
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                   <input type="hidden" name="id_centro" value="{{ centro.id }}" />
                   <div class="form-group">
@@ -217,7 +217,7 @@
                       <span class="btn btn-theme02 btn-file">
                         <span class="fileupload-new"><i class="fa fa-paperclip"></i> Selecciona un PDF</span>
                       <span class="fileupload-exists"><i class="fa fa-undo"></i> Cambiar</span>
-                      <input type="file" id="pdf" class="default"name="direccion" value="{{ centro.direccion }}" required   accept="application/pdf"/>
+                      <input type="file" id="path_pdf" class="default"name="path_pdf" value="{{ centro.direccion }}" accept="application/pdf"/>
                       </span>
                       <span class="fileupload-preview" style="margin-left:5px;"></span>
                       <a href="advanced_form_components.html#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none; margin-left:5px;"></a>

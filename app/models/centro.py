@@ -1,3 +1,5 @@
+import os
+
 from app import db
 from app.models.turno import Turno
 from app.helpers.geocoder import geocoder as Geocoder
@@ -97,7 +99,7 @@ class Centro(db.Model):
         return True
 
     @staticmethod
-    def update(data):       
+    def update(data,newPath):       
         try:
             micentro = db.session.query(Centro).filter(Centro.id==data.get('id_centro')).first()
             micentro.nombre = data.get("nombre")
@@ -112,7 +114,10 @@ class Centro(db.Model):
             micentro.hora_cierre = data.get("hora_cierre")
             micentro.latitud=coords[0]
             micentro.longitud=coords[1]
-            
+            if(newPath != "NO_UPDATE_PDF"):
+                os.remove(os.getcwd()+"/app/"+micentro.path_pdf)
+                micentro.path_pdf = newPath
+
             db.session.commit()
         except:
             db.session.rollback()
