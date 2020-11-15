@@ -85,3 +85,39 @@ class Centro(db.Model):
         except Exception as e:
             raise e
             return False
+
+    @staticmethod 
+    def cambiarEstado(id_centro):
+        centro = db.session.query(Centro).filter(Centro.id==id_centro).first()
+        #centro = Centro.find_by_username(nombre) como no tengo el campo username busco asi
+        centro.estado = not centro.estado
+        db.session.commit()
+        return True
+
+    @staticmethod
+    def update(data):       
+        try:
+            micentro = db.session.query(Centro).filter(Centro.id==data.get('id_centro')).first()
+            micentro.nombre = data.get("nombre")
+            micentro.telefono = data.get("telefono")
+            micentro.tipo_centro = data.get("tipo_centro")
+            micentro.sitio_web = data.get("sitio_web")
+            #micentro.direccion = data.get("direccion")
+            micentro.email = data.get("email")
+            
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+ 
+        return True
+
+    @staticmethod 
+    def delete(id_centro):
+        # User.query.filter_by(id=id_usuario).delete()
+        micentro = db.session.query(Centro).filter(Centro.id==id_centro).first()
+        db.session.delete(micentro)
+        db.session.commit()
+        return True
+
+
