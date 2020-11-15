@@ -64,8 +64,7 @@ class CentroNew(Resource):
         form = formCentros(request.form)
         pdf_visita = request.files['path_pdf']
         # Apendo el path del archivo al formulario
-        form.path_pdf.data = "/static/uploads/" + \
-            (pdf_visita.filename).replace(" ", "")
+        form.path_pdf.data = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
         # Guardo el archivo
         pdf_visita.save(os.getcwd()+"/app/static/uploads/" +
                         (pdf_visita.filename).replace(" ", ""))
