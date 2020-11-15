@@ -62,7 +62,8 @@
                </button>
             </div>
             <div class="modal-body">
-              <form id="nuevoTurno" method="POST">
+              <form id="nuevoTurno" method="POST">                
+                <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <input id="id_turno" type="hidden" name="id_turno" />
                 <div class="form-group">
                   <label>Email:</label>
