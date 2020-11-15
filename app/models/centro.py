@@ -1,5 +1,6 @@
 from app import db
 from app.models.turno import Turno
+from app.helpers.geocoder import geocoder as Geocoder
 
 
 class Centro(db.Model):
@@ -98,6 +99,7 @@ class Centro(db.Model):
     @staticmethod
     def update(data):       
         try:
+            coords = Geocoder(form.data['direccion'])
             micentro = db.session.query(Centro).filter(Centro.id==data.get('id_centro')).first()
             micentro.nombre = data.get("nombre")
             micentro.telefono = data.get("telefono")
@@ -108,6 +110,8 @@ class Centro(db.Model):
             micentro.municipio = data.get("municipio")
             micentro.hora_apertura = data.get("hora_apertura")
             micentro.hora_cierre = data.get("hora_cierre")
+            micentro.latitud=coords[0]
+            micentro.longitud=coords[1]
             
             db.session.commit()
         except:
