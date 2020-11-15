@@ -242,14 +242,38 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   $("#borrar").click(function () {
-    axios({
-      method: 'post',
-      url: '/turno/borrar',
-      data: {
-        id_turno: '4'
+    var formData = new FormData();
+    //formData.append('csrf_token', $('#csrf_token').val());
+    formData.append('id_turno', $('#id_turno').val());
+    axios.post('/turno/borrar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'X-CSRF-TOKEN':  $('#csrf_token').val()
       }
     }).then(function (response) {
       console.log(response);
+      $("#notificacion-global-turno").text(response.data);
+      $('#notificacion-global').show();
+      var calendarEl = document.getElementById('calendar');
+      var calendar = obtenerCalendario(calendarEl);
+      calendar.render();
+      //Cierro y limpio la  ventana modal
+      $('#exampleModal').modal('hide');
+      $('#hora_inicio').val("");
+      $('#hora_fin').val("");
+      $("#email").val("");
+      $("#fecha_turno").val("");
+      $('#telefono').val("");
+
+      $("#hora_inicio").prop("disabled", false);
+      $("#hora_inicio_button").prop("disabled", false);
+      $("#hora_fin").prop("disabled", false);
+      $("#hora_fin_button").prop("disabled", false);
+      $("#email").prop("disabled", false);
+      $("#fecha_turno").prop("disabled", false);
+      $("#telefono").prop("disabled", false);
+      $("#guardar").prop("disabled", false);
+      $("#guardar").prop("disabled", false);
     })
       .catch(function (error) {
         console.log(error);

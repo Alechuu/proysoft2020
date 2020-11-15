@@ -30,10 +30,11 @@ def get_turnos_by_centro():
     return jsonify(json_list)
 
 def delete():
-    id_turno = request.args.get('id_turno','')
+    id_turno = int(request.form['id_turno'], 10)
     try:
         Turno.borrar_turno(id_turno)
         mensaje = "Turno borrado."
-        jsonify(mensaje)
+        return jsonify(mensaje)
     except Exception as e:
-        return jsonify(e)
+        mensaje = "Se ha producido un error al intentar borrar el turno."
+        return jsonify(mensaje)

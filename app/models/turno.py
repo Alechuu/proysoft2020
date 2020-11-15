@@ -62,7 +62,7 @@ class Turno(db.Model):
     
     @staticmethod
     def borrar_turno(id_turno):
-        turno = Turno.get(id_turno)
+        turno = Turno.query.get(id_turno)
         db.session.delete(turno)
         db.session.commit()
         return True
