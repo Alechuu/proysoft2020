@@ -4,6 +4,8 @@
   {{super()}}
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fullcalendar/bootstrap-fullcalendar.css')}}"/>
   <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='lib/bootstrap-fileupload/bootstrap-fileupload.css')}}" rel="stylesheet" />
+
 
   <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
 {#   
@@ -211,7 +213,16 @@
                   </div>
                   <div class="form-group">
                     <label>PDF Visita:</label>
-                    <input type="file" class="form-control" name="direccion" value="{{ centro.direccion }}" required >
+                    <div class="fileupload fileupload-new"id="path_pdf" data-provides="fileupload">
+                      <span class="btn btn-theme02 btn-file">
+                        <span class="fileupload-new"><i class="fa fa-paperclip"></i> Selecciona un PDF</span>
+                      <span class="fileupload-exists"><i class="fa fa-undo"></i> Cambiar</span>
+                      <input type="file" id="pdf" class="default"name="direccion" value="{{ centro.direccion }}" required   accept="application/pdf"/>
+                      </span>
+                      <span class="fileupload-preview" style="margin-left:5px;"></span>
+                      <a href="advanced_form_components.html#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none; margin-left:5px;"></a>
+                    </div>
+                   <!--  <input type="file" class="form-control" name="direccion" value="{{ centro.direccion }}" required > -->
                   </div>
                   <a href="{{centro.path_pdf}}">PDF Cargado actualmente</a>
                   <hr>
@@ -259,6 +270,8 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
+
+<script src="{{ url_for('static', filename='lib/bootstrap-fileupload/bootstrap-fileupload.js')}}"></script>
 
 <script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
 <script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script>
