@@ -17,7 +17,7 @@
   <section class="wrapper">
       {% if notificacion  %}
       <br>
-        {% if "API" in notificacion %}
+        {% if "API" in notificacion or "contiene" in notificacion %}
           <div class="alert alert-danger alert-dismissible" role="alert">
         {% else %}
           <div class="alert alert-success alert-dismissible" role="alert">
@@ -98,7 +98,9 @@
                            </form>
                            <br>
                            <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modaledit{{ centro.id }}" style="size:12px;font-size: 15px;"></button>
-                           <button class="btn btn-danger btn-xs fas fa-trash-alt" data-toggle="modal" data-target="#modalBorrar{{centro.id}}" style="size:12px;font-size: 15px;"></button>
+                           {% if 'centro_destroy' in permisos %}
+                            <button class="btn btn-danger btn-xs fas fa-trash-alt" data-toggle="modal" data-target="#modalBorrar{{centro.id}}" style="size:12px;font-size: 15px;"></button>
+                           {% endif %}
                           </td>
                      </tr>
                    {% endfor %}
