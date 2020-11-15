@@ -6,8 +6,8 @@
   <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
   <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
-  
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-timepicker/compiled/timepicker.css')}}" />
+{#   
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-timepicker/compiled/timepicker.css')}}" /> #}
 {% endblock %}
 
 {% block main %}
@@ -158,19 +158,19 @@
                   </div>
                   <div class="form-group">
                     <label>Horario:</label>
-                      <div class="input-group  bootstrap-timepicker">
-                        <div class="input-group bootstrap-timepicker">
-                          <input id="input_hora_apertura" type="text" class="form-control timepicker-default" value="{{centro.hora_apertura}}"  required>
-                          <span class="input-group-btn">
+                      <div class="input-group">
+                        <div class="input-group">
+                          <input type="time" value="{{centro.hora_apertura}}" required>
+{#                           <span class="input-group-btn">
                             <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
-                            </span>
+                            </span> #}
                         </div>
                         <span class="input-group-addon">Hasta</span>
-                        <div class="input-group bootstrap-timepicker">
-                          <input id="input_hora_cierre" type="text" class="form-control timepicker-default " value="{{centro.hora_cierre}}"  required>
-                          <span class="input-group-btn">
+                        <div class="input-group">
+                          <input type="time"  value="{{centro.hora_cierre}}"  required>
+{#                           <span class="input-group-btn">
                             <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
-                            </span>
+                            </span> #}
                         </div>
                       </div>
                     
@@ -187,7 +187,11 @@
                     <label>Municipio</label>
                         <select id="municipio" name="municipio" class="form-control" >
                           {%for municipio in municipios %}
-                          <option  value="{{municipio}}">{{ municipio }}</option> 
+                            {% if municipio == centro.municipio %}
+                              <option  value="{{municipio}}" selected >{{ municipio }}</option> 
+                            {%else %}
+                              <option  value="{{municipio}}" >{{ municipio }}</option> 
+                            {%endif%}
                           {% endfor %}
                         </select>
                   </div>

@@ -19,7 +19,7 @@ def index():
 
      
     # sending get request and saving the response as response object 
-    r = requests.get(url = URL) 
+    r = requests.get(url = URL,timeout=5) 
     data = r.json()
     municipios = []
     for municipio in data['data']['Town']:
