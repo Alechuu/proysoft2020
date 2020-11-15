@@ -1,116 +1,399 @@
-var Script = function () {
+document.addEventListener('DOMContentLoaded', function () {
+  function crea_query_string() {
+    var id_centro = document.getElementById("centro_id")
+    return encodeURIComponent(id_centro.value);
+  }
+
+  function formatear_fecha(fecha) {
+    //Formato YYYY-MM-DD para parsear fecha en servidor de taco
+    var dia = fecha.getDate() < 10 ? ('0' + fecha.getDate().toString()) : fecha.getDate().toString();
+    var mes = (fecha.getMonth() + 1).toString();
+    var year = fecha.getFullYear().toString();
+    return year + '-' + mes + '-' + dia;
+  }
+
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = obtenerCalendario(calendarEl);
+
+  function obtenerCalendario(calendarEl) {
+    return new FullCalendar.Calendar(calendarEl, {
+      locale: 'es',
+      headerToolbar: {
+        start: 'prev,next today',
+        center: 'title',
+        end: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      slotLabelFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        omitZeroMinute: true,
+        meridiem: 'short'
+      },
+      allDaySlot: false,
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      dayMaxEvents: true, // allow "more" link when too many events
+      nowIndicator: true,
+      businessHours: [ // specify an array instead
+        {
+          daysOfWeek: [1, 2, 3, 4, 5], // Lunes a viernes
+          startTime: '09:00', // 9am
+          endTime: '18:00' // 6pm
+        }
+      ],
+      events: function (info, successCallback, failureCallback) {
+        axios.get('/api/centros/turnos_tomados', {
+          params: {
+            id_centro: crea_query_string(),
+            //Mandamos las fechas en isoformat(YYYY-MM-DD)
+            fecha_ini_calendario: formatear_fecha(info.start),
+            fecha_fin_calendario: formatear_fecha(info.end)
+          }
+        })
+          .then(function (response) {
+            console.log(response);
+            var turnos = [];
+            var result = response.data.body.atributos;
+            for (var i = 0; i < result.length; i++) {
+              turnos.push(
+                {
+                  id_turno: result[i].id,
+                  title: result[i].email_visitante,
+                  start: result[i].hora_inicio,
+                  end: result[i].hora_fin,
+                  telefono: result[i].telefono_visitante,
+                  editable: false//para evitar resize y arrastre
+                }
+              );
+            }
+            successCallback(turnos);
+
+          })
+          .catch(function (error) {
+            console.log(error);
+            failureCallback(error);
+          })
+          .then(function () {
+            // always executed
+          });
+      },
+
+      eventClick: function (info) {
+
+        var fecha = info.event.start;
+        var dia = fecha.getDate() < 10 ? '0' + fecha.getDate().toString() : fecha.getDate().toString();
+        var mes = (fecha.getMonth() + 1).toString();
+        var year = fecha.getFullYear().toString();
+        var correo = info.event.title;
+
+        var h = info.event.start.getHours() < 10 ? '0' + (info.event.start.getHours().toString()) : info.event.start.getHours().toString();
+        var m = info.event.start.getMinutes() == 0 ? info.event.start.getMinutes().toString() + '0' : info.event.start.getMinutes().toString();
+        var h_inicio = h + ':' + m;
+
+        h = info.event.end.getHours() < 10 ? '0' + (info.event.end.getHours().toString()) : info.event.end.getHours().toString();
+        m = info.event.end.getMinutes() == 0 ? info.event.end.getMinutes().toString() + '0' : info.event.end.getMinutes().toString();
+        var h_fin = h + ':' + m;
+
+        $('#hora_inicio').val(h_inicio);
+        $('#hora_fin').val(h_fin);
+        $("#email").val(correo);
+        $("#fecha_turno").val(year + '-' + mes + '-' + dia);
+        $('#telefono').val(info.event.extendedProps.telefono);
+        $('#id_turno').val(info.event.extendedProps.id_turno);
+        //La hora de fin es informativa, se la calculo yo
+        $("#hora_fin").prop("disabled", true);
+        $("#hora_fin_button").prop("disabled", true);
+        //no permito la edición ni el guardado si el evento es pasado al momento actual
+        //dejo el formulario no editable y el botón de guardar desabilitado      
+        var diaActual = new Date();
+        if (fecha < diaActual) {
+          $("#hora_inicio").prop("disabled", true);
+          $("#hora_inicio_button").prop("disabled", true);
+          $("#email").prop("disabled", true);
+          $("#fecha_turno").prop("disabled", true);
+          $("#telefono").prop("disabled", true);
+          $("#guardar").prop("disabled", true);
+          $("#borrar").hide();
+        } else {
+          $("#borrar").show();
+        }
+        $("#bloque-notificacion").hide();
+        $("#exampleModal").modal("show");
+      },
+
+      dateClick: function (info) {
+        var d = info.date.getDate() < 10 ? '0' + info.date.getDate().toString() : info.date.getDate().toString();
+        var m = (info.date.getMonth() + 1).toString();
+        var y = info.date.getFullYear().toString();
 
 
-    /* initialize the external events
-     -----------------------------------------------------------------*/
+        //Si hizo click en una grilla horaria, le completo la hora de inicio y fin
+        if (info.view.type == "timeGridDay" || info.view.type == "timeGridWeek") {
+          //solo voy a mostrar el diálogo si está a partir de ahora(para que no pueda crear un turno pasado)
+          var ahora = new Date();
+          if (info.date > ahora) {
+            var h_inicio, h_fin, m, h;
+            if (info.date.getHours() > 0) {
+              h = info.date.getHours() < 10 ? '0' + (info.date.getHours().toString()) : info.date.getHours().toString();
+              if (info.date.getMinutes() == 0) {
+                m = info.date.getMinutes().toString() + '0';
+                h_inicio = h + ':' + m;
+                h_fin = h + ':30';
+              } else {
+                //los minutos son 30. Calculo los horarios
+                h_inicio = h + ':' + info.date.getMinutes().toString();
+                if ((info.date.getHours() + 1) == 24) {
+                  h_fin = '23:59';
+                } else {
+                  h = info.date.getHours() + 1;
+                  h = h < 10 ? '0' + h.toString() : h.toString();
+                  h_fin = h + ':00';
+                }
+              }
+            } else {
+              //son las 12 de la noche
+              if (info.date.getMinutes() == 0) {
+                h_inicio = "00:00";
+                h_fin = "00:30";
+              } else {
+                h_inicio = "00:30";
+                h_fin = "01:00";
+              }
+            }
+            //Completo los horarios y deshabilito su edición
+            $('#hora_inicio').val(h_inicio);
+            $('#hora_fin').val(h_fin);
+            $("#hora_inicio").prop("disabled", true);
+            $("#hora_inicio_button").prop("disabled", true);
+            $("#hora_fin").prop("disabled", true);
+            $("#hora_fin_button").prop("disabled", true);
 
-    $('#external-events div.external-event').each(function() {
+            //no importa sobre qué vista se de click, la fecha queda no editable.
+            $("#fecha_turno").val(y + '-' + m + '-' + d);
+            $("#fecha_turno").prop("disabled", true);
+            $("#bloque-notificacion").hide();
+            $("#borrar").hide();
+            $("#exampleModal").modal("show");
+          }
+        } else {
+          //hizo click en la vista de mes. Puede editar el inicio de la hora. La hora de fin
+          //la calculo media hora hacia adelante según regla de negocio.
+          $("#hora_fin").prop("disabled", true);
+          $("#hora_fin_button").prop("disabled", true);
 
-        // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-        // it doesn't need to have a start or end
-        var eventObject = {
-            title: $.trim($(this).text()) // use the element's text as the event title
-        };
+          //no importa sobre qué vista se de click, la fecha queda no editable.
+          $("#fecha_turno").val(y + '-' + m + '-' + d);
+          $("#fecha_turno").prop("disabled", true);
+          $("#bloque-notificacion").hide();
+          $("#borrar").hide();
+          $("#exampleModal").modal("show");
+        }
+      }
+    });
+  }
+  $("#notificacion-global").hide();
+  calendar.render();
 
-        // store the Event Object in the DOM element so we can get to it later
-        $(this).data('eventObject', eventObject);
+  $("#cerrar").click(cerrarVentanaTurno());
 
-        // make the event draggable using jQuery UI
-        $(this).draggable({
-            zIndex: 999,
-            revert: true,      // will cause the event to go back to its
-            revertDuration: 0  //  original position after the drag
+  $("#guardar").click(function () {
+    //valido que los campos estén completos
+    if ($('#hora_inicio').val() == "" ||
+      $('#hora_fin').val() == "" ||
+      $("#fecha_turno").val() == "" ||
+      $("#email").val() == "" ||
+      $('#telefono').val() == "") {
+      $("#notificacion-turno").text("Debe completar todos los campos del formulario");
+      $("#bloque-notificacion").show();
+    } else {
+      //Todos los datos completos. Listos para el post
+      const formData = new FormData();
+      formData.append('hora_inicio', $('#hora_inicio').val());
+      formData.append('hora_fin', $('#hora_fin').val());
+      formData.append('fecha', $("#fecha_turno").val());
+      formData.append('email_visitante', $("#email").val());
+      formData.append('telefono_visitante', $('#telefono').val());
+
+      //pregunto por el id del turno si existe para determinar si es nuevo turno o edición de uno
+      if ($('#id_turno').val() != '') {
+        //********* EDICION DE TURNO **********/
+        formData.append('id_turno', $('#id_turno').val());
+        axios.post('/api/centros/' + crea_query_string() + '/modificar-reserva', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (response) {
+          console.log(response);
+          if (response.data.status == "400" || response.data.status == "500") {
+            $("#notificacion-turno").text(response.data.details);
+            $("#bloque-notificacion").show();
+          } else {
+            $("#notificacion-global-turno").text(response.data.details);
+            $('#notificacion-global').show();
+            var calendarEl = document.getElementById('calendar');
+            var calendar = obtenerCalendario(calendarEl);
+            calendar.render();
+            //Cierro y limpio la  ventana modal
+            $('#exampleModal').modal('hide');
+            $('#id_turno').val("");
+            $('#hora_inicio').val("");
+            $('#hora_fin').val("");
+            $("#email").val("");
+            $("#fecha_turno").val("");
+            $('#telefono').val("");
+
+            $("#hora_inicio").prop("disabled", false);
+            $("#hora_inicio_button").prop("disabled", false);
+            $("#hora_fin").prop("disabled", false);
+            $("#hora_fin_button").prop("disabled", false);
+            $("#email").prop("disabled", false);
+            $("#fecha_turno").prop("disabled", false);
+            $("#telefono").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+          }
+        }).catch(function (error) {
+          console.log(error);
         });
+      } else {//********* NUEVO TURNO **********/
+        axios.post('/api/centros/' + crea_query_string() + '/reserva', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (response) {
+          console.log(response);
+          if (response.data.status == "400" || response.data.status == "500") {
+            $("#notificacion-turno").text(response.data.details);
+            $("#bloque-notificacion").show();
+          } else {
+            $("#notificacion-global-turno").text(response.data.details);
+            $('#notificacion-global').show();
+            var calendarEl = document.getElementById('calendar');
+            var calendar = obtenerCalendario(calendarEl);
+            calendar.render();
+            //Cierro y limpio la  ventana modal
+            $('#exampleModal').modal('hide');
+            $('#id_turno').val("");
+            $('#hora_inicio').val("");
+            $('#hora_fin').val("");
+            $("#email").val("");
+            $("#fecha_turno").val("");
+            $('#telefono').val("");
 
-    });
+            $("#hora_inicio").prop("disabled", false);
+            $("#hora_inicio_button").prop("disabled", false);
+            $("#hora_fin").prop("disabled", false);
+            $("#hora_fin_button").prop("disabled", false);
+            $("#email").prop("disabled", false);
+            $("#fecha_turno").prop("disabled", false);
+            $("#telefono").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+            $("#guardar").prop("disabled", false);
+          }
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  });
 
+  $("#borrar").click(function () {
+    var formData = new FormData();
+    //formData.append('csrf_token', $('#csrf_token').val());
+    formData.append('id_turno', $('#id_turno').val());
+    axios.post('/turno/borrar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'X-CSRF-TOKEN': $('#csrf_token').val()
+      }
+    }).then(function (response) {
+      console.log(response);
+      $("#notificacion-global-turno").text(response.data);
+      $('#notificacion-global').show();
+      var calendarEl = document.getElementById('calendar');
+      var calendar = obtenerCalendario(calendarEl);
+      calendar.render();
+      //Cierro y limpio la  ventana modal
+      $('#exampleModal').modal('hide');
+      $('#id_turno').val("");
+      $('#hora_inicio').val("");
+      $('#hora_fin').val("");
+      $("#email").val("");
+      $("#fecha_turno").val("");
+      $('#telefono').val("");
 
-    /* initialize the calendar
-     -----------------------------------------------------------------*/
+      $("#hora_inicio").prop("disabled", false);
+      $("#hora_inicio_button").prop("disabled", false);
+      $("#hora_fin").prop("disabled", false);
+      $("#hora_fin_button").prop("disabled", false);
+      $("#email").prop("disabled", false);
+      $("#fecha_turno").prop("disabled", false);
+      $("#telefono").prop("disabled", false);
+      $("#guardar").prop("disabled", false);
+      $("#guardar").prop("disabled", false);
+    })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
 
-    var date = new Date();
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
+  //calculo y completo la hora de fin cuando ponen la hora de inicio.
+  $("#hora_inicio").change(function () {
+    var horaInicio = $("#hora_inicio").val();
+    if (horaInicio != "") {
+      //hora y minutos son enteros(necesarios para poder sumar)
+      var hora = parseInt(horaInicio.substring(0, 2), 10);
+      var minutos = parseInt(horaInicio.substring(3, 5), 10);
 
-    $('#calendar').fullCalendar({
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,basicWeek,basicDay'
-        },
-        editable: true,
-        droppable: true, // this allows things to be dropped onto the calendar !!!
-        drop: function(date, allDay) { // this function is called when something is dropped
+      //h y m son string que me van a formar el horario en formato hh:mm
+      var h, m;
 
-            // retrieve the dropped element's stored Event Object
-            var originalEventObject = $(this).data('eventObject');
+      if (hora > 0) {
+        h = hora < 10 ? '0' + (hora.toString()) : hora.toString();
+        if (minutos == 0) {
+          h_fin = h + ':30';
+        } else {
+          //los minutos son 30. Calculo la hora de fin(no los minutos porque sé que son 00)
+          if ((hora + 1) == 24) {
+            h_fin = '23:59';
+          } else {
+            h = hora + 1;
+            h = h < 10 ? '0' + h.toString() : h.toString();
+            h_fin = h + ':00';
+          }
+        }
+      } else {
+        //son las 12 de la noche
+        if (minutos == 0) {
+          h_fin = "00:30";
+        } else {
+          h_fin = "01:00";
+        }
+      }
+      $("#hora_fin").val(h_fin);
+    }
+  });
 
-            // we need to copy it, so that multiple events don't have a reference to the same object
-            var copiedEventObject = $.extend({}, originalEventObject);
+});
 
-            // assign it the date that was reported
-            copiedEventObject.start = date;
-            copiedEventObject.allDay = allDay;
+function cerrarVentanaTurno() {
+  return function () {
+    $('#id_turno').val("");
+    $('#hora_inicio').val("");
+    $('#hora_fin').val("");
+    $("#email").val("");
+    $("#fecha_turno").val("");
+    $('#telefono').val("");
 
-            // render the event on the calendar
-            // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-            $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-            // is the "remove after drop" checkbox checked?
-            if ($('#drop-remove').is(':checked')) {
-                // if so, remove the element from the "Draggable Events" list
-                $(this).remove();
-            }
-
-        },
-        events: [
-            {
-                title: 'All Day Event',
-                start: new Date(y, m, 1)
-            },
-            {
-                title: 'Long Event',
-                start: new Date(y, m, d-5),
-                end: new Date(y, m, d-2)
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: new Date(y, m, d-3, 16, 0),
-                allDay: false
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: new Date(y, m, d+4, 16, 0),
-                allDay: false
-            },
-            {
-                title: 'Meeting',
-                start: new Date(y, m, d, 10, 30),
-                allDay: false
-            },
-            {
-                title: 'Lunch',
-                start: new Date(y, m, d, 12, 0),
-                end: new Date(y, m, d, 14, 0),
-                allDay: false
-            },
-            {
-                title: 'Birthday Party',
-                start: new Date(y, m, d+1, 19, 0),
-                end: new Date(y, m, d+1, 22, 30),
-                allDay: false
-            },
-            {
-                title: 'Click for Google',
-                start: new Date(y, m, 28),
-                end: new Date(y, m, 29),
-                url: 'http://google.com/'
-            }
-        ]
-    });
-
-
-}();
+    $("#hora_inicio").prop("disabled", false);
+    $("#hora_inicio_button").prop("disabled", false);
+    $("#hora_fin").prop("disabled", false);
+    $("#hora_fin_button").prop("disabled", false);
+    $("#email").prop("disabled", false);
+    $("#fecha_turno").prop("disabled", false);
+    $("#telefono").prop("disabled", false);
+    $("#guardar").prop("disabled", false);
+    $("#guardar").prop("disabled", false);
+  };
+}

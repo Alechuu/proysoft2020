@@ -1,0 +1,142 @@
+{% extends "menubarra.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <meta charset='utf-8' />
+  <!-- ===========ESTILOS DE turno.html ===========-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}"/>
+  <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fullcalendar/bootstrap-fullcalendar.css')}}"/> -->
+  <!-- CSS -->
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/moment.min.js')}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fullcalendar/main.css')}}"/>
+
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/fullcalendar/main.js')}}"></script> 
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/fullcalendar/locales/es.js')}}"></script> 
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/calendar-conf-events.js')}}"></script> 
+
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-datepicker/css/datepicker.css')}}" /> 
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-daterangepicker/daterangepicker.css')}}" /> 
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-timepicker/compiled/timepicker.css')}}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-datetimepicker/datetimepicker.css')}}" />
+
+{% endblock %}
+
+{% block main %}
+
+<!-- **********************************************************************************************************************************************************
+        MAIN CONTENT
+        *********************************************************************************************************************************************************** -->
+    <!--main content start-->
+    <input type="hidden" id="centro_id" name="centro_id" value={{centro.id}}>
+    <section id="main-content">
+      <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> Turnos de {{ centro.nombre }}</h3>
+        <div id="notificacion-global" class="alert alert-success alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <span id="notificacion-global-turno"></span>
+        </div>
+        <!-- page start-->
+        <div class="row mt">           
+          <aside class="col-lg-12 mt">
+            <section class="panel">
+              <div class="panel-body">
+                <div id="calendar"></div>
+              </div>
+            </section>
+          </aside>
+        </div>
+        <!-- page end-->
+      </section>
+      <!-- /wrapper -->
+    </section>
+      
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Turno</h5>              
+            </div>
+            <div id="bloque-notificacion" class="alert alert-danger alert-dismissible" role="alert">
+              <span id="notificacion-turno"></span>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <div class="modal-body">
+              <form id="nuevoTurno" method="POST">                
+                <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input id="id_turno" type="hidden" name="id_turno" />
+                <div class="form-group">
+                  <label>Email:</label>
+                  <input id="email" type="email" class="form-control" name="email" required >                  
+                </div>
+                <div class="form-group">
+                  <label>Telefono:</label>
+                  <input id="telefono" type="tel" class="form-control" name="telefono" required >                  
+                </div>
+                <div class="form-group">
+                  <label>Fecha</label>
+                  <input id="fecha_turno" class="form-control default-date-picker" size="16" type="text" disabled>                    
+                </div>
+                <div class="form-group">
+                  <label>Hora Inicio</label>
+                    <div class="input-group bootstrap-timepicker">
+                      <input id="hora_inicio" type="text" class="form-control timepicker-default" required>
+                      <span class="input-group-btn">
+                        <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label>Hora Fin</label>
+                    <div class="input-group bootstrap-timepicker">
+                      <input id="hora_fin" type="text" class="form-control timepicker-default" disabled>
+                      <span class="input-group-btn">
+                        <button  id="hora_fin_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
+                        </span>
+                    </div>
+                </div>
+              </form>
+                <div class="modal-footer">
+                  <button id="cerrar" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <button id="guardar" type="button" class="btn btn-primary">Guardar cambios</button>
+                  <button id="borrar" type="button" class="btn btn-danger">Borrar</button>
+                </div>
+              
+        <!--  TIME PICKERS -->
+            </div>
+            
+          
+          </div>
+        </div>
+      </div> 
+
+  {% endblock %}  
+  
+  {% block scripts %} 
+    <!-- Script de turno.html --> 
+    <!-- js placed at the end of the document so the pages load faster -->       
+    <script src="{{ url_for('static', filename='lib/jquery-ui-1.9.2.custom.min.js')}}"></script>      
+    <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>  
+    <script src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>   
+    <script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script> 
+    <script src="{{ url_for('static', filename='lib/jquery.nicescroll.js')}}"></script>     
+    <!--common script for all pages-->
+    <script src="{{ url_for('static', filename='lib/common-scripts.js')}}"></script> 
+    <!--script for this page-->    
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='lib/fullcalendar/fullcalendar.min.js')}}"></script> --> 
+    
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/date.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+    
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-timepicker/js/bootstrap-timepicker.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/advanced-form-components.js')}}"></script>
+  {% endblock %}
+
+  

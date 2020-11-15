@@ -117,3 +117,4 @@ def listarUsuarios():
         return render_template("user/list_usuarios.html", usuarios=usuarios, permisos=permisos, conf=miConfiguracion, active_page=active_page)
     else:
         abort(401)
+

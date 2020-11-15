@@ -1,99 +1,278 @@
 {% extends "menubarra.html" %}
 
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fullcalendar/bootstrap-fullcalendar.css')}}"/>
+  <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='lib/bootstrap-fileupload/bootstrap-fileupload.css')}}" rel="stylesheet" />
+
+
+  <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
+{#   
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-timepicker/compiled/timepicker.css')}}" /> #}
+{% endblock %}
+
 {% block main %}
 
 <section id="main-content">
-  <section class="wrapper site-min-height">
-    <h3><i class="fa fa-angle-right"></i> Blank Page</h3>
-    <div class="row mt">
-      <div class="col-lg-12">
-        <p>Place your content here.</p>
-        <button type="button"  class="btn btn-success float-right"
-          data-toggle="modal" data-target="#mymodal">Agregar</button>
-      
+  
+  <section class="wrapper">
+      {% if notificacion  %}
+      <br>
+        {% if "API" in notificacion or "contiene" in notificacion %}
+          <div class="alert alert-danger alert-dismissible" role="alert">
+        {% else %}
+          <div class="alert alert-success alert-dismissible" role="alert">
+        {% endif %}
+         {{notificacion}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+      {% endif %}
+   <h3><i class="fa fa-angle-right"></i> Listado de Centros</h3>
+   <!-- SIMPLE TO DO LIST -->
+   
+   <!-- SORTABLE TO DO LIST -->
+   <div class="row mt mb" style="height: 100vh;">
+     <div class="col-md-12">
+       <section class="task-panel tasks-widget">
+         <div class="panel-heading">
+           <div class="pull-left">
+             <h4><i class="fa fa-tasks" style="font-size:20px"></i>  Acá podes ver a todos los Centros.</h4>
+           </div>
+           <div>
+             <form action="#" method="GET"> 
+               <div class="row">
+                 <div class="col-xs-12 col-md-12">
+                   <div class="input-group">
+                     <input class="form-control" id="inputSearch" type="text" placeholder="Buscá un Centro por cualquier campo">
+                     <div class="input-group-btn">
+                       <button disabled class="btn btn-primary" type="submit">
+                         <span class="glyphicon glyphicon-search"></span>
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </form>
+           </div>  
+         </div>
+         <div class="panel-body">
+           <div class="table-responsive">
+               <table id="tablaCentros" class="table table-striped table-bordered" style="font-size:14px">                   
+                    <thead>
+                      <tr>                        
+                        <th scope="col" style="width:150px;">Nombre</th>
+                        <th scope="col" style="width:200px;">Dirección</th>
+                        <th scope="col" style="width:200px;">Teléfono</th>
+                        <th scope="col" style="width:150px">Hora de apertura</th>
+                        <th scope="col" style="width:150px">Hora de cierre</th>
+                        <th scope="col" style="width:150px">Web</th>                        
+                        <th scope="col" style="width:150px">E-Mail</th>
+                        <th scope="col" style="width:150px">estado</th>
+                        <th scope="col">Acciones</th>
+                      </tr>
+                    </thead>
+                 <tbody id="tabla_Centros" >
+                   {% for centro in centros %}                   
+                     <tr>                   
+                        <td>{{centro.nombre}}</td>
+                        <td>{{centro.direccion}}</td>  
+                        <td>{{centro.telefono}}</td>  
+                        <td>{{centro.hora_apertura}}</td>  
+                        <td>{{centro.hora_cierre}}</td>  
+                        <td>{{centro.sitio_web}}</td>  
+                        <td>{{centro.email}}</td>
+                        {% if centro.estado%}
+                          <td> <button type="submit" class="btn btn-primary btn-xs"data-toggle="modal" data-target="#modalEstado{{ centro.id }}" >Habilitado</button></td>
+                          <!-- <td>Publicado <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modalEstado{{ centro.id }}" style="size:12px;font-size: 15px;"></button></td> -->
+                        {% else %}
+                          <td> <button type="submit" class="btn btn-primary btn-xs"data-toggle="modal" data-target="#modalEstado{{ centro.id }}" >Deshabilitado</button></td>
+
+  <!--                         <td>Despublicado <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modalEstado{{ centro.id }}" style="size:12px;font-size: 15px;"></button></td> -->
+                        {% endif %}                      
+                        <td>
+                           <form class="cmxform form-horizontal style-form" id="commentForm" method="post" action="{{ url_for('turno_index') }}" novalidate>                      
+                           <input type="hidden" name="id_centro" value="{{ centro.id }}" />
+                           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />                           
+                           <button type="submit" class="btn btn-primary btn-xs">Turnos</button>
+                           </form>
+                           <br>
+                           <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modaledit{{ centro.id }}" style="size:12px;font-size: 15px;"></button>
+                           {% if 'centro_destroy' in permisos %}
+                            <button class="btn btn-danger btn-xs fas fa-trash-alt" data-toggle="modal" data-target="#modalBorrar{{centro.id}}" style="size:12px;font-size: 15px;"></button>
+                           {% endif %}
+                          </td>
+                     </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+             </div>
+           </div>
+       </section>
+     </div>
+     <!--/col-md-12 -->
+   </div>
+   <!-- /row -->
+ </section>
+ {% for centro in centros %}
+    <div id="modalEstado{{centro.id}}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          {% if centro.estado == 1 %}
+            <h4 class="modal-title">¿Desea deshabilitar al Centro {{centro.nombre}}?</h4>
+          {% else %}
+            <h4 class="modal-title">¿Desea habilitar al Centro {{centro.nombre}}?</h4>
+          {% endif %}
+          </div>
+          <div class="modal-body">
+            <br>
+            <form action="{{url_for('centro_estado')}}" method="POST">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="hidden" name="id_centro" value="{{centro.id}}"/>   
+              <input type="hidden" name="nombre" value="{{centro.nombre}}"/>
+            <button type="submit" class="btn btn-primary">Sí</button>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-  <!-- /wrapper -->
+    <!--Modal Edit-->
+    <div id="modaledit{{ centro.id }}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">    
+               <h4 class="modal-title">Actualizar Informacion de {{ centro.nombre }}</h4> 
+            </div>
+            <div class="modal-body">
+               <form action="{{ url_for('centro_update') }}" method="POST" enctype="multipart/form-data" >
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                  <input type="hidden" name="id_centro" value="{{ centro.id }}" />
+                  <div class="form-group">
+                     <label>Nombre:</label>
+                     <input type="text" class="form-control" name="nombre" value="{{ centro.nombre }}" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Telefono</label>
+                    <input type="text" class="form-control" name="telefono" value="{{ centro.telefono }}"required >
+                  </div>
+                  <div class="form-group">
+                      <label>Tipo de Centro:</label>
+                      <input type="text" class="form-control" name="tipo_centro" value="{{ centro.tipo_centro }}" required >
+                  </div>
+                  <div class="form-group">
+                    <label>Horario:</label>
+                      <div class="input-group" style="display:flex;flex-direction:row;flex-wrap:wrap">
+                        <div class="input-group">
+                          <input type="time" name="hora_apertura" step="1800" value="{{centro.hora_apertura}}" required>
+{#                           <span class="input-group-btn">
+                            <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
+                            </span> #}
+                        </div>
+                        <span class="input-group-addon" style="width:70px;padding-bottom:0">Hasta</span>
+                        <div class="input-group">
+                          <input type="time" name="hora_cierre" step="1800"  value="{{centro.hora_cierre}}"  required>
+{#                           <span class="input-group-btn">
+                            <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
+                            </span> #}
+                        </div>
+                      </div>
+                    
+                  </div>
+                  <div class="form-group">
+                    <label>Sitio Web:</label>
+                    <input type="text" class="form-control" name="sitio_web" value="{{ centro.sitio_web }}" required >
+                  </div>
+                  <div class="form-group">
+                    <label>Mail:</label>
+                    <input type="email" class="form-control" name="email" value="{{ centro.email }}" required >
+                  </div>
+                  <div class="form-group ">
+                    <label>Municipio</label>
+                        <select id="municipio" name="municipio" class="form-control" >
+                          {%for municipio in municipios %}
+                            {% if municipio == centro.municipio %}
+                              <option  value="{{municipio}}" selected >{{ municipio }}</option> 
+                            {%else %}
+                              <option  value="{{municipio}}" >{{ municipio }}</option> 
+                            {%endif%}
+                          {% endfor %}
+                        </select>
+                  </div>
+                  
+
+                  <div class="form-group">
+                    <label>Direccion:</label>
+                    <input type="text" class="form-control" name="direccion" value="{{ centro.direccion }}" required >
+                  </div>
+                  <div class="form-group">
+                    <label>PDF Visita:</label>
+                    <div class="fileupload fileupload-new"id="path_pdf" data-provides="fileupload">
+                      <span class="btn btn-theme02 btn-file">
+                        <span class="fileupload-new"><i class="fa fa-paperclip"></i> Selecciona un PDF</span>
+                      <span class="fileupload-exists"><i class="fa fa-undo"></i> Cambiar</span>
+                      <input type="file" id="path_pdf" class="default"name="path_pdf" value="{{ centro.direccion }}" accept="application/pdf"/>
+                      </span>
+                      <span class="fileupload-preview" style="margin-left:5px;"></span>
+                      <a href="advanced_form_components.html#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none; margin-left:5px;"></a>
+                    </div>
+                   <!--  <input type="file" class="form-control" name="direccion" value="{{ centro.direccion }}" required > -->
+                  </div>
+                  <a href="{{centro.path_pdf}}">PDF Cargado actualmente</a>
+                  <hr>
+                  <div class="form-group">
+                     <button class="btn btn-primary"  type="submit">Actualizar</button>
+                  </div>                  
+               </form>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+         </div>
+      </div>
+    </div>
+    <!--Modal Borrar-->
+    <div id="modalBorrar{{centro.id}}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">¿Desea borrar al Centro {{centro.nombre}}?</h4>
+          </div>
+          <div class="modal-body">
+            <p>Esta acción es <b>permanente</b> y <b>no se puede deshacer</b>.</p>
+            <br>
+            <form action="{{url_for('centro_borrar')}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="id_centro" value="{{centro.id}}"/>
+            <input type="hidden" name="nombre" value="{{centro.nombre}}"/>
+            <button type="submit" class="btn btn-danger">Borrar</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+ <!-- /wrapper -->
 </section>
-
-<div id="mymodal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-     <div class="modal-content">
-        <div class="modal-header">
-
-           <h4 class="modal-title">Add User</h4>
-        </div>
-        <div class="modal-body">
-
-           <form action="{{url_for('user_new')}}" method="POST">
-
-
-              <div class="form-group">
-
-                 <label>Name:</label>
-                 <input type="text" class="form-control" name="name" required="1">
-
-
-              </div>
-
-
-               <div class="form-group">
-
-
-                 <label>Email:</label>
-                 <input type="email" class="form-control" name="email" required="1">
-
-
-              </div>
-
-
-               <div class="form-group">
-
-
-                 <label>Phone:</label>
-                 <input type="number" class="form-control" name="phone" required="1">
-
-
-              </div>
-
-
-
-              <div class="form-group">
-
-
-                 <button class="btn btn-primary" type="submit">Add Employee</button>
-
-
-              </div>
-
-
-           </form>
-
-
-        </div>
-
-
-        <div class="modal-footer">
-
-
-           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-
-        </div>
-
-
-     </div>
-
-
-  </div>
-</div>
-
+  <!-- /main -->
 {% endblock %}
 
-<script src="{{ url_for('static', filename='lib/jquery/jquery.min.js')}}"></script>
+{% block scripts %}  
 
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js')}}"></script>
+
+<script src="{{ url_for('static', filename='lib/bootstrap-fileupload/bootstrap-fileupload.js')}}"></script>
+
 <script class="include" type="text/javascript" src="{{ url_for('static', filename='lib/jquery.dcjqaccordion.2.7.js')}}"></script>
 <script src="{{ url_for('static', filename='lib/jquery.scrollTo.min.js')}}"></script>
 <script src="{{ url_for('static', filename='lib/jquery.nicescroll.js')}}" type="text/javascript"></script>
@@ -104,3 +283,46 @@
 <script type="text/javascript" src="{{ url_for('static', filename='lib/gritter-conf.js')}}"></script>
 <!--script for this page-->
 <script src="{{ url_for('static', filename='lib/form-validation-script.js')}}"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    tabla = $('#tablaCentros').DataTable({
+    "language":{
+      "info": "Mostrando página _PAGE_ de _PAGES_",
+      "zeroRecords": "No se encontraron Centros.",
+      "paginate": {
+        "first":"Primero",
+        "last": "Último",
+        "next": "Siguiente",
+        "previous":"Anterior"
+    },
+      },
+    "dom":"lrtip",
+    "bLengthChange": false, //Este parametro controla si el usuario puede cambiar el paginado
+    "iDisplayLength":  {{conf.paginado}}, //Este es el paginado por Default
+    "columnDefs": [ {
+      "targets":8,
+      "orderable":false
+    }]  
+    }); 
+    $('#inputSearch').keyup(function(){
+      tabla.search($(this).val()).draw() ;
+    })
+  } );
+</script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/date.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+    
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/bootstrap-timepicker/js/bootstrap-timepicker.js')}}"></script>
+
+    <script src="{{ url_for('static', filename='lib/advanced-form-components.js')}}"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+
+{% endblock %}
