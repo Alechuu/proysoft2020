@@ -102,8 +102,11 @@ class Centro(db.Model):
             micentro.telefono = data.get("telefono")
             micentro.tipo_centro = data.get("tipo_centro")
             micentro.sitio_web = data.get("sitio_web")
-            #micentro.direccion = data.get("direccion")
+            micentro.direccion = data.get("direccion")
             micentro.email = data.get("email")
+            micentro.municipio = data.get("municipio")
+            micentro.hora_apertura = data.get("hora_apertura")
+            micentro.hora_cierre = data.get("hora_cierre")
             
             db.session.commit()
         except:
