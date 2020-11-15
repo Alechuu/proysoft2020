@@ -17,10 +17,16 @@
   <section class="wrapper">
       {% if notificacion  %}
       <br>
-        {{notificacion}}
-         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-         </button>
+        {% if "API" in notificacion %}
+          <div class="alert alert-danger alert-dismissible" role="alert">
+        {% else %}
+          <div class="alert alert-success alert-dismissible" role="alert">
+        {% endif %}
+         {{notificacion}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
       {% endif %}
    <h3><i class="fa fa-angle-right"></i> Listado de Centros</h3>
    <!-- SIMPLE TO DO LIST -->
@@ -158,16 +164,16 @@
                   </div>
                   <div class="form-group">
                     <label>Horario:</label>
-                      <div class="input-group">
+                      <div class="input-group" style="display:flex;flex-direction:row;flex-wrap:wrap">
                         <div class="input-group">
-                          <input type="time" value="{{centro.hora_apertura}}" required>
+                          <input type="time" name="hora_apertura" value="{{centro.hora_apertura}}" required>
 {#                           <span class="input-group-btn">
                             <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span> #}
                         </div>
-                        <span class="input-group-addon">Hasta</span>
+                        <span class="input-group-addon" style="width:70px;padding-bottom:0">Hasta</span>
                         <div class="input-group">
-                          <input type="time"  value="{{centro.hora_cierre}}"  required>
+                          <input type="time" name="hora_cierre" value="{{centro.hora_cierre}}"  required>
 {#                           <span class="input-group-btn">
                             <button id="hora_inicio_button" class="btn btn-theme04" type="button"><i class="fa fa-clock-o"></i></button>
                             </span> #}
@@ -265,7 +271,7 @@
     tabla = $('#tablaCentros').DataTable({
     "language":{
       "info": "Mostrando página _PAGE_ de _PAGES_",
-      "zeroRecords": "No se encontraron Usuarios.",
+      "zeroRecords": "No se encontraron Centros.",
       "paginate": {
         "first":"Primero",
         "last": "Último",
@@ -277,8 +283,8 @@
     "bLengthChange": false, //Este parametro controla si el usuario puede cambiar el paginado
     "iDisplayLength":  {{conf.paginado}}, //Este es el paginado por Default
     "columnDefs": [ {
-      "targets": 6,
-      "orderable": false
+      "targets":8,
+      "orderable":false
     }]  
     }); 
     $('#inputSearch').keyup(function(){

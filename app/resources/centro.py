@@ -19,12 +19,22 @@ def index():
 
      
     # sending get request and saving the response as response object 
-    r = requests.get(url = URL,timeout=5) 
-    data = r.json()
-    municipios = []
-    for municipio in data['data']['Town']:
-        municipios.append(data['data']['Town'][municipio]['name'])
-       
+    try:
+        r = requests.get(url = URL,timeout=5) 
+        data = r.json()
+        municipios = []
+        for municipio in data['data']['Town']:
+            municipios.append(data['data']['Town'][municipio]['name'])
+    except Exception as e:
+        municipios = []
+        if "centro_index" in permisos:
+            centros = Centro.get_all()
+            turnos = Turno.get_all()
+            return render_template("centro/centros.html",permisos=permisos, conf=miConfiguracion, centros=centros, municipios = municipios, 
+            notificacion="Esta caída la API de Municipios")
+        else:
+            abort(401)
+
     if "centro_index" in permisos:
         centros = Centro.get_all()
         turnos = Turno.get_all()
@@ -99,7 +109,7 @@ def update():
         usuarios=User.all()
         centros = Centro.get_all()
         Centro.update(request.form)
-        notificacion = "¡Se actualizó con éxito la información del Centro!" +request.form.get("nombre")+"!"
+        notificacion = "¡Se actualizó con éxito la información del Centro " +request.form.get("nombre")+"!"
         return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)
         """ try:
             Centro.update(request.form)
