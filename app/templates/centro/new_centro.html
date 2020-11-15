@@ -3,8 +3,8 @@
 {% block styles %}
   {{super()}}
   
-<!-- 
-  <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet"> -->
+
+  <link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
   <link href="{{ url_for('static', filename='lib/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
   <link href="{{ url_for('static', filename='lib/bootstrap-fileupload/bootstrap-fileupload.css')}}" rel="stylesheet" />
 
@@ -15,7 +15,7 @@
   
 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-timepicker/compiled/timepicker.css')}}" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-datetimepicker/datertimepicker.css')}}" />
+<!--   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap-datetimepicker/datetimepicker.css')}}" /> -->
 
 
   <meta name="viewport" content="initial-scale=1.0, width=device-width" />
@@ -135,7 +135,7 @@
                         <span class="btn btn-theme02 btn-file">
                           <span class="fileupload-new"><i class="fa fa-paperclip"></i> Selecciona un PDF</span>
                         <span class="fileupload-exists"><i class="fa fa-undo"></i> Cambiar</span>
-                        <input type="file" class="default"  accept="application/pdf"/>
+                        <input type="file" id="pdf" class="default"  accept="application/pdf"/>
                         </span>
                         <span class="fileupload-preview" style="margin-left:5px;"></span>
                         <a href="advanced_form_components.html#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none; margin-left:5px;"></a>
@@ -419,6 +419,7 @@
         ($("#tipo_centro").val() == '') || 
         ($("#municipio").val() == '') ||
         ($("#sitio_web").val() == '') ||
+        ($("#pdf").val() == '') ||
         ($("#calleynumero").val() == '')){
           alert("Campo vacio");
           return false;
