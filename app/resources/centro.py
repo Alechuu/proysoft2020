@@ -59,13 +59,23 @@ def cambiarEstado():
         abort(401)
     miConfiguracion = Configuracion.get_first() 
     usuario = User.find_by_username(session.get("user"))
+    URL= 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135'
+
+     
+    # sending get request and saving the response as response object 
+    r = requests.get(url = URL) 
+    data = r.json()
+    municipios = []
+    for municipio in data['data']['Town']:
+        municipios.append(data['data']['Town'][municipio]['name'])
+       
     permisos = get_permisos(usuario)
     if "centro_update" in permisos:
         usuarios=User.all()
         Centro.cambiarEstado(request.form.get("id_centro"))
         centros = Centro.get_all()
         notificacion = "¡Se actualizó con éxito el estado del Centro "+request.form.get("nombre")+"!"
-        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)
     else:
         abort(401)
 
@@ -74,13 +84,31 @@ def update():
         abort(401)
     miConfiguracion = Configuracion.get_first() 
     usuario = User.find_by_username(session.get("user"))
+    URL= 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135'
+
+     
+    # sending get request and saving the response as response object 
+    r = requests.get(url = URL) 
+    data = r.json()
+    municipios = []
+    for municipio in data['data']['Town']:
+        municipios.append(data['data']['Town'][municipio]['name'])
+       
     permisos = get_permisos(usuario)
     if "centro_update" in permisos:
         usuarios=User.all()
-        Centro.update(request.form)
         centros = Centro.get_all()
-        notificacion = "¡Se actualizó con éxito la información del Centro "
-        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+        Centro.update(request.form)
+        notificacion = "¡Se actualizó con éxito la información del Centro!" +request.form.get("nombre")+"!"
+        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)
+        """ try:
+            Centro.update(request.form)
+            notificacion = "¡Se actualizó con éxito la información del Centro!" +request.form.get("nombre")+"!"
+            return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)
+        except Exception as e:
+            if("horario'" in str(e)):
+                notificacion = "¡Hay turnos reservados fuera de esta Franja Horaria!"
+                return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios) """    
     else:
         abort(401)
 
@@ -119,9 +147,12 @@ def delete():
     permisos = get_permisos(usuario)
     if "centro_destroy" in permisos:
         usuarios = User.all()
-        Centro.delete(request.form.get("id_centro"))
         centros = Centro.get_all()
-        notificacion = "¡Se eliminó con éxito al Centro "+request.form.get('nombre')+"!"
-        return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+        if(Centro.delete(request.form.get("id_centro"))):
+            notificacion = "¡Se eliminó con éxito al Centro "+request.form.get('nombre')+"!"
+            return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+        else:    
+            notificacion = "¡El centro"+request.form.get('nombre')+" contiene reservas!"
+            return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)    
     else:
         abort(401)
