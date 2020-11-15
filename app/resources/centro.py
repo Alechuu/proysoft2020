@@ -15,10 +15,20 @@ def index():
         abort(401)
     miConfiguracion = Configuracion.get_first() 
     permisos = get_permisos(User.find_by_username(session.get("user")))
+    URL= 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135'
+
+     
+    # sending get request and saving the response as response object 
+    r = requests.get(url = URL) 
+    data = r.json()
+    municipios = []
+    for municipio in data['data']['Town']:
+        municipios.append(data['data']['Town'][municipio]['name'])
+       
     if "centro_index" in permisos:
         centros = Centro.get_all()
         turnos = Turno.get_all()
-        return render_template("centro/centros.html",permisos=permisos, conf=miConfiguracion, centros=centros)
+        return render_template("centro/centros.html",permisos=permisos, conf=miConfiguracion, centros=centros, municipios = municipios)
     else:
         abort(401)
 

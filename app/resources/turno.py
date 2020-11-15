@@ -19,6 +19,7 @@ def index():
     else:
         abort(401)
 
+
 def get_turnos_by_centro():
     id_centro = request.args.get('parametro_id_centro','')
     start = request.args.get('fecha_ini_calendario','')#el formato es YYYY-MM-DD
@@ -36,5 +37,18 @@ def delete():
         mensaje = "Turno borrado."
         return jsonify(mensaje)
     except Exception as e:
-        mensaje = "Se ha producido un error al intentar borrar el turno."
-        return jsonify(mensaje)
+        return jsonify(e)
+
+def listarTurnos():
+    if not authenticated(session):
+        abort(401)
+    miConfiguracion = Configuracion.get_first() 
+    usuario = User.find_by_username(session.get("user"))
+    permisos = get_permisos(usuario)
+    active_page = "turnos_index"
+    if "turnos_index" in permisos: 
+        turnos = Turno.get_all()
+        centros = Centro.get_all()
+        return render_template("turno/list_turnos.html", centros=centros ,turnos=turnos, permisos=permisos, conf=miConfiguracion, active_page=active_page)
+    else:
+        abort(401)

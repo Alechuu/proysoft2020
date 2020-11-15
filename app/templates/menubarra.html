@@ -69,6 +69,12 @@
               <li><a href="{{ url_for('centro_new') }}">Agregar Centro</a></li>
               {% endif %}
             </ul>
+          </li>
+          <li>           
+            <a class="{{'active' if active_page == 'turnos_index'}}" href="{{ url_for('turnos_index') }}">
+              <i class="fa fa-book"></i>
+              <span>Turnos</span>
+              </a>
           </li> 
           {% if 'configuracion_index' in permisos %} 
           <li class="sub-menu">
