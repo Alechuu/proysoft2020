@@ -97,5 +97,6 @@ def create_app(environment="development"):
     api.add_resource(centroAPI.CentroID, '/api/centros/id=<id_centro>')
     api.add_resource(centroAPI.TurnosCentro, '/api/centros/<id_centro>/turnos_disponibles')
     api.add_resource(centroAPI.TurnosNew, '/api/centros/<id_centro>/reserva')
+    api.add_resource(centroAPI.TurnosUpdate, '/api/centros/<id_centro>/modificar-reserva')
     api.add_resource(centroAPI.TurnosCentroRangoFecha, '/api/centros/turnos_tomados')
     return app
