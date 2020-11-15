@@ -101,20 +101,21 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#fecha_turno").val(year + '-' + mes + '-' + dia);
         $('#telefono').val(info.event.extendedProps.telefono);
         $('#id_turno').val(info.event.extendedProps.id_turno);
+        //La hora de fin es informativa, se la calculo yo
+        $("#hora_fin").prop("disabled", true);
+        $("#hora_fin_button").prop("disabled", true);
         //no permito la edición ni el guardado si el evento es pasado al momento actual
         //dejo el formulario no editable y el botón de guardar desabilitado      
         var diaActual = new Date();
         if (fecha < diaActual) {
           $("#hora_inicio").prop("disabled", true);
-          $("#hora_inicio_button").prop("disabled", true);
-          $("#hora_fin").prop("disabled", true);
-          $("#hora_fin_button").prop("disabled", true);
+          $("#hora_inicio_button").prop("disabled", true);          
           $("#email").prop("disabled", true);
           $("#fecha_turno").prop("disabled", true);
           $("#telefono").prop("disabled", true);
           $("#guardar").prop("disabled", true);
           $("#borrar").hide();
-        } else {
+        } else {          
           $("#borrar").show();
         }
         $("#bloque-notificacion").hide();
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 //los minutos son 30. Calculo los horarios
                 h_inicio = h + ':' + info.date.getMinutes().toString();
                 if ((info.date.getHours() + 1) == 24) {
-                  h_fin = '00:00';
+                  h_fin = '23:59';
                 } else {
                   h = info.date.getHours() + 1;
                   h = h < 10 ? '0' + h.toString() : h.toString();
@@ -248,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
     axios.post('/turno/borrar', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'X-CSRF-TOKEN':  $('#csrf_token').val()
+        'X-CSRF-TOKEN': $('#csrf_token').val()
       }
     }).then(function (response) {
       console.log(response);
@@ -298,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           //los minutos son 30. Calculo la hora de fin(no los minutos porque sé que son 00)
           if ((hora + 1) == 24) {
-            h_fin = '00:00';
+            h_fin = '23:59';
           } else {
             h = hora + 1;
             h = h < 10 ? '0' + h.toString() : h.toString();
