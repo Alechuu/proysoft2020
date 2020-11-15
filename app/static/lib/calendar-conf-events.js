@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
-
+  $("#notificacion-global").hide();
   calendar.render();
 
   $("#cerrar").click(cerrarVentanaTurno());
