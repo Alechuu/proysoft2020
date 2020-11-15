@@ -61,7 +61,8 @@ class Centro(db.Model):
             email=data['email'],
             estado=data['estado'],
             latitud=coords[0],
-            longitud=coords[1]
+            longitud=coords[1],
+            path_pdf=data['path_pdf']
         )
 
         try:

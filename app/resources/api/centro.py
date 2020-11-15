@@ -64,8 +64,7 @@ class CentroNew(Resource):
         form = formCentros(request.form)
         pdf_visita = request.files['path_pdf']
         # Apendo el path del archivo al formulario
-        form.path_pdf.data = "/static/uploads/" + \
-            (pdf_visita.filename).replace(" ", "")
+        form.path_pdf.data = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
         # Guardo el archivo
         pdf_visita.save(os.getcwd()+"/app/static/uploads/" +
                         (pdf_visita.filename).replace(" ", ""))
@@ -185,7 +184,7 @@ class TurnosNew(Resource):
                         'fecha': str(form.data['fecha'])
                     }
                     datos = {'status': '201 Created',
-                             'body': {'atributos': datos_turno}}
+                             'body': {'atributos': datos_turno}, 'details': 'El turno se ha creado de manera exitosa.'}
                     return Response(json.dumps(datos), mimetype="application/json")
                 else:
                     datos = {'status': 400, 'body': 'Bad Request',
@@ -228,7 +227,8 @@ class TurnosUpdate(Resource):
                              'details': 'Verifique que la fecha y/o la hora del turno sean posteriores a este momento'}
                     return Response(json.dumps(datos), mimetype="application/json")
                 # chequeo que el horario no esté ocupado por otro turno
-                if(Turno.get_by_hour_and_date(form.data['hora_inicio'], form.data['fecha'], id_centro) == None):
+                t = Turno.get_by_hour_and_date(form.data['hora_inicio'], form.data['fecha'], id_centro)
+                if(not t or t.id == id_turno):
                     Turno.update(turno, form.data)
                     datos_turno = {
                         'centro_id': id_centro,

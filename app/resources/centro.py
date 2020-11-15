@@ -162,7 +162,7 @@ def delete():
             notificacion = "¡Se eliminó con éxito al Centro "+request.form.get('nombre')+"!"
             return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
         else:    
-            notificacion = "¡El centro"+request.form.get('nombre')+" contiene reservas!"
+            notificacion = "¡El centro "+request.form.get('nombre')+" contiene reservas!"
             return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)    
     else:
         abort(401)
