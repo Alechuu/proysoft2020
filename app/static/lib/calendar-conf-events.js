@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
             for (var i = 0; i < result.length; i++) {
               turnos.push(
                 {
+                  id_turno: result[i].id,
                   title: result[i].email_visitante,
                   start: result[i].hora_inicio,
                   end: result[i].hora_fin,
@@ -99,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#email").val(correo);
         $("#fecha_turno").val(year + '-' + mes + '-' + dia);
         $('#telefono').val(info.event.extendedProps.telefono);
+        $('#id_turno').val(info.event.extendedProps.id_turno);
         //no permito la edición ni el guardado si el evento es pasado al momento actual
         //dejo el formulario no editable y el botón de guardar desabilitado      
         var diaActual = new Date();
@@ -111,6 +113,9 @@ document.addEventListener('DOMContentLoaded', function () {
           $("#fecha_turno").prop("disabled", true);
           $("#telefono").prop("disabled", true);
           $("#guardar").prop("disabled", true);
+          $("#borrar").hide();
+        } else {
+          $("#borrar").show();
         }
         $("#bloque-notificacion").hide();
         $("#exampleModal").modal("show");
@@ -166,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
             //no importa sobre qué vista se de click, la fecha queda no editable.
             $("#fecha_turno").val(y + '-' + m + '-' + d);
             $("#fecha_turno").prop("disabled", true);
+            $("#borrar").hide();
             $("#exampleModal").modal("show");
           }
         } else {
@@ -178,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
           $("#fecha_turno").val(y + '-' + m + '-' + d);
           $("#fecha_turno").prop("disabled", true);
           $("#bloque-notificacion").hide();
+          $("#borrar").hide();
           $("#exampleModal").modal("show");
         }
       }
@@ -203,9 +210,9 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }).then(function (response) {
       console.log(response);
-      if (response.data.status == "400" || response.data.status == "500") {        
+      if (response.data.status == "400" || response.data.status == "500") {
         $("#notificacion-turno").text(response.data.details);
-        $("#bloque-notificacion").show();        
+        $("#bloque-notificacion").show();
       } else {
         var calendarEl = document.getElementById('calendar');
         var calendar = obtenerCalendario(calendarEl);
@@ -228,6 +235,21 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#guardar").prop("disabled", false);
         $("#guardar").prop("disabled", false);
       }
+    })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
+
+  $("#borrar").click(function () {
+    axios({
+      method: 'post',
+      url: '/turno/borrar',
+      data: {
+        id_turno: '4'
+      }
+    }).then(function (response) {
+      console.log(response);
     })
       .catch(function (error) {
         console.log(error);

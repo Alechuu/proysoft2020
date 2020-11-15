@@ -66,8 +66,7 @@ def create_app(environment="development"):
 
     #Rutas de Turno
     app.add_url_rule('/turno', "turno_index", turno.index, methods=["POST"])
-    app.add_url_rule('/turno/nuevo', "turno_new", turno.new, methods=["POST"])
-    app.add_url_rule('/turno-ajax', "get_turnos_by_centro", turno.get_turnos_by_centro)
+    app.add_url_rule('/turno/borrar', "turno_delete", turno.delete, methods=["POST"])
 
 
     # Handlers

@@ -59,3 +59,10 @@ class Turno(db.Model):
     @staticmethod
     def get_by_hour_and_date(hour,date,id_centro):
         return Turno.query.filter(Turno.hora_inicio==hour, Turno.fecha==date, Turno.id_centro_ayuda==id_centro).first()
+    
+    @staticmethod
+    def borrar_turno(id_turno):
+        turno = Turno.get(id_turno)
+        db.session.delete(turno)
+        db.session.commit()
+        return True

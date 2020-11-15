@@ -29,5 +29,11 @@ def get_turnos_by_centro():
     json_list=[unTurno.serializar for unTurno in turnos]
     return jsonify(json_list)
 
-def new():
-    render_template("turno/turno.html",permisos=permisos, conf=miConfiguracion, centro=centro)
+def delete():
+    id_turno = request.args.get('id_turno','')
+    try:
+        Turno.borrar_turno(id_turno)
+        mensaje = "Turno borrado."
+        jsonify(mensaje)
+    except Exception as e:
+        return jsonify(e)
