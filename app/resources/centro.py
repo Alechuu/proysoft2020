@@ -114,7 +114,7 @@ def update():
         pdf_visita = request.files['path_pdf']
         if(pdf_visita.filename != ""):   
             nuevo_path = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
-            pdf_visita.save(os.getcwd()+"/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))
+            pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))
         else:
             nuevo_path = "NO_UPDATE_PDF"
         Centro.update(request.form,nuevo_path)
