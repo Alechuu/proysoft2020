@@ -64,10 +64,16 @@ class CentroNew(Resource):
         form = formCentros(request.form)
         pdf_visita = request.files['path_pdf']
         # Apendo el path del archivo al formulario
-        form.path_pdf.data = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
-        # Guardo el archivo
-        pdf_visita.save(os.getcwd()+"/app/static/uploads/" +
-                        (pdf_visita.filename).replace(" ", ""))
+        if(os.path.exists("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))):
+            secuencia = 'abcdefghijklmnopqrst'
+            result_str = ''.join((random.choice(secuencia) for i in range(30)))
+            nombre_archivo = result_str+(pdf_visita.filename).replace(" ", "")
+            form.path_pdf.data = "/static/uploads/" + nombre_archivo
+            pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + nombre_archivo)
+        else:
+            form.path_pdf.data = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
+            # Guardo el archivo
+            pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" +(pdf_visita.filename).replace(" ", ""))
         form.estado.data = False
         if(not form.validate()):
             datos = {'status': 400, 'body': 'Bad Request'}
