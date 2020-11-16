@@ -115,7 +115,7 @@ class Centro(db.Model):
             micentro.latitud=coords[0]
             micentro.longitud=coords[1]
             if(newPath != "NO_UPDATE_PDF"):
-                os.remove(os.getcwd()+"/app/"+micentro.path_pdf)
+                os.remove(os.getcwd()+"/app"+micentro.path_pdf)
                 micentro.path_pdf = newPath
 
             db.session.commit()
