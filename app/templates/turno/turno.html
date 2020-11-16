@@ -32,10 +32,7 @@
     <section id="main-content">
       <section class="wrapper">
         <h3><i class="fa fa-angle-right"></i> Turnos de {{ centro.nombre }}</h3>
-        <div id="notificacion-global" class="alert alert-success alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          <span id="notificacion-global-turno"></span>
-        </div>
+        <div id="notificacion-global"></div>
         <!-- page start-->
         <div class="row mt">           
           <aside class="col-lg-12 mt">
@@ -58,13 +55,8 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Turno</h5>              
-            </div>
-            <div id="bloque-notificacion" class="alert alert-danger alert-dismissible" role="alert">
-              <span id="notificacion-turno"></span>
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-               </button>
-            </div>
+            </div>            
+            <div id="bloque-notificacion"></div>
             <div class="modal-body">
               <form id="nuevoTurno" method="POST">                
                 <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
