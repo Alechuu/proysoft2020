@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           $("#borrar").show();
         }
-        $("#bloque-notificacion").hide();
         $("#exampleModal").modal("show");
       },
 
@@ -172,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
             //no importa sobre qué vista se de click, la fecha queda no editable.
             $("#fecha_turno").val(y + '-' + m + '-' + d);
             $("#fecha_turno").prop("disabled", true);
-            $("#bloque-notificacion").hide();
             $("#borrar").hide();
             $("#exampleModal").modal("show");
           }
@@ -185,14 +183,13 @@ document.addEventListener('DOMContentLoaded', function () {
           //no importa sobre qué vista se de click, la fecha queda no editable.
           $("#fecha_turno").val(y + '-' + m + '-' + d);
           $("#fecha_turno").prop("disabled", true);
-          $("#bloque-notificacion").hide();
           $("#borrar").hide();
           $("#exampleModal").modal("show");
         }
       }
     });
   }
-  $("#notificacion-global").hide();
+
   calendar.render();
 
   $("#cerrar").click(cerrarVentanaTurno());
@@ -204,8 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
       $("#fecha_turno").val() == "" ||
       $("#email").val() == "" ||
       $('#telefono').val() == "") {
-      $("#notificacion-turno").text("Debe completar todos los campos del formulario");
-      $("#bloque-notificacion").show();
+      showAlertModalTurno("Debe completar todos los campos del formulario")
     } else {
       //Todos los datos completos. Listos para el post
       const formData = new FormData();
@@ -226,11 +222,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (response) {
           console.log(response);
           if (response.data.status == "400" || response.data.status == "500") {
-            $("#notificacion-turno").text(response.data.details);
-            $("#bloque-notificacion").show();
+            showAlertModalTurno(response.data.details)
           } else {
-            $("#notificacion-global-turno").text(response.data.details);
-            $('#notificacion-global').show();
+            showAlert(response.data.details)
             var calendarEl = document.getElementById('calendar');
             var calendar = obtenerCalendario(calendarEl);
             calendar.render();
@@ -264,11 +258,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (response) {
           console.log(response);
           if (response.data.status == "400" || response.data.status == "500") {
-            $("#notificacion-turno").text(response.data.details);
-            $("#bloque-notificacion").show();
+            showAlertModalTurno(response.data.details)
           } else {
-            $("#notificacion-global-turno").text(response.data.details);
-            $('#notificacion-global').show();
+            showAlert(response.data.details)
             var calendarEl = document.getElementById('calendar');
             var calendar = obtenerCalendario(calendarEl);
             calendar.render();
@@ -300,7 +292,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   $("#borrar").click(function () {
     var formData = new FormData();
-    //formData.append('csrf_token', $('#csrf_token').val());
     formData.append('id_turno', $('#id_turno').val());
     axios.post('/turno/borrar', formData, {
       headers: {
@@ -309,8 +300,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }).then(function (response) {
       console.log(response);
-      $("#notificacion-global-turno").text(response.data);
-      $('#notificacion-global').show();
+      showAlert(response.data)
       var calendarEl = document.getElementById('calendar');
       var calendar = obtenerCalendario(calendarEl);
       calendar.render();
@@ -396,4 +386,28 @@ function cerrarVentanaTurno() {
     $("#guardar").prop("disabled", false);
     $("#guardar").prop("disabled", false);
   };
+}
+
+function showAlert(mensaje) {
+  // aqui dibujo el alert      
+  $('#notificacion-global').html("").append(
+    '<a href="#" class="close" data-hide="alert">&times;</a>'
+  )
+    .addClass("alert alert-success fade in")
+    .append(mensaje).show();
+  $("[data-hide]").on("click", function () {
+    $(this).closest("." + $(this).attr("data-hide")).hide();
+  });
+}
+
+function showAlertModalTurno(mensaje) {
+  // aqui dibujo el alert      
+  $('#bloque-notificacion').html("").append(
+    '<a href="#" class="close" data-hide="alert">&times;</a>'
+  )
+    .addClass("alert alert-danger fade in")
+    .append(mensaje).show();
+  $("[data-hide]").on("click", function () {
+    $(this).closest("." + $(this).attr("data-hide")).hide();
+  });
 }
