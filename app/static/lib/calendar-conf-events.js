@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#fecha_turno").val(year + '-' + mes + '-' + dia);
         $('#telefono').val(info.event.extendedProps.telefono);
         $('#id_turno').val(info.event.extendedProps.id_turno);
+        $("#fecha_turno").prop("disabled", true);
         //La hora de fin es informativa, se la calculo yo
         $("#hora_fin").prop("disabled", true);
         $("#hora_fin_button").prop("disabled", true);
@@ -110,8 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (fecha < diaActual) {
           $("#hora_inicio").prop("disabled", true);
           $("#hora_inicio_button").prop("disabled", true);
-          $("#email").prop("disabled", true);
-          $("#fecha_turno").prop("disabled", true);
+          $("#email").prop("disabled", true);          
           $("#telefono").prop("disabled", true);
           $("#guardar").prop("disabled", true);
           $("#borrar").hide();
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       dateClick: function (info) {
         var d = info.date.getDate() < 10 ? '0' + info.date.getDate().toString() : info.date.getDate().toString();
-        var m = (info.date.getMonth() + 1).toString();
+        var mes = (info.date.getMonth() + 1).toString();
         var y = info.date.getFullYear().toString();
 
 
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $("#hora_fin_button").prop("disabled", true);
 
             //no importa sobre qué vista se de click, la fecha queda no editable.
-            $("#fecha_turno").val(y + '-' + m + '-' + d);
+            $("#fecha_turno").val(y + '-' + mes + '-' + d);
             $("#fecha_turno").prop("disabled", true);
             $("#borrar").hide();
             $("#exampleModal").modal("show");
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
           $("#hora_fin_button").prop("disabled", true);
 
           //no importa sobre qué vista se de click, la fecha queda no editable.
-          $("#fecha_turno").val(y + '-' + m + '-' + d);
+          $("#fecha_turno").val(y + '-' + mes + '-' + d);
           $("#fecha_turno").prop("disabled", true);
           $("#borrar").hide();
           $("#exampleModal").modal("show");
