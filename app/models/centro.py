@@ -29,9 +29,9 @@ class Centro(db.Model):
 
     @staticmethod
     def get_all_api(pagina,maxCentros):
-        totales = db.session.query(Centro).count()
-        datos = Centro.query.paginate(pagina,maxCentros,False).items
-        numPaginas = Centro.query.paginate(pagina,maxCentros,False).pages
+        totales = db.session.query(Centro).filter(Centro.estado==1).count()
+        datos = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).items
+        numPaginas = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).pages
         res = [totales,datos,numPaginas]
         return res
     
