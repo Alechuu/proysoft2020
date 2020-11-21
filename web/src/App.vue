@@ -5,7 +5,7 @@
       <router-view></router-view>
     </v-main>
     <v-footer
-      absolute
+      relative
       class="font-weight-medium"
       color="primary"
       dark
