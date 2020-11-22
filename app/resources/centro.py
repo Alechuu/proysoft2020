@@ -1,8 +1,6 @@
-import requests
-import os
-import random
+import requests, os, random
 
-from flask import redirect, render_template, request, url_for, session, abort
+from flask import redirect, render_template, request, url_for, session, abort, current_app
 
 from app.db import connection
 from app.models.user import User
@@ -114,15 +112,15 @@ def update():
         centros = Centro.get_all()
         pdf_visita = request.files['path_pdf']
         if(pdf_visita.filename != ""):
-            if(os.path.exists("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))):
+            if(os.path.exists(current_app.root_path+"/static/uploads/" + (pdf_visita.filename).replace(" ", ""))):
                 secuencia = 'abcdefghijklmnopqrst'
                 result_str = ''.join((random.choice(secuencia) for i in range(30)))
                 nombre_archivo = result_str+(pdf_visita.filename).replace(" ", "")
                 nuevo_path = "/static/uploads/" + nombre_archivo
-                pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + nombre_archivo)
+                pdf_visita.save(current_app.root_path+"/static/uploads/" + nombre_archivo)
             else:
                 nuevo_path = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
-                pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))
+                pdf_visita.save(current_app.root_path+"/static/uploads/" + (pdf_visita.filename).replace(" ", ""))
         else:
             nuevo_path = "NO_UPDATE_PDF"
         Centro.update(request.form,nuevo_path)
