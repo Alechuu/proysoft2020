@@ -171,13 +171,13 @@ def delete():
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
     if "centro_destroy" in permisos:
-        usuarios = User.all()
-        centros = Centro.get_all()
         if(Centro.delete(request.form.get("id_centro"))):
+            centros = Centro.get_all()
             notificacion = "¡Se eliminó con éxito al Centro "+request.form.get('nombre')+"!"
-            return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+            return render_template("centro/centros.html", permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
         else:    
+            centros = Centro.get_all()
             notificacion = "¡El centro "+request.form.get('nombre')+" contiene reservas!"
-            return render_template("centro/centros.html",usuarios=usuarios, permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)    
+            return render_template("centro/centros.html", permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)    
     else:
         abort(401)
