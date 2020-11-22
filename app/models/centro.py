@@ -1,5 +1,7 @@
 import os
 
+from flask import current_app
+
 from app import db
 from app.models.turno import Turno
 from app.helpers.geocoder import geocoder as Geocoder
@@ -115,7 +117,7 @@ class Centro(db.Model):
             micentro.latitud=coords[0]
             micentro.longitud=coords[1]
             if(newPath != "NO_UPDATE_PDF"):
-                os.remove("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app"+micentro.path_pdf)
+                os.remove(current_app.root_path+micentro.path_pdf)
                 micentro.path_pdf = newPath
 
             db.session.commit()

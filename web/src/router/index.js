@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Turnos from '../views/Turnos.vue'
+import NewCentro from '../views/NewCentro.vue'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/turnos',
     name: 'Turnos',
     component: Turnos
+  },
+  {
+    path: '/centros/crear',
+    name: 'Nuevo Centro',
+    component: NewCentro
   }
 ]
 
