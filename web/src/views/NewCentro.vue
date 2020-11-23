@@ -9,17 +9,25 @@
       border="bottom"
       :type="alert_type"
       transition="scale-transition"
-      dismissible
       >{{ alert_body }}
     </v-alert>
     <v-card class="pa-8 ma-5" color="primary" elevation="5">
-      <h1 style="text-align: center; color: white">Agregar un nuevo Centro</h1>
+      <div class="d-flex flex-column">
+        <v-icon color="white" size="50"> mdi-home-heart </v-icon>
+        <h1 style="text-align: center; color: white">
+          Agregar un nuevo Centro
+        </h1>
+      </div>
     </v-card>
     <v-card class="pa-8 ma-5" elevation="5">
-      <h3 class="pb-10" style="text-align: center; color: primary">
-        Por favor, completá los siguientes datos
-      </h3>
-      <v-divider></v-divider>
+      <div class="d-flex flex-column">
+        <v-icon size="45" color="primary">mdi-clipboard-edit</v-icon>
+        <h3 class="pb-5" style="text-align: center; color: primary">
+          Por favor, completá los siguientes datos
+        </h3>
+      </div>
+
+      <v-divider class="mb-10"></v-divider>
       <form id="test_form" @submit.prevent="submit">
         <validation-provider
           v-slot="{ errors }"
