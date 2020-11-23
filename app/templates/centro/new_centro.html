@@ -277,6 +277,7 @@
    function buscarDireccion() {
 
     var dataDir = encodeURI(document.getElementById("calleynumero").value + ', Municipio ' +document.getElementById('municipio').value +', Provincia de Buenos Aires, Argentina') 
+    console.log(dataDir)
     fetch('https://geocode.search.hereapi.com/v1/geocode?apikey=s0gvC3NKNulSUn6DSTyhf4jCcwVL5TN7C5oBELvwf3I&q='+ dataDir)
     .then(response => response.json())
     .then(data => {

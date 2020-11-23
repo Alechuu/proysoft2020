@@ -4,11 +4,13 @@
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
     <v-alert
+      v-model="resetAlert"
       class="ma-5"
       :value="alert"
       border="bottom"
       :type="alert_type"
       transition="scale-transition"
+      dismissible
       >{{ alert_body }}
     </v-alert>
     <v-card class="pa-8 ma-5" color="primary" elevation="5">
@@ -47,7 +49,7 @@
         <v-text-field
           v-model="web"
           :error-messages="errors"
-          label="Sitio Web"
+          label="Sitio Web (Opcional)"
           name="sitio_web"
           prepend-icon="mdi-web"
           required
@@ -70,7 +72,7 @@
           <v-text-field
             v-model="tipo"
             :error-messages="errors"
-            label="Tipo"
+            label="Tipo (Ropa, Alimentos, Sangre, etc)"
             name="tipo"
             prepend-icon="mdi-text-box"
             required
@@ -185,6 +187,7 @@
             :error-messages="errors"
             label="Municipio"
             name="municipio"
+            id="municipio"
             data-vv-name="select"
             prepend-icon="mdi-home-map-marker"
             required
@@ -204,6 +207,58 @@
             required
           ></v-text-field>
         </validation-provider>
+        <div class="d-flex flex-row ml-10">
+          <v-alert type="info" dense>
+            Elegí un municipio, ingresá una dirección y hacé click en
+            <b>Ver en Mapa</b>
+          </v-alert>
+          <v-btn class="ml-10 mb-5" color="primary" @click="verEnMapa">
+            Ver en Mapa
+          </v-btn>
+        </div>
+
+        <v-alert
+          v-model="resetAlertMapa"
+          :value="alertMapa"
+          class="ml-10"
+          style="width: 50%"
+          type="warning"
+          transition="scale-transition"
+          dismissible
+          dense
+          border="bottom"
+        >
+          Ups, no encontramos esa dirección. Revisala e intentá de nuevo.
+        </v-alert>
+        <v-card class="ml-10">
+          <div>
+            <l-map
+              @click="agregarMarker"
+              :zoom="zoom"
+              :center="center"
+              ref="mapaCentro"
+              style="height: 450px; width: 100%; z-index: 1"
+            >
+              <l-tile-layer :url="url" :attribution="attribution" />
+              <l-marker :lat-lng="marker">
+                <l-tooltip :options="{ permanent: true, interactive: true }">
+                  <div>
+                    Esta sería la ubicación del Centro.<br />
+                    Si es errónea, simplemente<br />
+                    hacé click en la ubicación correcta<br />
+                    y se guardará
+                  </div></l-tooltip
+                >
+              </l-marker>
+            </l-map>
+            <v-overlay :absolute="true" :value="overlayMapa">
+              <v-progress-circular
+                indeterminate
+                size="64"
+              ></v-progress-circular>
+            </v-overlay>
+          </div>
+        </v-card>
 
         <v-file-input
           accept="application/pdf"
@@ -221,6 +276,9 @@
 
 
 <script>
+import "leaflet/dist/leaflet.css";
+import { latLng } from "leaflet";
+import { LMap, LTileLayer, LMarker, LTooltip } from "vue2-leaflet";
 import { required, email, max, numeric } from "vee-validate/dist/rules";
 import {
   extend,
@@ -255,31 +313,62 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    LMap,
+    LTileLayer,
+    LMarker,
+    LTooltip,
   },
-  data: () => ({
-    alert: false,
-    alert_type: "success",
-    alert_body: "",
-    overlay: false,
-    nombre: "",
-    telefono: "",
-    direccion: "",
-    email: "",
-    web: "",
-    tipo: "",
-    select: null,
-    time_apertura: null,
-    time_cierre: null,
-    menu_apertura: false,
-    menu_cierre: false,
-    errors: null,
-    items: [],
-    checkbox: null,
-  }),
+  data() {
+    return {
+      // Datos Leaflet
+      zoom: 6,
+      center: [-37.3121792, -61.3996217],
+      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution:
+        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      marker: latLng(0, 0),
+      // Datos Alerta
+      resetAlert: false,
+      alert: false,
+      alert_type: "success",
+      alert_body: "",
+      resetAlertMapa: false,
+      alertMapa: false,
+
+      // Loading animacion
+      overlay: false,
+      overlayMapa: false,
+
+      // Datos formulario
+      nombre: "",
+      telefono: "",
+      direccion: "",
+      email: "",
+      web: "",
+      tipo: "",
+      select: null,
+      time_apertura: null,
+      time_cierre: null,
+      menu_apertura: false,
+      menu_cierre: false,
+      errors: null,
+      items: [],
+      checkbox: null,
+    };
+  },
+
   created() {
     this.fetchMunicipios();
   },
+  mounted() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },
   methods: {
+    // Función que trae los municipios para llenar el Select
     fetchMunicipios() {
       fetch(
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135"
@@ -294,6 +383,8 @@ export default {
           }
         });
     },
+
+    // Submit del formulario junto a sus chequeos + Alertas
     submit() {
       this.$refs.observer.validate();
       this.overlay = true;
@@ -308,7 +399,8 @@ export default {
             this.overlay = false;
             this.alert_type = "success";
             this.alert_body =
-              "Solicitud de Centro aceptada exitosamente. Estará pendiente de aprobación";
+              "Solicitud de Centro aceptada exitosamente. Estará pendiente de aprobación.";
+            this.resetAlert = true;
             this.alert = true;
             window.scrollTo({
               top: 0,
@@ -324,14 +416,53 @@ export default {
             });
             this.alert_type = "error";
             this.alert_body =
-              "Hubo un error procesando tu solicitud, por favor, intentá de nuevo";
+              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
+            this.resetAlert = true;
             this.alert = true;
             console.log(data);
             console.log("Hubo un error");
           }
         });
     },
+
+    // Esto controla que el horario sea de 30 a 30 minutos
     allowedStep: (m) => m % 30 === 0,
+
+    // Funciones de Leaflet
+
+    agregarMarker(event) {
+      this.marker = latLng(event.latlng.lat, event.latlng.lng);
+    },
+
+    verEnMapa() {
+      this.overlayMapa = true;
+      var dataDir = encodeURI(
+        this.direccion +
+          ", Municipio " +
+          this.select +
+          ", Provincia de Buenos Aires, Argentina"
+      );
+      console.log(dataDir);
+      fetch(
+        "https://geocode.search.hereapi.com/v1/geocode?apikey=s0gvC3NKNulSUn6DSTyhf4jCcwVL5TN7C5oBELvwf3I&q=" +
+          dataDir
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data["items"][0] === undefined) {
+            this.resetAlertMapa = true;
+            this.alertMapa = true;
+            this.overlayMapa = false;
+          }
+          var lat = data["items"][0]["position"]["lat"];
+          var lng = data["items"][0]["position"]["lng"];
+          this.marker = latLng(lat, lng);
+          this.overlayMapa = false;
+          this.$refs.mapaCentro.mapObject.setView([lat, lng], 18);
+
+          // Aca falta guardar los valores para la API
+        });
+    },
   },
 };
 </script>
