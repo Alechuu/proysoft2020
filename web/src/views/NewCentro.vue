@@ -24,7 +24,10 @@
     <v-card class="pa-8 ma-5" elevation="5">
       <div class="d-flex flex-column">
         <v-icon size="45" color="primary">mdi-clipboard-edit</v-icon>
-        <h3 class="pb-5" style="text-align: center; color: primary">
+        <h3
+          class="pb-5"
+          style="text-align: center; color: primary; font-family: Ruda"
+        >
           Por favor, completá los siguientes datos
         </h3>
       </div>
@@ -52,7 +55,6 @@
           label="Sitio Web (Opcional)"
           name="sitio_web"
           prepend-icon="mdi-web"
-          required
         ></v-text-field>
         <validation-provider
           v-slot="{ errors }"
@@ -207,12 +209,13 @@
             required
           ></v-text-field>
         </validation-provider>
-        <div class="d-flex flex-row ml-10">
-          <v-alert type="info" dense>
-            Elegí un municipio, ingresá una dirección y hacé click en
+        <div class="d-flex flex-column ml-10">
+          <v-alert type="info" dense border="bottom">
+            Elegí un <b>municipio</b>, ingresá una <b>dirección</b> y hacé click
+            en
             <b>Ver en Mapa</b>
           </v-alert>
-          <v-btn class="ml-10 mb-5" color="primary" @click="verEnMapa">
+          <v-btn class="mb-5" color="primary" @click="verEnMapa">
             Ver en Mapa
           </v-btn>
         </div>
@@ -259,12 +262,41 @@
             </v-overlay>
           </div>
         </v-card>
-
         <v-file-input
+          @click:append="mostrarAyuda"
+          append-icon="mdi-help-circle"
           accept="application/pdf"
           label="PDF Visita"
           name="path_pdf"
         ></v-file-input>
+        <div class="text-center">
+          <v-dialog v-model="dialog" width="500">
+            <v-card>
+              <v-card-title class="headline primary">
+                <h4 style="color: white">PDF con info de visita</h4>
+              </v-card-title>
+
+              <v-card-text class="mt-5">
+                Te solicitamos que subas un PDF especificando el protocolo de
+                visita que se debe respetar para poder ir al Centro. <br />
+                Por ejemplo, como se manejan con los turnos, indicar que se
+                tiene que llevar barbijo, respetar la distancia social, entre
+                otros. <br />
+                Esto quedará disponible para las personas que vayan a visitar el
+                Centro.
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="dialog = false">
+                  Entendí
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
 
         <v-btn class="mr-4" type="submit" :disabled="invalid" color="primary">
           enviar
@@ -354,6 +386,7 @@ export default {
       errors: null,
       items: [],
       checkbox: null,
+      dialog: false,
     };
   },
 
@@ -427,6 +460,12 @@ export default {
 
     // Esto controla que el horario sea de 30 a 30 minutos
     allowedStep: (m) => m % 30 === 0,
+
+    // Esto abre el popup de ayuda
+
+    mostrarAyuda() {
+      this.dialog = true;
+    },
 
     // Funciones de Leaflet
 
