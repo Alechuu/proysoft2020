@@ -1,6 +1,7 @@
 from os import path, environ
 
 from flask import Flask, render_template, g
+from flask_cors import CORS
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -22,6 +23,7 @@ def create_app(environment="development"):
     csrf = CSRFProtect(app)
     Bootstrap(app)
     api = Api(app, decorators=[csrf.exempt])
+    cors = CORS(app, resources={r"/api/*":{"origins": "*"}})
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
