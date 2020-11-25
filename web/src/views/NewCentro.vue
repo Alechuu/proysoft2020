@@ -301,6 +301,19 @@
         <v-btn class="mr-4" type="submit" :disabled="invalid" color="primary">
           enviar
         </v-btn>
+        <!-- Hidden inputs para coordenadas  -->
+        <input
+          type="hidden"
+          name="latitud"
+          id="latitud"
+          :value="latitudInput"
+        />
+        <input
+          type="hidden"
+          name="longitud"
+          id="longitud"
+          :value="longitudInput"
+        />
       </form>
     </v-card>
   </validation-observer>
@@ -387,6 +400,8 @@ export default {
       items: [],
       checkbox: null,
       dialog: false,
+      latitudInput: "",
+      longitudInput: "",
     };
   },
 
@@ -471,6 +486,8 @@ export default {
 
     agregarMarker(event) {
       this.marker = latLng(event.latlng.lat, event.latlng.lng);
+      this.latitudInput = event.latlng.lat;
+      this.longitudInput = event.latlng.lng;
     },
 
     verEnMapa() {

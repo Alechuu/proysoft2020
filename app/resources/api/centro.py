@@ -79,7 +79,10 @@ class CentroNew(Resource):
             return Response(json.dumps(datos), mimetype='application/json')
         else:
             try:
-                coords = Geocoder(form.data['direccion'])
+                if(request.form['latitud'] == "" and request.form['longitud'] == ""):
+                    coords = Geocoder(form.data['direccion'])
+                else:
+                    coords = [request.form['latitud'],request.form['longitud']]                
                 nuevo_centro = Centro.create(form.data, coords)
                 campos_no_deseados = ['latitud', 'longitud',
                                       'tipo_centro', 'estado', 'municipio']
