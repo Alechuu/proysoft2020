@@ -4,6 +4,7 @@
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
     <v-alert
+      v-model="resetAlert"
       class="ma-5"
       :value="alert"
       border="bottom"
@@ -13,13 +14,25 @@
       >{{ alert_body }}
     </v-alert>
     <v-card class="pa-8 ma-5" color="primary" elevation="5">
-      <h1 style="text-align: center; color: white">Agregar un nuevo Centro</h1>
+      <div class="d-flex flex-column">
+        <v-icon color="white" size="50"> mdi-home-heart </v-icon>
+        <h1 style="text-align: center; color: white">
+          Agregar un nuevo Centro
+        </h1>
+      </div>
     </v-card>
     <v-card class="pa-8 ma-5" elevation="5">
-      <h3 class="pb-10" style="text-align: center; color: primary">
-        Por favor, completá los siguientes datos
-      </h3>
-      <v-divider></v-divider>
+      <div class="d-flex flex-column">
+        <v-icon size="45" color="primary">mdi-clipboard-edit</v-icon>
+        <h3
+          class="pb-5"
+          style="text-align: center; color: primary; font-family: Ruda"
+        >
+          Por favor, completá los siguientes datos
+        </h3>
+      </div>
+
+      <v-divider class="mb-10"></v-divider>
       <form id="test_form" @submit.prevent="submit">
         <validation-provider
           v-slot="{ errors }"
@@ -39,10 +52,9 @@
         <v-text-field
           v-model="web"
           :error-messages="errors"
-          label="Sitio Web"
+          label="Sitio Web (Opcional)"
           name="sitio_web"
           prepend-icon="mdi-web"
-          required
         ></v-text-field>
         <validation-provider
           v-slot="{ errors }"
@@ -62,7 +74,7 @@
           <v-text-field
             v-model="tipo"
             :error-messages="errors"
-            label="Tipo"
+            label="Tipo (Ropa, Alimentos, Sangre, etc)"
             name="tipo"
             prepend-icon="mdi-text-box"
             required
@@ -177,6 +189,7 @@
             :error-messages="errors"
             label="Municipio"
             name="municipio"
+            id="municipio"
             data-vv-name="select"
             prepend-icon="mdi-home-map-marker"
             required
@@ -196,16 +209,111 @@
             required
           ></v-text-field>
         </validation-provider>
+        <div class="d-flex flex-column ml-10">
+          <v-alert type="info" dense border="bottom">
+            Elegí un <b>municipio</b>, ingresá una <b>dirección</b> y hacé click
+            en
+            <b>Ver en Mapa</b>
+          </v-alert>
+          <v-btn class="mb-5" color="primary" @click="verEnMapa">
+            Ver en Mapa
+          </v-btn>
+        </div>
 
+        <v-alert
+          v-model="resetAlertMapa"
+          :value="alertMapa"
+          class="ml-10"
+          style="width: 50%"
+          type="warning"
+          transition="scale-transition"
+          dismissible
+          dense
+          border="bottom"
+        >
+          Ups, no encontramos esa dirección. Revisala e intentá de nuevo.
+        </v-alert>
+        <v-card class="ml-10">
+          <div>
+            <l-map
+              @click="agregarMarker"
+              :zoom="zoom"
+              :center="center"
+              ref="mapaCentro"
+              style="height: 450px; width: 100%; z-index: 1"
+            >
+              <l-tile-layer :url="url" :attribution="attribution" />
+              <l-marker :lat-lng="marker">
+                <l-tooltip :options="{ permanent: true, interactive: true }">
+                  <div>
+                    Esta sería la ubicación del Centro.<br />
+                    Si es errónea, simplemente<br />
+                    hacé click en la ubicación correcta<br />
+                    y se guardará
+                  </div></l-tooltip
+                >
+              </l-marker>
+            </l-map>
+            <v-overlay :absolute="true" :value="overlayMapa">
+              <v-progress-circular
+                indeterminate
+                size="64"
+              ></v-progress-circular>
+            </v-overlay>
+          </div>
+        </v-card>
         <v-file-input
+          @click:append="mostrarAyuda"
+          append-icon="mdi-help-circle"
           accept="application/pdf"
           label="PDF Visita"
           name="path_pdf"
         ></v-file-input>
+        <div class="text-center">
+          <v-dialog v-model="dialog" width="500">
+            <v-card>
+              <v-card-title class="headline primary">
+                <h4 style="color: white">PDF con info de visita</h4>
+              </v-card-title>
+
+              <v-card-text class="mt-5">
+                Te solicitamos que subas un PDF especificando el protocolo de
+                visita que se debe respetar para poder ir al Centro. <br />
+                Por ejemplo, como se manejan con los turnos, indicar que se
+                tiene que llevar barbijo, respetar la distancia social, entre
+                otros. <br />
+                Esto quedará disponible para las personas que vayan a visitar el
+                Centro.
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="dialog = false">
+                  Entendí
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
 
         <v-btn class="mr-4" type="submit" :disabled="invalid" color="primary">
           enviar
         </v-btn>
+        <!-- Hidden inputs para coordenadas  -->
+        <input
+          type="hidden"
+          name="latitud"
+          id="latitud"
+          :value="latitudInput"
+        />
+        <input
+          type="hidden"
+          name="longitud"
+          id="longitud"
+          :value="longitudInput"
+        />
       </form>
     </v-card>
   </validation-observer>
@@ -213,6 +321,9 @@
 
 
 <script>
+import "leaflet/dist/leaflet.css";
+import { latLng } from "leaflet";
+import { LMap, LTileLayer, LMarker, LTooltip } from "vue2-leaflet";
 import { required, email, max, numeric } from "vee-validate/dist/rules";
 import {
   extend,
@@ -247,31 +358,65 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    LMap,
+    LTileLayer,
+    LMarker,
+    LTooltip,
   },
-  data: () => ({
-    alert: false,
-    alert_type: "success",
-    alert_body: "",
-    overlay: false,
-    nombre: "",
-    telefono: "",
-    direccion: "",
-    email: "",
-    web: "",
-    tipo: "",
-    select: null,
-    time_apertura: null,
-    time_cierre: null,
-    menu_apertura: false,
-    menu_cierre: false,
-    errors: null,
-    items: [],
-    checkbox: null,
-  }),
+  data() {
+    return {
+      // Datos Leaflet
+      zoom: 6,
+      center: [-37.3121792, -61.3996217],
+      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution:
+        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      marker: latLng(0, 0),
+      // Datos Alerta
+      resetAlert: false,
+      alert: false,
+      alert_type: "success",
+      alert_body: "",
+      resetAlertMapa: false,
+      alertMapa: false,
+
+      // Loading animacion
+      overlay: false,
+      overlayMapa: false,
+
+      // Datos formulario
+      nombre: "",
+      telefono: "",
+      direccion: "",
+      email: "",
+      web: "",
+      tipo: "",
+      select: null,
+      time_apertura: null,
+      time_cierre: null,
+      menu_apertura: false,
+      menu_cierre: false,
+      errors: null,
+      items: [],
+      checkbox: null,
+      dialog: false,
+      latitudInput: "",
+      longitudInput: "",
+    };
+  },
+
   created() {
     this.fetchMunicipios();
   },
+  mounted() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },
   methods: {
+    // Función que trae los municipios para llenar el Select
     fetchMunicipios() {
       fetch(
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135"
@@ -286,6 +431,8 @@ export default {
           }
         });
     },
+
+    // Submit del formulario junto a sus chequeos + Alertas
     submit() {
       this.$refs.observer.validate();
       this.overlay = true;
@@ -300,7 +447,8 @@ export default {
             this.overlay = false;
             this.alert_type = "success";
             this.alert_body =
-              "Solicitud de Centro aceptada exitosamente. Estará pendiente de aprobación";
+              "Solicitud de Centro aceptada exitosamente. Estará pendiente de aprobación.";
+            this.resetAlert = true;
             this.alert = true;
             window.scrollTo({
               top: 0,
@@ -316,14 +464,61 @@ export default {
             });
             this.alert_type = "error";
             this.alert_body =
-              "Hubo un error procesando tu solicitud, por favor, intentá de nuevo";
+              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
+            this.resetAlert = true;
             this.alert = true;
             console.log(data);
             console.log("Hubo un error");
           }
         });
     },
+
+    // Esto controla que el horario sea de 30 a 30 minutos
     allowedStep: (m) => m % 30 === 0,
+
+    // Esto abre el popup de ayuda
+
+    mostrarAyuda() {
+      this.dialog = true;
+    },
+
+    // Funciones de Leaflet
+
+    agregarMarker(event) {
+      this.marker = latLng(event.latlng.lat, event.latlng.lng);
+      this.latitudInput = event.latlng.lat;
+      this.longitudInput = event.latlng.lng;
+    },
+
+    verEnMapa() {
+      this.overlayMapa = true;
+      var dataDir = encodeURI(
+        this.direccion +
+          ", Municipio " +
+          this.select +
+          ", Provincia de Buenos Aires, Argentina"
+      );
+      console.log(dataDir);
+      fetch(
+        "https://geocode.search.hereapi.com/v1/geocode?apikey=s0gvC3NKNulSUn6DSTyhf4jCcwVL5TN7C5oBELvwf3I&q=" +
+          dataDir
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data["items"][0] === undefined) {
+            this.resetAlertMapa = true;
+            this.alertMapa = true;
+            this.overlayMapa = false;
+          }
+          var lat = data["items"][0]["position"]["lat"];
+          var lng = data["items"][0]["position"]["lng"];
+          this.marker = latLng(lat, lng);
+          this.overlayMapa = false;
+          this.$refs.mapaCentro.mapObject.setView([lat, lng], 18);
+
+          // Aca falta guardar los valores para la API
+        });
+    },
   },
 };
 </script>
