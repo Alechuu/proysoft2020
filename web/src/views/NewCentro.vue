@@ -30,152 +30,192 @@
         >
           Por favor, completá los siguientes datos
         </h3>
+        <h5 class="font-weight-light pb-3" style="text-align: center">
+          Los campos requeridos están marcados con un *
+        </h5>
       </div>
 
       <v-divider class="mb-10"></v-divider>
       <form id="test_form" @submit.prevent="submit">
-        <validation-provider
-          v-slot="{ errors }"
-          name="nombre"
-          rules="required|max:50"
-        >
-          <v-text-field
-            v-model="nombre"
-            :counter="50"
-            :error-messages="errors"
-            label="Nombre"
-            name="nombre"
-            prepend-icon="mdi-text"
-            required
-          ></v-text-field>
-        </validation-provider>
-        <v-text-field
-          v-model="web"
-          :error-messages="errors"
-          label="Sitio Web (Opcional)"
-          name="sitio_web"
-          prepend-icon="mdi-web"
-        ></v-text-field>
-        <validation-provider
-          v-slot="{ errors }"
-          name="teléfono"
-          rules="required|numeric"
-        >
-          <v-text-field
-            v-model="telefono"
-            :error-messages="errors"
-            label="Teléfono"
-            name="telefono"
-            prepend-icon="mdi-phone"
-            required
-          ></v-text-field>
-        </validation-provider>
-        <validation-provider v-slot="{ errors }" name="tipo" rules="required">
-          <v-text-field
-            v-model="tipo"
-            :error-messages="errors"
-            label="Tipo (Ropa, Alimentos, Sangre, etc)"
-            name="tipo"
-            prepend-icon="mdi-text-box"
-            required
-          ></v-text-field>
-        </validation-provider>
-        <v-menu
-          ref="menu_apertura"
-          v-model="menu_apertura"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          :return-value.sync="time_apertura"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
+        <v-row>
+          <v-col md="6" cols="12">
             <validation-provider
               v-slot="{ errors }"
-              name="Hora de Apertura"
+              name="nombre"
+              rules="required|max:50"
+            >
+              <v-text-field
+                v-model="nombre"
+                :counter="50"
+                :error-messages="errors"
+                label="Nombre *"
+                name="nombre"
+                prepend-icon="mdi-text"
+                required
+              ></v-text-field>
+            </validation-provider>
+          </v-col>
+          <v-col md="6" cols="12">
+            <v-text-field
+              v-model="web"
+              :error-messages="errors"
+              label="Sitio Web (Opcional)"
+              name="sitio_web"
+              prepend-icon="mdi-web"
+            ></v-text-field>
+          </v-col>
+          <v-col md="6" cols="12">
+            <validation-provider
+              v-slot="{ errors }"
+              name="teléfono"
+              rules="required|numeric"
+            >
+              <v-text-field
+                v-model="telefono"
+                :error-messages="errors"
+                label="Teléfono *"
+                name="telefono"
+                prepend-icon="mdi-phone"
+                required
+              ></v-text-field>
+            </validation-provider>
+          </v-col>
+          <v-col md="6" cols="12">
+            <validation-provider
+              v-slot="{ errors }"
+              name="tipo"
               rules="required"
             >
               <v-text-field
+                v-model="tipo"
+                :error-messages="errors"
+                label="Tipo (Ropa, Alimentos, Sangre, etc) *"
+                name="tipo"
+                prepend-icon="mdi-text-box"
+                required
+              ></v-text-field>
+            </validation-provider>
+          </v-col>
+          <v-col md="6" cols="12">
+            <v-menu
+              ref="menu_apertura"
+              v-model="menu_apertura"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="time_apertura"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Hora de Apertura"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="time_apertura"
+                    label="Hora de Apertura *"
+                    name="hora_apertura"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    required
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </template>
+              <v-time-picker
+                v-if="menu_apertura"
                 v-model="time_apertura"
-                label="Hora de Apertura"
-                name="hora_apertura"
-                prepend-icon="mdi-clock-time-four-outline"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                required
-                :error-messages="errors"
-              ></v-text-field>
-            </validation-provider>
-          </template>
-          <v-time-picker
-            v-if="menu_apertura"
-            v-model="time_apertura"
-            format="24hr"
-            :allowed-minutes="allowedStep"
-            min="9:00"
-            :max="time_cierre"
-            full-width
-            @click:minute="$refs.menu_apertura.save(time_apertura)"
-          ></v-time-picker>
-        </v-menu>
-        <v-menu
-          ref="menu_cierre"
-          v-model="menu_cierre"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          :return-value.sync="time_cierre"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
+                format="24hr"
+                :allowed-minutes="allowedStep"
+                min="9:00"
+                :max="time_cierre"
+                full-width
+                @click:minute="$refs.menu_apertura.save(time_apertura)"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+          <v-col md="6" cols="12">
+            <v-menu
+              ref="menu_cierre"
+              v-model="menu_cierre"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="time_cierre"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Hora de Cierre"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="time_cierre"
+                    label="Hora de Cierre *"
+                    name="hora_cierre"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    required
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </template>
+              <v-time-picker
+                v-if="menu_cierre"
+                v-model="time_cierre"
+                format="24hr"
+                :allowed-minutes="allowedStep"
+                :min="time_apertura"
+                max="16:00"
+                full-width
+                @click:minute="$refs.menu_cierre.save(time_cierre)"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+          <v-col md="6" cols="12">
             <validation-provider
               v-slot="{ errors }"
-              name="Hora de Cierre"
-              rules="required"
+              name="email"
+              rules="required|email"
             >
               <v-text-field
-                v-model="time_cierre"
-                label="Hora de Cierre"
-                name="hora_cierre"
-                prepend-icon="mdi-clock-time-four-outline"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                required
+                v-model="email"
                 :error-messages="errors"
+                label="E-mail *"
+                name="email"
+                prepend-icon="mdi-at"
+                required
               ></v-text-field>
             </validation-provider>
-          </template>
-          <v-time-picker
-            v-if="menu_cierre"
-            v-model="time_cierre"
-            format="24hr"
-            :allowed-minutes="allowedStep"
-            :min="time_apertura"
-            max="16:00"
-            full-width
-            @click:minute="$refs.menu_cierre.save(time_cierre)"
-          ></v-time-picker>
-        </v-menu>
-        <validation-provider
-          v-slot="{ errors }"
-          name="email"
-          rules="required|email"
-        >
-          <v-text-field
-            v-model="email"
-            :error-messages="errors"
-            label="E-mail"
-            name="email"
-            prepend-icon="mdi-at"
-            required
-          ></v-text-field>
-        </validation-provider>
+          </v-col>
+          <v-col md="6" cols="12">
+            <validation-provider
+              v-slot="{ errors }"
+              name="PDF"
+              rules="required"
+            >
+              <v-file-input
+                :error-messages="errors"
+                @click:append="mostrarAyuda"
+                append-icon="mdi-help-circle"
+                accept="application/pdf"
+                label="PDF Visita *"
+                name="path_pdf"
+              ></v-file-input>
+            </validation-provider>
+          </v-col>
+        </v-row>
+
         <validation-provider
           v-slot="{ errors }"
           name="municipio"
@@ -187,7 +227,7 @@
             item-text="mun_nombre"
             item-value="mun_nombre"
             :error-messages="errors"
-            label="Municipio"
+            label="Municipio *"
             name="municipio"
             id="municipio"
             data-vv-name="select"
@@ -203,7 +243,7 @@
           <v-text-field
             v-model="direccion"
             :error-messages="errors"
-            label="Dirección"
+            label="Dirección *"
             name="direccion"
             prepend-icon="mdi-map-marker"
             required
@@ -262,18 +302,11 @@
             </v-overlay>
           </div>
         </v-card>
-        <v-file-input
-          @click:append="mostrarAyuda"
-          append-icon="mdi-help-circle"
-          accept="application/pdf"
-          label="PDF Visita"
-          name="path_pdf"
-        ></v-file-input>
         <div class="text-center">
           <v-dialog v-model="dialog" width="500">
             <v-card>
               <v-card-title class="headline primary">
-                <h4 style="color: white">PDF con info de visita</h4>
+                <h4 style="color: white">PDF con información de visita</h4>
               </v-card-title>
 
               <v-card-text class="mt-5">
@@ -298,7 +331,14 @@
           </v-dialog>
         </div>
 
-        <v-btn class="mr-4" type="submit" :disabled="invalid" color="primary">
+        <v-btn
+          class="mr-4 mt-10"
+          x-large
+          style="width:100%;"
+          type="submit"
+          :disabled="invalid"
+          color="success"
+        >
           enviar
         </v-btn>
         <!-- Hidden inputs para coordenadas  -->
@@ -318,7 +358,6 @@
     </v-card>
   </validation-observer>
 </template>
-
 
 <script>
 import "leaflet/dist/leaflet.css";

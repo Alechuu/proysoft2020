@@ -72,6 +72,13 @@
 
         <!-- /Opciones de los Turnos -->
       </v-list>
+      <v-list-item @click="darkMode">
+        <v-list-item-icon>
+          <v-icon>mdi-theme-light-dark</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-title>Claro/Oscuro</v-list-item-title>
+      </v-list-item>
     </v-navigation-drawer>
 
     <v-app-bar app dark color="primary">
@@ -83,19 +90,13 @@
           contain
           src="@/assets/logonew.png"
           transition="scale-transition"
-          width="42"
+          width="38"
         />
       </div>
       <v-toolbar-title>Centros Buenos Aires</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn color="white" icon @click="darkMode">
-        <v-icon>mdi-theme-light-dark </v-icon></v-btn
-      >
     </v-app-bar>
   </div>
 </template>
-
-
 
 <script>
 export default {
@@ -113,8 +114,26 @@ export default {
       drawer: false,
     };
   },
+
+  created() {
+    // Configuracion Tema
+    if (localStorage.getItem("settings") === null) {
+      var localDataNotSet = {
+        settings: {
+          dark_theme: this.$vuetify.theme.dark,
+        },
+      };
+      localStorage.setItem("settings", JSON.stringify(localDataNotSet));
+    } else {
+      var localData = JSON.parse(localStorage.getItem("settings"));
+      this.$vuetify.theme.dark = localData.settings.dark_theme;
+    }
+  },
   methods: {
     darkMode() {
+      var localData = JSON.parse(localStorage.getItem("settings"));
+      localData.settings.dark_theme = !this.$vuetify.theme.dark;
+      localStorage.setItem("settings", JSON.stringify(localData));
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
     },
   },
