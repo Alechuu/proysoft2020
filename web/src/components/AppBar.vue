@@ -19,7 +19,7 @@
         <!-- Opciones de los Centros -->
 
         <v-list-group
-          group="/centros"
+          group="/v/centros"
           :value="false"
           prepend-icon="mdi-home-heart"
         >
@@ -47,7 +47,7 @@
         <!-- Opciones de los Turnos -->
 
         <v-list-group
-          group="/turnos"
+          group="/v/turnos"
           :value="false"
           prepend-icon="mdi-ticket-account"
         >
@@ -93,7 +93,7 @@
           width="38"
         />
       </div>
-      <v-toolbar-title>Centros Buenos Aires</v-toolbar-title>
+      <v-toolbar-title class="text-h5">Centros Buenos Aires</v-toolbar-title>
     </v-app-bar>
   </div>
 </template>
@@ -104,12 +104,13 @@ export default {
   data() {
     return {
       centros: [
-        ["Listado", "mdi-home-search", "/centros/buscar"],
-        ["Nuevo Centro", "mdi-home-plus", "/centros/crear"],
+        ["Listado", "mdi-home-search", "/v/centros/buscar"],
+        ["Nuevo Centro", "mdi-home-plus", "/v/centros/crear"],
+        ["Estado Solicitud", "mdi-home-edit", "/v/centros/estado"],
       ],
       turnos: [
-        ["Opcion 1", "mdi-plus-circle", "/turnos/opcion1"],
-        ["Opcion 2", "mdi-card-search-outline", "/turnos/opcion2"],
+        ["Opcion 1", "mdi-plus-circle", "/v/turnos/opcion1"],
+        ["Opcion 2", "mdi-card-search-outline", "/v/turnos/opcion2"],
       ],
       drawer: false,
     };

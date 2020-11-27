@@ -3,12 +3,12 @@
     <v-parallax dark src="@/assets/parallax2.jpg" height="1000">
       <v-row align="center" justify="center">
         <v-col class="text-center" cols="12">
-          <h1 class="display-2 font-weight-black mb-4">
+          <h1 class="text-h2 display-2 font-weight-black mb-4">
             Centros de donación de la Provincia de Buenos Aires
           </h1>
-          <h3 class="font-italic">
+          <h3 class="text-h5 font-italic">
             Cientos de centros de ropa, alimentos, donaciones de sangre, plasma
-            y ¡muchos más!
+            y muchas categorías más.
           </h3>
         </v-col>
       </v-row>
@@ -21,12 +21,13 @@
         outlined
         tile
       >
-        <div style="text-align:center;">
+        <div style="text-align: center">
           <v-icon size="50" color="primary"> {{ slide.icon }} </v-icon>
           <h1>{{ slide.title }}</h1>
           <p
-            class="mt-2"
-            style="font-family:Ruda;font-size:20px;max-width:600px"
+            class="text-body-1 mt-2"
+            style="font-family: Noto Sans SC; max-width: 600px"
+            v-html="slide.descripcion"
           >
             {{ slide.descripcion }}
           </p>
@@ -49,7 +50,7 @@ export default {
           title: "Información General",
           icon: "mdi-help-circle",
           descripcion:
-            "Acá vas a poder encontrar un montón de Centros ubicados en la Provincia de Buenos Aires. Podés buscar tu Centro más cercano para donar, recibir asistencia o incluso agregar un Centro nuevo. ",
+            "Acá vas a poder encontrar un montón de Centros ubicados en la Provincia de Buenos Aires. <br/> Podés buscar tu Centro más cercano para donar, recibir asistencia o incluso agregar un Centro nuevo. ",
         },
         {
           title: "Donaciones",
@@ -58,16 +59,16 @@ export default {
             "Donar es muy fácil, hacé click abajo para buscar un Centro al cuál donar.",
           boton: true,
           botonContent: "Donar",
-          link: "/centros",
+          link: "/v/centros/buscar",
         },
         {
           title: "Necesito una mano",
           icon: "mdi-hand-heart",
           descripcion:
-            "¿Necesitás asistencia? Hacé click abajo y buscá el Centro más cercano para empezar.",
+            "¿Necesitás asistencia? <br/> Hacé click abajo y buscá el Centro más cercano para empezar.",
           boton: true,
           botonContent: "Necesito una mano",
-          link: "/centros",
+          link: "/v/centros/buscar",
         },
         {
           title: "Nuevo Centro",
@@ -76,7 +77,7 @@ export default {
             "Si sabés de algún Centro que falte, hacé click abajo para llenar un formulario con los datos correspondientes.",
           boton: true,
           botonContent: "Solicitar",
-          link: "/centros/crear",
+          link: "/v/centros/crear",
         },
       ],
     };
