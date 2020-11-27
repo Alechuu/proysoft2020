@@ -332,6 +332,8 @@ styles %} {{super()}}
                   <div
                   class="col-lg-offset-2 col-lg-10"
                 />
+                <input type="hidden" name="latitudInput" id="latitudInput" />
+                <input type="hidden" name="longitudInput" id="longitudInput" />
                 <button
                   class="btn btn-theme"
                   id="createButton"
@@ -460,6 +462,15 @@ styles %} {{super()}}
         "sk.eyJ1Ijoibmljb3hyb2xsIiwiYSI6ImNraDVjajM2YjBrMW4yem92dzBpY3I2enMifQ.5RbMt9SNX0EQuk9VHVszFg",
     }
   ).addTo(mymap);
+
+  var markerCentro = L.marker([0, 0]);
+
+  mymap.on("click", function (e) {
+    markerCentro.setLatLng(e.latlng);
+    document.getElementById("latitudInput").value = e.latlng.lat;
+    document.getElementById("longitudInput").value = e.latlng.lng;
+    markerCentro.bindPopup("¡Ubicación guardada!").openPopup();
+  });
 </script>
 <script>
   function buscarDireccion() {
@@ -478,18 +489,16 @@ styles %} {{super()}}
       .then((data) => {
         var lat = data["items"][0]["position"]["lat"];
         var lng = data["items"][0]["position"]["lng"];
-        var newMarker = L.marker([lat, lng], { draggable: "true" })
-          .addTo(mymap)
+        markerCentro.setLatLng(new L.LatLng(lat, lng));
+        markerCentro.addTo(mymap);
+        markerCentro
           .bindPopup(
-            "Vas agregarlo en las siguientes coordenadas: latitud = " +
-              lat +
-              " longitud = " +
-              lng +
-              '" </a>'
+            "Esta sería la ubicación del Centro. <br/>" +
+              "Si es errónea, simplemente hacé click en una ubicación <br/>" +
+              "y se guardará."
           )
           .openPopup();
         mymap.setView([lat, lng], 18);
-        console.log(data);
       });
     // The function returns the product of p1 and p2
   }
@@ -515,10 +524,8 @@ styles %} {{super()}}
     formData.append("sitio_web", $("#sitio_web").val());
     formData.append("direccion", $("#calleynumero").val());
     formData.append("path_pdf", $("input[type=file]")[0].files[0]);
-    formData.append("latitud", "");
-    formData.append("longitud", "");
-
-    //formData.append('estado', $('#estado').val());
+    formData.append("latitud", $("#latitudInput").val());
+    formData.append("longitud", $("#longitudInput").val());
 
     axios
       .post("/api/centros", formData, {
