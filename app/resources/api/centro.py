@@ -5,6 +5,10 @@ from flask import Response, request, session, current_app
 from flask_restful import Resource
 from flask_wtf.csrf import CSRFProtect
 
+# ESTO ROMPE EL MODELO MVC. HAY QUE HACER UN METODO EN EL RECURSO USER
+# IMPORTAR DIRECTAMENTE EL MODELO ROMPE EL MVC
+from app.models.user import User 
+# <== ------------------------------------------------------------ =>>
 from app.forms.api.centro import formCentros
 from app.forms.api.turno import formTurno
 from app.helpers.serialize import serializeSQLAlchemy
@@ -82,12 +86,13 @@ class CentroNew(Resource):
                     coords = Geocoder(form.data['direccion'])
                 else:
                     coords = [request.form['latitud'],request.form['longitud']]
-
-                usuario_logueado = session.get('user') 
+                #breakpoint()
+                usuario_logueado = session.get('user')
                 if(usuario_logueado == None):
                     solicitud = "ESPERANDO_REVISION"
                     form.estado.data = False
                 else:
+                    usuario_logueado = User.find_by_username(usuario_logueado) 
                     permisos = get_permisos(usuario_logueado)
                     if 'centro_new' in permisos:
                         solicitud = "ACEPTADO"
@@ -99,6 +104,7 @@ class CentroNew(Resource):
                     'atributos': serializeSQLAlchemy(nuevo_centro, campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
+                print(str(e))
                 if('400 Bad Request' in str(e)):
                     datos = {'status': 400, 'body': 'Bad Request'}
                     return Response(json.dumps(datos), mimetype='application/json')                    

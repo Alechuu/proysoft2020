@@ -296,14 +296,14 @@
               >
                 <l-tile-layer :url="url" :attribution="attribution" />
                 <l-marker :lat-lng="marker">
-                  <l-tooltip :options="{ permanent: true, interactive: true }">
-                    <div>
-                      Esta sería la ubicación del Centro.<br />
-                      Si es errónea, simplemente<br />
-                      hacé click en la ubicación correcta<br />
-                      y se guardará
-                    </div></l-tooltip
+                  <l-tooltip
+                    v-html="pin_help"
+                    :options="{ permanent: true, interactive: true }"
                   >
+                    <div>
+                      {{ pin_help }}
+                    </div>
+                  </l-tooltip>
                 </l-marker>
               </l-map>
               <v-overlay :absolute="true" :value="overlayMapa">
@@ -424,6 +424,11 @@ export default {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       marker: latLng(0, 0),
+      pin_help:
+        "Esta sería la ubicación del Centro.<br />" +
+        "Si es errónea, simplemente<br />" +
+        "hacé click en la ubicación correcta<br />" +
+        "y se guardará.",
 
       // Datos Alerta
       resetAlert: false,
@@ -563,6 +568,7 @@ export default {
     // Funciones de Leaflet
 
     agregarMarker(event) {
+      this.pin_help = "¡Ubicación guardada!";
       this.marker = latLng(event.latlng.lat, event.latlng.lng);
       this.latitudInput = event.latlng.lat;
       this.longitudInput = event.latlng.lng;
@@ -589,6 +595,11 @@ export default {
           }
           var lat = data["items"][0]["position"]["lat"];
           var lng = data["items"][0]["position"]["lng"];
+          this.pin_help =
+            "Esta sería la ubicación del Centro.<br />" +
+            "Si es errónea, simplemente<br />" +
+            "hacé click en la ubicación correcta<br />" +
+            "y se guardará.";
           this.marker = latLng(lat, lng);
           this.overlayMapa = false;
           this.$refs.mapaCentro.mapObject.setView([lat, lng], 18);

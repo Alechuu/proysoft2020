@@ -118,6 +118,7 @@ class Centro(db.Model):
             micentro.hora_cierre = data.get("hora_cierre")
             micentro.latitud=coords[0]
             micentro.longitud=coords[1]
+            micentro.solicitud=data.get("solicitud")
             if(newPath != "NO_UPDATE_PDF"):
                 os.remove(current_app.root_path+micentro.path_pdf)
                 micentro.path_pdf = newPath
