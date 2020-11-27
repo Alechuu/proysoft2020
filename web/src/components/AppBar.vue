@@ -19,7 +19,7 @@
         <!-- Opciones de los Centros -->
 
         <v-list-group
-          group="/centros"
+          group="/v/centros"
           :value="false"
           prepend-icon="mdi-home-heart"
         >
@@ -47,7 +47,7 @@
         <!-- Opciones de los Turnos -->
 
         <v-list-group
-          group="/turnos"
+          group="/v/turnos"
           :value="false"
           prepend-icon="mdi-ticket-account"
         >
@@ -72,6 +72,13 @@
 
         <!-- /Opciones de los Turnos -->
       </v-list>
+      <v-list-item @click="darkMode">
+        <v-list-item-icon>
+          <v-icon>mdi-theme-light-dark</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-title>Claro/Oscuro</v-list-item-title>
+      </v-list-item>
     </v-navigation-drawer>
 
     <v-app-bar app dark color="primary">
@@ -83,19 +90,13 @@
           contain
           src="@/assets/logonew.png"
           transition="scale-transition"
-          width="42"
+          width="38"
         />
       </div>
-      <v-toolbar-title>Centros Buenos Aires</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn color="white" icon @click="darkMode">
-        <v-icon>mdi-theme-light-dark </v-icon></v-btn
-      >
+      <v-toolbar-title class="text-h5">Centros Buenos Aires</v-toolbar-title>
     </v-app-bar>
   </div>
 </template>
-
-
 
 <script>
 export default {
@@ -103,18 +104,37 @@ export default {
   data() {
     return {
       centros: [
-        ["Listado", "mdi-home-search", "/centros/buscar"],
-        ["Nuevo Centro", "mdi-home-plus", "/centros/crear"],
+        ["Listado", "mdi-home-search", "/v/centros/buscar"],
+        ["Nuevo Centro", "mdi-home-plus", "/v/centros/crear"],
+        ["Estado Solicitud", "mdi-home-edit", "/v/centros/estado"],
       ],
       turnos: [
-        ["Opcion 1", "mdi-plus-circle", "/turnos/opcion1"],
-        ["Opcion 2", "mdi-card-search-outline", "/turnos/opcion2"],
+        ["Opcion 1", "mdi-plus-circle", "/v/turnos/opcion1"],
+        ["Opcion 2", "mdi-card-search-outline", "/v/turnos/opcion2"],
       ],
       drawer: false,
     };
   },
+
+  created() {
+    // Configuracion Tema
+    if (localStorage.getItem("settings") === null) {
+      var localDataNotSet = {
+        settings: {
+          dark_theme: this.$vuetify.theme.dark,
+        },
+      };
+      localStorage.setItem("settings", JSON.stringify(localDataNotSet));
+    } else {
+      var localData = JSON.parse(localStorage.getItem("settings"));
+      this.$vuetify.theme.dark = localData.settings.dark_theme;
+    }
+  },
   methods: {
     darkMode() {
+      var localData = JSON.parse(localStorage.getItem("settings"));
+      localData.settings.dark_theme = !this.$vuetify.theme.dark;
+      localStorage.setItem("settings", JSON.stringify(localData));
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
     },
   },

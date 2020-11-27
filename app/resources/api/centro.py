@@ -1,10 +1,14 @@
 import json, os, random
 from datetime import datetime, timedelta
 
-from flask import Response, request, current_app
+from flask import Response, request, session, current_app
 from flask_restful import Resource
 from flask_wtf.csrf import CSRFProtect
 
+# ESTO ROMPE EL MODELO MVC. HAY QUE HACER UN METODO EN EL RECURSO USER
+# IMPORTAR DIRECTAMENTE EL MODELO ROMPE EL MVC
+from app.models.user import User 
+# <== ------------------------------------------------------------ =>>
 from app.forms.api.centro import formCentros
 from app.forms.api.turno import formTurno
 from app.helpers.serialize import serializeSQLAlchemy
@@ -12,6 +16,7 @@ from app.helpers.geocoder import geocoder as Geocoder
 from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.models.turno import Turno
+from app.helpers.autorizacion import get_permisos
 
 
 class AllCentros(Resource):
@@ -44,13 +49,12 @@ class CentroID(Resource):
     def get(self, id_centro):
         try:
             centro = Centro.get_by_id(id_centro)
-            campos_no_deseados = ['latitud', 'longitud',
-                                  'tipo_centro', 'estado', 'municipio']
+            campos_no_deseados = ['latitud', 'longitud']
             datos = {'status': 200, 'atributos': serializeSQLAlchemy(
                 centro, campos_no_deseados)}
         except Exception as e:
             if ('__table__' in str(e)):
-                datos = {'status': 401, 'body': 'Not Found'}
+                datos = {'status': 404, 'body': 'Not Found'}
             else:
                 datos = {'status': 500, 'body': 'Internal Server Error'}
         finally:
@@ -73,7 +77,6 @@ class CentroNew(Resource):
             form.path_pdf.data = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
             # Guardo el archivo
             pdf_visita.save(current_app.root_path+"/static/uploads/" +(pdf_visita.filename).replace(" ", ""))
-        form.estado.data = False
         if(not form.validate()):
             datos = {'status': 400, 'body': 'Bad Request'}
             return Response(json.dumps(datos), mimetype='application/json')
@@ -82,14 +85,29 @@ class CentroNew(Resource):
                 if(request.form['latitud'] == "" and request.form['longitud'] == ""):
                     coords = Geocoder(form.data['direccion'])
                 else:
-                    coords = [request.form['latitud'],request.form['longitud']]                
-                nuevo_centro = Centro.create(form.data, coords)
-                campos_no_deseados = ['latitud', 'longitud',
-                                      'tipo_centro', 'estado', 'municipio']
+                    coords = [request.form['latitud'],request.form['longitud']]
+                #breakpoint()
+                usuario_logueado = session.get('user')
+                if(usuario_logueado == None):
+                    solicitud = "ESPERANDO_REVISION"
+                    form.estado.data = False
+                else:
+                    usuario_logueado = User.find_by_username(usuario_logueado) 
+                    permisos = get_permisos(usuario_logueado)
+                    if 'centro_new' in permisos:
+                        solicitud = "ACEPTADO"
+                        form.estado.data = True
+            
+                nuevo_centro = Centro.create(form.data, coords, solicitud)
+                campos_no_deseados = ['latitud', 'longitud']
                 datos = {'status': '201 Created', 'body': {
                     'atributos': serializeSQLAlchemy(nuevo_centro, campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
+                print(str(e))
+                if('400 Bad Request' in str(e)):
+                    datos = {'status': 400, 'body': 'Bad Request'}
+                    return Response(json.dumps(datos), mimetype='application/json')                    
                 datos = {'status': 500, 'body': 'Internal Server Error'}
                 return Response(json.dumps(datos), mimetype='application/json')
 
