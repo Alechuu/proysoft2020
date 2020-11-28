@@ -21,7 +21,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Centros.vue')
   },
   {
-    path: '/turnos',
+    path: '/turnos/opcion1',
     name: 'Turnos',
     component: Turnos
   },
