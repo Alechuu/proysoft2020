@@ -70,7 +70,8 @@
                         <th scope="col" style="width:150px">Hora de cierre</th>
                         <th scope="col" style="width:150px">Web</th>                        
                         <th scope="col" style="width:150px">E-Mail</th>
-                        <th scope="col" style="width:150px">estado</th>
+                        <th scope="col" style="width:150px">Solicitud</th>
+                        <th scope="col" style="width:150px">Estado</th>
                         <th scope="col">Acciones</th>
                       </tr>
                     </thead>
@@ -84,11 +85,17 @@
                         <td>{{centro.hora_cierre}}</td>  
                         <td>{{centro.sitio_web}}</td>  
                         <td>{{centro.email}}</td>
+                        {% if centro.solicitud == "ESPERANDO_REVISION": %}
+                          <td>ESPERANDO REVISIÓN</td>
+                        {% else %}
+                          <td>{{centro.solicitud}}</td>
+                        {% endif %}
+
                         {% if centro.estado%}
-                          <td> <button type="submit" class="btn btn-primary btn-xs"data-toggle="modal" data-target="#modalEstado{{ centro.id }}" >Habilitado</button></td>
+                          <td> <button type="submit" class="btn btn-primary btn-xs"data-toggle="modal" data-target="#modalEstado{{ centro.id }}" >Publicado</button></td>
                           <!-- <td>Publicado <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modalEstado{{ centro.id }}" style="size:12px;font-size: 15px;"></button></td> -->
                         {% else %}
-                          <td> <button type="submit" class="btn btn-primary btn-xs"data-toggle="modal" data-target="#modalEstado{{ centro.id }}" >Deshabilitado</button></td>
+                          <td> <button type="submit" class="btn btn-primary btn-xs"data-toggle="modal" data-target="#modalEstado{{ centro.id }}" >Despublicado</button></td>
 
   <!--                         <td>Despublicado <button class="btn btn-primary btn-xs far fa-edit" data-toggle="modal" data-target="#modalEstado{{ centro.id }}" style="size:12px;font-size: 15px;"></button></td> -->
                         {% endif %}                      
@@ -122,9 +129,9 @@
         <div class="modal-content">
           <div class="modal-header">
           {% if centro.estado == 1 %}
-            <h4 class="modal-title">¿Desea deshabilitar al Centro {{centro.nombre}}?</h4>
+            <h4 class="modal-title">¿Desea despublicar al Centro {{centro.nombre}}?</h4>
           {% else %}
-            <h4 class="modal-title">¿Desea habilitar al Centro {{centro.nombre}}?</h4>
+            <h4 class="modal-title">¿Desea publicar al Centro {{centro.nombre}}?</h4>
           {% endif %}
           </div>
           <div class="modal-body">
@@ -155,7 +162,7 @@
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                   <input type="hidden" name="id_centro" value="{{ centro.id }}" />
                   <div class="form-group">
-                     <label>Nombre:</label>
+                     <label>Nombre</label>
                      <input type="text" class="form-control" name="nombre" value="{{ centro.nombre }}" required>
                   </div>
                   <div class="form-group">
@@ -163,11 +170,11 @@
                     <input type="text" class="form-control" name="telefono" value="{{ centro.telefono }}"required >
                   </div>
                   <div class="form-group">
-                      <label>Tipo de Centro:</label>
+                      <label>Tipo de Centro</label>
                       <input type="text" class="form-control" name="tipo_centro" value="{{ centro.tipo_centro }}" required >
                   </div>
                   <div class="form-group">
-                    <label>Horario:</label>
+                    <label>Horario</label>
                       <div class="input-group" style="display:flex;flex-direction:row;flex-wrap:wrap">
                         <div class="input-group">
                           <input type="time" name="hora_apertura" step="1800" value="{{centro.hora_apertura}}" required>
@@ -186,11 +193,11 @@
                     
                   </div>
                   <div class="form-group">
-                    <label>Sitio Web:</label>
+                    <label>Sitio Web</label>
                     <input type="text" class="form-control" name="sitio_web" value="{{ centro.sitio_web }}" required >
                   </div>
                   <div class="form-group">
-                    <label>Mail:</label>
+                    <label>Mail</label>
                     <input type="email" class="form-control" name="email" value="{{ centro.email }}" required >
                   </div>
                   <div class="form-group ">
@@ -208,11 +215,29 @@
                   
 
                   <div class="form-group">
-                    <label>Direccion:</label>
+                    <label>Direccion</label>
                     <input type="text" class="form-control" name="direccion" value="{{ centro.direccion }}" required >
                   </div>
                   <div class="form-group">
-                    <label>PDF Visita:</label>
+                    <label>Solicitud</label>
+                    <select id="solicitud" name="solicitud" class="form-control">
+                      {% set opciones_select = [
+                            ("ACEPTADO","ACEPTADO"),
+                            ("RECHAZADO","RECHAZADO"),
+                            ("ESPERANDO_REVISION","ESPERANDO REVISIÓN")
+                            ] 
+                      %}
+                      {% for value,name in opciones_select: %}
+                        {% if value == centro.solicitud %}
+                          <option  value="{{value}}" selected >{{ name }}</option> 
+                        {%else %}
+                          <option  value="{{value}}" >{{ name }}</option> 
+                        {%endif%}
+                      {% endfor %}
+                    </select>
+                  </div>                  
+                  <div class="form-group">
+                    <label>PDF Visita</label>
                     <div class="fileupload fileupload-new"id="path_pdf" data-provides="fileupload">
                       <span class="btn btn-theme02 btn-file">
                         <span class="fileupload-new"><i class="fa fa-paperclip"></i> Selecciona un PDF</span>
@@ -292,6 +317,8 @@
     "language":{
       "info": "Mostrando página _PAGE_ de _PAGES_",
       "zeroRecords": "No se encontraron Centros.",
+      "infoEmpty": "No hay resultados que mostrar.",
+      "infoFiltered":   "(filtrado de un total de _MAX_ elementos)",
       "paginate": {
         "first":"Primero",
         "last": "Último",
@@ -303,7 +330,7 @@
     "bLengthChange": false, //Este parametro controla si el usuario puede cambiar el paginado
     "iDisplayLength":  {{conf.paginado}}, //Este es el paginado por Default
     "columnDefs": [ {
-      "targets":8,
+      "targets":[9],
       "orderable":false
     }]  
     }); 

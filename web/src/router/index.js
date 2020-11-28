@@ -1,39 +1,43 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Turnos from '../views/Turnos.vue'
-import NewCentro from '../views/NewCentro.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import Turnos from "../views/Turnos.vue";
+import NewCentro from "../views/NewCentro.vue";
+import Centros from "../views/Centros.vue";
+import EstadoCentro from "../views/EstadoCentro.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "Home",
+    component: Home,
   },
   {
-    path: '/centros/buscar',
-    name: 'Centros',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Centros.vue')
+    path: "/v/centros/buscar",
+    name: "Centros",
+    component: Centros,
   },
   {
-    path: '/turnos/opcion1',
-    name: 'Turnos',
-    component: Turnos
+    path: "/v/centros/crear",
+    name: "Nuevo Centro",
+    component: NewCentro,
   },
   {
-    path: '/centros/crear',
-    name: 'Nuevo Centro',
-    component: NewCentro
-  }
-]
+    path: "/v/centros/estado",
+    name: "Estado Solicitud",
+    component: EstadoCentro,
+  },
+  {
+    path: "/v/turnos",
+    name: "Turnos",
+    component: Turnos,
+  },
+];
 
 const router = new VueRouter({
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

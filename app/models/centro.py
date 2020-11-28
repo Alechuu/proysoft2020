@@ -20,6 +20,7 @@ class Centro(db.Model):
     sitio_web = db.Column(db.String(60),nullable=True)
     email = db.Column(db.String(255), nullable=True)
     estado = db.Column(db.Boolean, default=False)
+    solicitud = db.Column(db.String, nullable=False)
     latitud = db.Column(db.Numeric(9,6), nullable=True)
     longitud = db.Column(db.Numeric(9,6), nullable=True)
     path_pdf = db.Column(db.String(400), nullable=False)
@@ -52,7 +53,7 @@ class Centro(db.Model):
             raise 
 
 
-    def create(data,coords):
+    def create(data,coords, solicitud):
         nuevo_centro = Centro(
             nombre=data['nombre'],
             direccion=data['direccion'],
@@ -64,6 +65,7 @@ class Centro(db.Model):
             sitio_web=data['sitio_web'],
             email=data['email'],
             estado=data['estado'],
+            solicitud=solicitud,
             latitud=coords[0],
             longitud=coords[1],
             path_pdf=data['path_pdf']
@@ -116,6 +118,7 @@ class Centro(db.Model):
             micentro.hora_cierre = data.get("hora_cierre")
             micentro.latitud=coords[0]
             micentro.longitud=coords[1]
+            micentro.solicitud=data.get("solicitud")
             if(newPath != "NO_UPDATE_PDF"):
                 os.remove(current_app.root_path+micentro.path_pdf)
                 micentro.path_pdf = newPath
