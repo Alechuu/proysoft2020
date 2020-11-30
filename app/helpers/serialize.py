@@ -12,6 +12,6 @@ def serializeSQLAlchemy(sqlresult,campos_no_deseados=[]):
             if str(column.key) in campos_no_deseados:
                 continue
             else:
-                objectToAppend = {str(column.key):getattr(sqlresult, str(column.key))}   
+                objectToAppend = {str(column.key):str(getattr(sqlresult, str(column.key)))}   
         parsed_sql_object.update(objectToAppend)
     return (parsed_sql_object)

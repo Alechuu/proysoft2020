@@ -9,7 +9,7 @@
       </div>
     </v-card>
     <v-card class="pa-8 mt-5 mb-5" elevation="5">
-      <div class="d-flex flex-column">
+      <div style="text-align: center">
         <v-icon size="45" color="primary">mdi-clipboard-text</v-icon>
         <h3
           class="text-h6 pb-5"
@@ -20,6 +20,8 @@
         <h4 class="text-subtitle-1 pb-3" style="text-align: center">
           Ingresá el número de solicitud y hacé click en <b>Ver Solicitud</b>
         </h4>
+      </div>
+      <div class="d-flex flex-column">
         <v-divider></v-divider>
         <validation-observer ref="observer" v-slot="{ invalid }">
           <v-row>
@@ -168,7 +170,7 @@ export default {
     if (this.$route.query.id !== undefined) {
       this.idSolicitud = this.$route.query.id;
       this.buscarSolicitud();
-      this.alert_type = "info";
+      this.alert_type = "warning";
       this.alert_body =
         "Tu número de solicitud es: " +
         this.$route.query.id +
