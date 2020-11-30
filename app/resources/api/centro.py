@@ -23,6 +23,8 @@ class AllCentros(Resource):
 
     def get(self):
         pagina = request.args.get('pagina')
+        if pagina == None:
+            pagina = 1
         try:
             miConfiguracion = Configuracion.get_first()
             centros = Centro.get_all_api(int(pagina), miConfiguracion.paginado)
@@ -31,15 +33,15 @@ class AllCentros(Resource):
                          'pagina_maxima': centros[2]}
                 return Response(json.dumps(datos), mimetype='application/json')
             parsed_list = []
-            campos_no_deseados = ['latitud', 'longitud',
-                                  'id_tipo_centro', 'estado', 'id_municipio']
+            campos_no_deseados = ['solicitud', 'estado']
             for centro in centros[1]:
                 parsed_list.append(serializeSQLAlchemy(
                     centro, campos_no_deseados))
             datos = {'status': 200, 'body': {'centros': parsed_list,
                                              'total': centros[0], 'pagina': int(pagina)}}
             return Response(json.dumps(datos), mimetype='application/json')
-        except:
+        except Exception as e:
+            print(str(e))
             datos = {'status': 500, 'body': 'Internal Server Error'}
             return Response(json.dumps(datos), mimetype='application/json')
 
@@ -49,13 +51,13 @@ class CentroID(Resource):
     def get(self, id_centro):
         try:
             centro = Centro.get_by_id(id_centro)
-            campos_no_deseados = ['latitud', 'longitud']
             datos = {'status': 200, 'atributos': serializeSQLAlchemy(
-                centro, campos_no_deseados)}
+                centro)}
         except Exception as e:
             if ('__table__' in str(e)):
                 datos = {'status': 404, 'body': 'Not Found'}
             else:
+                print(str(e))
                 datos = {'status': 500, 'body': 'Internal Server Error'}
         finally:
             return Response(json.dumps(datos), mimetype='application/json')
