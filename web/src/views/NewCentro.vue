@@ -33,7 +33,7 @@
         </div>
       </v-card>
       <v-card class="pa-8 mt-5 mb-5" elevation="5">
-        <div class="d-flex flex-column">
+        <div style="text-align: center">
           <v-icon size="45" color="primary">mdi-clipboard-edit</v-icon>
           <h3 class="text-h6 pb-5" style="text-align: center; color: primary">
             Por favor, completá los siguientes datos
@@ -290,6 +290,9 @@
               <l-map
                 @click="agregarMarker"
                 :zoom="zoom"
+                :minZoom="minZoom"
+                :bounds="bounds"
+                :max-bounds="maxBounds"
                 :center="center"
                 ref="mapaCentro"
                 style="height: 450px; width: 100%; z-index: 1"
@@ -372,9 +375,10 @@
   </validation-observer>
 </template>
 
+
 <script>
 import "leaflet/dist/leaflet.css";
-import { latLng } from "leaflet";
+import { latLngBounds, latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LTooltip } from "vue2-leaflet";
 import { required, email, max, numeric } from "vee-validate/dist/rules";
 import {
@@ -418,8 +422,11 @@ export default {
   data() {
     return {
       // Datos Leaflet
+      minZoom: 6,
       zoom: 6,
       center: [-37.3121792, -61.3996217],
+      bounds: latLngBounds([-32.602, -65.237], [-41.673, -50.515]),
+      maxBounds: latLngBounds([-32.602, -65.237], [-41.673, -50.515]),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
