@@ -45,30 +45,14 @@
         <!-- /Opciones de los Centros -->
 
         <!-- Opciones de los Turnos -->
+        <v-list-item link to="/v/turnos">
+          <v-list-item-icon>
+            <v-icon>mdi-ticket-account</v-icon>
+          </v-list-item-icon>
 
-        <v-list-group
-          group="/v/turnos"
-          :value="false"
-          prepend-icon="mdi-ticket-account"
-        >
-          <template v-slot:activator>
-            <v-list-item-title>Turnos</v-list-item-title>
-          </template>
-
-          <v-list-item
-            class="ml-10"
-            v-for="([title, icon, link], i) in turnos"
-            :key="i"
-            link
-            :to="link"
-          >
-            <v-list-item-title v-text="title"></v-list-item-title>
-
-            <v-list-item-icon>
-              <v-icon v-text="icon"></v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-        </v-list-group>
+          <v-list-item-title>Turnos</v-list-item-title>
+        </v-list-item>
+        
 
         <!-- /Opciones de los Turnos -->
       </v-list>
@@ -109,8 +93,7 @@ export default {
         ["Estado Solicitud", "mdi-home-edit", "/v/centros/estado"],
       ],
       turnos: [
-        ["Opcion 1", "mdi-plus-circle", "/v/turnos/opcion1"],
-        ["Opcion 2", "mdi-card-search-outline", "/v/turnos/opcion2"],
+        ["Solicitud", "mdi-plus-circle", "/v/turnos"],        
       ],
       drawer: false,
     };

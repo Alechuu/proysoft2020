@@ -1,120 +1,279 @@
 <template>
-  <div>
-    <v-sheet
-      tile
-      height="54"
-      class="d-flex"
-    >
-      <v-btn
-        icon
-        class="ma-2"
-        @click="$refs.calendar.prev()"
-      >
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-      <v-select
-        v-model="type"
-        :items="types"
-        dense
-        outlined
-        hide-details
-        class="ma-2"
-        label="type"
-      ></v-select>
-      <v-select
-        v-model="mode"
-        :items="modes"
-        dense
-        outlined
-        hide-details
-        label="event-overlap-mode"
-        class="ma-2"
-      ></v-select>
-      <v-select
-        v-model="weekday"
-        :items="weekdays"
-        dense
-        outlined
-        hide-details
-        label="weekdays"
-        class="ma-2"
-      ></v-select>
-      <v-spacer></v-spacer>
-      <v-btn
-        icon
-        class="ma-2"
-        @click="$refs.calendar.next()"
-      >
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-sheet>
-    <v-sheet height="600">
-      <v-calendar
-        ref="calendar"
-        v-model="value"
-        :weekdays="weekday"
-        :type="type"
-        :events="events"
-        :event-overlap-mode="mode"
-        :event-overlap-threshold="30"
-        :event-color="getEventColor"
-        @change="getEvents"
-      ></v-calendar>
-    </v-sheet>
-  </div>
+  <validation-observer ref="observer" v-slot="{ invalid }">
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+    <v-container>
+      <v-card class="mt-5" color="primary" elevation="5">
+        <div class="pa-5" style="text-align: center">
+          <v-icon color="white" size="50"> mdi-calendar-month </v-icon>
+          <h1 class="text-h4" style="text-align: center; color: white">
+            Solicitud de turno
+          </h1>
+        </div>
+      </v-card>
+      <v-card class="mt-5" color="primary" elevation="5">
+        <div class="pa-5" style="text-align: center">
+          <h6 class="text-h6 pb-5" style="text-align: left; color: white">
+            Para concurrir a nuestros centros, necesitas previamente solicitar
+            un turno, que te permitirá acercarte a nosotros en los horarios
+            habituales de atención.
+          </h6>
+        </div>
+      </v-card>
+      <v-card class="pa-8 mt-5 mb-5" elevation="5">
+        <div class="d-flex flex-column">
+          <v-icon size="45" color="primary">mdi-clipboard-edit</v-icon>
+          <h3 class="text-h6 pb-5" style="text-align: center; color: primary">
+            Por favor, completá los siguientes datos
+          </h3>
+          <h5 class="font-weight-light pb-3" style="text-align: center">
+            Los campos requeridos están marcados con un *
+          </h5>
+        </div>
+
+        <v-divider class="mb-10"></v-divider>
+        <form id="test_form" @submit.prevent="submit">
+          <h3 class="text-h6 pb-5" style="text-align: center; color: primary">
+            Datos Personales
+          </h3>
+          <v-row>
+            <v-col md="6" cols="12">
+              <validation-provider
+                v-slot="{ errors }"
+                name="teléfono"
+                rules="required|numeric"
+              >
+                <v-text-field
+                  v-model="telefono"
+                  :error-messages="errors"
+                  label="Teléfono *"
+                  name="telefono"
+                  prepend-icon="mdi-phone"
+                  required
+                ></v-text-field>
+              </validation-provider>
+            </v-col>
+            <v-col md="6" cols="12">
+              <validation-provider
+                v-slot="{ errors }"
+                name="email"
+                rules="required|email"
+              >
+                <v-text-field
+                  v-model="email"
+                  :error-messages="errors"
+                  label="E-mail *"
+                  name="email"
+                  prepend-icon="mdi-at"
+                  required
+                ></v-text-field>
+              </validation-provider>
+            </v-col>
+          </v-row>
+          <h3 class="text-h6 pb-5" style="text-align: center; color: primary">
+            Centro de Ayuda
+          </h3>
+          <v-row>
+            <v-col md="6" cols="12">
+              <validation-provider
+                v-slot="{ errors }"
+                name="centro"
+                rules="required"
+              >
+                <v-select
+                  v-model="selectCentro"
+                  :items="itemsCentro"
+                  item-text="centro_nombre"
+                  item-value="centro_id"
+                  :error-messages="errors"
+                  label="Centro Ayuda *"
+                  name="centro"
+                  id="centro"
+                  data-vv-name="select"
+                  prepend-icon="mdi-map"
+                  required
+                  v-on:change="changeCentro"
+                ></v-select>
+              </validation-provider>
+            </v-col>
+            <v-col md="6" cols="12">
+              <v-menu
+                v-model="menuFecha"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="computedDateFormatted"
+                    label="Fecha del turno"
+                    persistent-hint
+                    prepend-icon="mdi-calendar"
+                    elevation="15"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  :allowed-dates="disablePastDates"
+                  @input="menuFecha = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col md="6" cols="12">
+              <v-select
+                v-model="valueHorarios"
+                :items="itemsHorarios"
+                attach
+                chips
+                label="Horarios"
+                multiple
+                prepend-icon="mdi-clock-time-three"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            class="mr-4 mt-10"
+            x-large
+            style="width: 100%"
+            type="submit"
+            :disabled="invalid"
+            color="success"
+          >
+            enviar
+          </v-btn>
+        </form>
+      </v-card>
+    </v-container>
+  </validation-observer>
 </template>
+
 <script>
-  export default {
-    data: () => ({
-      type: 'month',
-      types: ['month', 'week', 'day', '4day'],
-      mode: 'stack',
-      modes: ['stack', 'column'],
-      weekday: [0, 1, 2, 3, 4, 5, 6],
-      weekdays: [
-        { text: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
-        { text: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
-        { text: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
-        { text: 'Mon, Wed, Fri', value: [1, 3, 5] },
-      ],
-      value: '',
-      events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-    }),
-    methods: {
-      getEvents ({ start, end }) {
-        const events = []
+import { required, email, max, numeric } from "vee-validate/dist/rules";
+import {
+  extend,
+  ValidationObserver,
+  ValidationProvider,
+  setInteractionMode,
+} from "vee-validate";
 
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
+setInteractionMode("aggressive");
 
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
+extend("required", {
+  ...required,
+  message: "El campo {_field_} no puede estar vacío",
+});
 
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
-          })
-        }
+extend("max", {
+  ...max,
+  message: "El campo {_field_} no puede tener más de {length} caracteres",
+});
 
-        this.events = events
-      },
-      getEventColor (event) {
-        return event.color
-      },
-      rnd (a, b) {
-        return Math.floor((b - a + 1) * Math.random()) + a
-      },
+extend("email", {
+  ...email,
+  message: "Email inválido",
+});
+
+extend("numeric", {
+  ...numeric,
+  message: "El campo {_field_} solo puede contener números",
+});
+
+export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
+  data: (vm) => ({
+    // Datos formulario
+    telefono: "",
+    email: "",
+    errors: null,
+    selectCentro: null,
+    itemsCentro: [],
+    dialog: false,
+    overlay: false,
+    date: new Date().toISOString().substr(0, 10),
+    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+    menuFecha: false,
+    valueHorarios: "",
+    itemsHorarios:[],
+  }),
+  computed: {
+    computedDateFormatted() {
+      return this.formatDate(this.date);
     },
-  }
+  },
+  created() {
+    this.fetchCentros();
+  },
+  mounted() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },
+  methods: {
+    // Función que trae los centros para llenar el Select
+    fetchCentros() {
+      fetch("http://127.0.0.1:5000/api/centros?pagina=1")
+        .then((res) => res.json())
+        .then((data) => {
+          var centros = data.body.centros;
+          for (var i = 0; i < centros.length; i++) {
+            this.itemsCentro.push({
+              centro_id: centros[i].id,
+              centro_nombre: centros[i].nombre,
+            });
+          }
+        });
+    },
+      changeCentro() {
+      if (this.selectCentro != null) {
+        var headers = new Headers();
+        headers.append("fecha", this.date);
+        var request = new Request(
+          "/api/centros/" + this.selectCentro.toString() + "/turnos_disponibles",
+          {
+            headers: headers,
+          }
+        );
+        return fetch(request)
+          .then((res) => res.json())
+          .then((data) => {
+            var turnos = data.turnos;
+            for (var i = 0; i < turnos.length; i++) {
+            this.itemsHorarios.push({
+              hora_inicio: turnos[i].hora_inicio,              
+            });
+          }           
+          });
+      }      
+    },
+
+    formatDate(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
+    disablePastDates(val) {
+      return val >= new Date().toISOString().substr(0, 10);
+    },
+    // Esto limpia el formulario si la solicitud fue exitosa
+    limpiarFormulario() {
+      //this.nombre = "";
+      this.telefono = "";
+      this.email = "";
+      this.selectCentro = null;
+      this.$refs.observer.reset();
+    },
+  },
+};
 </script>
