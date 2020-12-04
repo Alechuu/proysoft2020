@@ -1,22 +1,9 @@
 <template v-slot:top>
   <v-container>
     <v-card>
-      <!-- <p>
-          First marker is placed at {{ withPopup.lat }}, {{ withPopup.lng }}
-        </p>
-        <p>
-          Center is at {{ currentCenter }} and the zoom is: {{ currentZoom }}
-        </p>
-        <button @click="showLongText">
-          Toggle long popup
-        </button>
-        <button @click="showMap = !showMap">
-          Toggle map
-        </button> -->
-
       <v-card>
         <v-card-title>
-          Centros de Ayuda
+          <v-btn @click="resetear">Centros de Ayuda <v-icon> mdi-map </v-icon></v-btn>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -36,11 +23,13 @@
             </v-icon>
           </template>
         </v-data-table>
+
       </v-card>
 
       <l-map
-        v-if="showMap"
+        ref="map"
         :zoom="zoom"
+        :bounds="bounds"
         :center="center"
         :options="mapOptions"
         style="height: 450px; width: 100%; z-index: 1"
@@ -48,7 +37,9 @@
         @update:zoom="zoomUpdate"
       >
         <l-tile-layer :url="url" :attribution="attribution" />
-
+        <div id="button-wrapper">
+            <input type="button" id="Btn1" value="Btn1" class="btnStyle span3" />
+          </div> 
         <l-marker
           :key="id"
           v-for="(centro, id) in centrosList"
@@ -70,7 +61,7 @@
 </template>
 
 <script>
-import { latLng } from "leaflet";
+import { latLngBounds, latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 
 export default {
@@ -85,19 +76,15 @@ export default {
     return {
       zoom: 6,
       center: latLng(-37.3121792, -61.3996217),
-
+      bounds: latLngBounds([-32.602, -65.237], [-41.673, -50.515]),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      withPopup: latLng(47.41322, -1.219482),
-      withTooltip: latLng(47.41422, -1.250482),
-      currentZoom: 11.5,
-      currentCenter: latLng(47.41322, -1.219482),
-      showParagraph: false,
+
       mapOptions: {
         zoomSnap: 0.5,
       },
-      showMap: true,
+
       search: "",
       headers: [
         {
@@ -177,7 +164,7 @@ export default {
         .then((data) => {
           /* alert(data.body.centros[1].nombre); */
           /* this.centrosList = data; */
-
+         
           for (var centro in data.body.centros) {
             this.centrosList.push({
               id: data.body.centros[centro].id,
@@ -187,7 +174,7 @@ export default {
                 lat: data.body.centros[centro].latitud,
               },
               municipio: data.body.centros[centro].municipio,
-              direccion: data.body.centros[centro].direccion,
+              direccion: data.body.centros[centro].direccion.replace(', Provincia de Buenos Aires',''),
               hora_apertura: data.body.centros[centro].hora_apertura,
               hora_cierre: data.body.centros[centro].hora_cierre,
               telefono: data.body.centros[centro].telefono,
@@ -209,15 +196,35 @@ export default {
         
     }, */
     verEnMapa(centro) {
-       return this.setView(centro.position, 12)
+      this.$refs.map.mapObject.flyTo(centro.position, 14, {
+        pan: {
+          animate: true,
+          duration: 1.5,
+        },
+        zoom: {
+          animate: true,
+        },
+      });
+    },
+
+    resetear() {
+      this.$refs.map.mapObject.flyTo([-37.3121792, -61.3996217], 6, {
+        pan: {
+          animate: true,
+          duration: 1.5,
+        },
+        zoom: {
+          animate: true,
+        },
+      });
     },
 
     sacarTurno(centro) {
-      alert(centro.nombre)
-      /*  this.$router.push({
-        path: "/v/centros/estado",
-        query: { id: this.idCentroSolicitud },
-      }); */
+      alert(centro.nombre);
+       this.$router.push({
+        path: "/v/turnos/opcion1",
+        query: { id: centro.nobre },
+      });
     },
 
     fetchMunicipios() {
