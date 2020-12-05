@@ -113,7 +113,7 @@
                 rules="required"
               >
                 <v-select
-                  v-model="selectCentro"
+                  v-model="selectCentro.centro_id"
                   :items="itemsCentro"
                   item-text="centro_nombre"
                   item-value="centro_id"
@@ -123,7 +123,7 @@
                   id="centro"
                   data-vv-name="select"
                   prepend-icon="mdi-map"
-                  required
+                  required                  
                   v-on:change="changeCentro"
                 ></v-select>
               </validation-provider>
@@ -248,7 +248,7 @@ export default {
     errors: null,
     selectMunicipio: null,
     itemsMunicipios: [],
-    selectCentro: null,
+    selectCentro: {centro_id:null},
     itemsCentro: [],
     itemsCentroAuxiliar: [],
     dialog: false,
@@ -267,13 +267,23 @@ export default {
   created() {
     this.fetchMunicipios();
     this.fetchCentros();
+    if (this.$route.query.id !== undefined) {
+      this.selectCentro.centro_id = this.$route.query.id;
+      this.changeCentro();
+      /* for (var i = 0; i < this.itemsCentro.length; i++) {
+        if(this.itemsCentro[i].centro_id == this.$route.query.id){
+          this.selectCentro = this.itemsCentro[i].centro_nombre;
+        }
+      } */
+    }
   },
-  mounted() {
+  mounted() {    
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "smooth",
     });
+
   },
   methods: {
     //Campo de ayuda para filtrar los centros
@@ -319,7 +329,7 @@ export default {
           }
         }
         this.itemsCentro = centrosFiltrados;
-        this.selectCentro = null;
+        this.selectCentro.centro_id = null;
         //borro los horarios por si hay seteados
         this.selectHorarios = null;
         this.itemsHorarios = [];
@@ -328,10 +338,10 @@ export default {
       }
     },   
     changeCentro() {
-      if (this.selectCentro != null) {
+      if (this.selectCentro.centro_id != null) {
         fetch(
           "http://127.0.0.1:5000/api/centros/" +
-            this.selectCentro.toString() +
+            this.selectCentro.centro_id +
             "/turnos_disponibles?fecha=" +
             this.date
         )
@@ -377,7 +387,7 @@ export default {
       form_data.set("hora_fin", this.selectHorarios.hora_fin);
       fetch(
         "http://127.0.0.1:5000/api/centros/" +
-          this.selectCentro.toString() +
+          this.selectCentro.centro_id +
           "/reserva",
         {
           method: "POST",

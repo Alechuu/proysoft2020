@@ -219,11 +219,10 @@ export default {
       });
     },
 
-    sacarTurno(centro) {
-      alert(centro.nombre);
+    sacarTurno(centro) {      
        this.$router.push({
-        path: "/v/turnos/opcion1",
-        query: { id: centro.nobre },
+        path: "/v/turnos",
+        query: { id: centro.id },
       });
     },
 
