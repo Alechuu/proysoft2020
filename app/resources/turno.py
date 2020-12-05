@@ -12,7 +12,7 @@ def index():
         abort(401)
     miConfiguracion = Configuracion.get_first() 
     permisos = get_permisos(User.find_by_username(session.get("user")))    
-    if "centro_index" in permisos: 
+    if "centro_index" in permisos:
         id_centro = request.form["id_centro"]       
         centro = Centro.get_by_id(id_centro)
         return render_template("turno/turno.html",permisos=permisos, conf=miConfiguracion, centro=centro)

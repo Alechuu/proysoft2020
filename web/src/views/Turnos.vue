@@ -4,16 +4,32 @@
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
     <v-container>
+      <v-alert
+        v-model="resetAlert"
+        :type="alert_type"
+        :value="alert"
+        :dismissible="alert_cerrar"
+        border="bottom"
+        transition="scale-transition"
+        prominent
+      >
+        <v-row align="center">
+          <v-col class="grow">
+            {{ alert_body }}
+          </v-col>
+          <v-col class="shrink">
+            <v-btn outlined v-if="mostrarBotonAlert" @click="verResumenTurno"
+              >Resumen</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-alert>
       <v-card class="mt-5" color="primary" elevation="5">
         <div class="pa-5" style="text-align: center">
           <v-icon color="white" size="50"> mdi-calendar-month </v-icon>
           <h1 class="text-h4" style="text-align: center; color: white">
             Solicitud de turno
           </h1>
-        </div>
-      </v-card>
-      <v-card class="mt-5" color="primary" elevation="5">
-        <div class="pa-5" style="text-align: center">
           <h6 class="text-h6 pb-5" style="text-align: left; color: white">
             Para concurrir a nuestros centros, necesitas previamente solicitar
             un turno, que te permitirá acercarte a nosotros en los horarios
@@ -33,7 +49,7 @@
         </div>
 
         <v-divider class="mb-10"></v-divider>
-        <form id="test_form" @submit.prevent="submit">
+        <form id="form_turnos" @submit.prevent="submit">
           <h3 class="text-h6 pb-5" style="text-align: center; color: primary">
             Datos Personales
           </h3>
@@ -48,7 +64,7 @@
                   v-model="telefono"
                   :error-messages="errors"
                   label="Teléfono *"
-                  name="telefono"
+                  name="telefono_visitante"
                   prepend-icon="mdi-phone"
                   required
                 ></v-text-field>
@@ -64,7 +80,7 @@
                   v-model="email"
                   :error-messages="errors"
                   label="E-mail *"
-                  name="email"
+                  name="email_visitante"
                   prepend-icon="mdi-at"
                   required
                 ></v-text-field>
@@ -75,6 +91,21 @@
             Centro de Ayuda
           </h3>
           <v-row>
+            <v-col md="6" cols="12">              
+                <v-select
+                  v-model="selectMunicipio"
+                  :items="itemsMunicipios"
+                  item-text="mun_nombre"
+                  item-value="mun_nombre"
+                  :error-messages="errors"
+                  label="Municipio"
+                  name="municipio"
+                  id="municipio"
+                  prepend-icon="mdi-map"
+                  clearable=true
+                  v-on:change="changeMunicipio"                                  
+                ></v-select>              
+            </v-col>
             <v-col md="6" cols="12">
               <validation-provider
                 v-slot="{ errors }"
@@ -106,35 +137,48 @@
                 offset-y
                 min-width="290px"
               >
-                <template v-slot:activator="{ on, attrs }">
+                <template v-slot:activator="{ on, attrs}">
                   <v-text-field
                     v-model="computedDateFormatted"
                     label="Fecha del turno"
+                    name="fecha"
+                    id="fecha"
                     persistent-hint
                     prepend-icon="mdi-calendar"
                     elevation="15"
                     readonly
                     v-bind="attrs"
-                    v-on="on"
+                    v-on="on"                                       
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   v-model="date"
                   :allowed-dates="disablePastDates"
-                  @input="menuFecha = false"
+                  @input="changeFecha"                  
                 ></v-date-picker>
               </v-menu>
             </v-col>
             <v-col md="6" cols="12">
-              <v-select
-                v-model="valueHorarios"
-                :items="itemsHorarios"
-                attach
-                chips
-                label="Horarios"
-                multiple
-                prepend-icon="mdi-clock-time-three"
-              ></v-select>
+              <validation-provider
+                v-slot="{ errors }"
+                name="hora"
+                rules="required"
+              >
+                <v-select
+                  v-model="selectHorarios"
+                  :items="itemsHorarios"
+                  item-text="hora_inicio"
+                  item-value="hora_inicio"
+                  name="hora_inicio"
+                  return-object                  
+                  attach
+                  chips
+                  label="Horarios"
+                  prepend-icon="mdi-clock-time-three"
+                  :error-messages="errors"
+                  required
+                ></v-select>
+              </validation-provider>
             </v-col>
           </v-row>
 
@@ -191,19 +235,29 @@ export default {
     ValidationObserver,
   },
   data: (vm) => ({
+    // Datos Alerta
+    resetAlert: false,
+    alert: false,
+    alert_type: "success",
+    alert_body: "",
+    alert_cerrar: false,
+    mostrarBotonAlert: true,
     // Datos formulario
     telefono: "",
     email: "",
     errors: null,
+    selectMunicipio: null,
+    itemsMunicipios: [],
     selectCentro: null,
     itemsCentro: [],
+    itemsCentroAuxiliar: [],
     dialog: false,
     overlay: false,
     date: new Date().toISOString().substr(0, 10),
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     menuFecha: false,
-    valueHorarios: "",
-    itemsHorarios:[],
+    selectHorarios: null,
+    itemsHorarios: [],
   }),
   computed: {
     computedDateFormatted() {
@@ -211,6 +265,7 @@ export default {
     },
   },
   created() {
+    this.fetchMunicipios();
     this.fetchCentros();
   },
   mounted() {
@@ -221,6 +276,20 @@ export default {
     });
   },
   methods: {
+    //Campo de ayuda para filtrar los centros
+    fetchMunicipios() {
+      fetch(
+        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135"
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          for (var municipio in data.data.Town) {
+            this.itemsMunicipios.push({
+              mun_nombre: data.data.Town[municipio].name,
+            });
+          }
+        });
+    },
     // Función que trae los centros para llenar el Select
     fetchCentros() {
       fetch("http://127.0.0.1:5000/api/centros?pagina=1")
@@ -231,33 +300,60 @@ export default {
             this.itemsCentro.push({
               centro_id: centros[i].id,
               centro_nombre: centros[i].nombre,
+              centro_municipio: centros[i].municipio,
+            });
+            this.itemsCentroAuxiliar.push({
+              centro_id: centros[i].id,
+              centro_nombre: centros[i].nombre,
+              centro_municipio: centros[i].municipio,
             });
           }
         });
     },
-      changeCentro() {
-      if (this.selectCentro != null) {
-        var headers = new Headers();
-        headers.append("fecha", this.date);
-        var request = new Request(
-          "/api/centros/" + this.selectCentro.toString() + "/turnos_disponibles",
-          {
-            headers: headers,
+    changeMunicipio(){
+      if (this.selectMunicipio != null) {
+        var centrosFiltrados = [];
+        for (var i = 0; i < this.itemsCentroAuxiliar.length; i++) {
+          if(this.itemsCentroAuxiliar[i].centro_municipio == this.selectMunicipio){
+            centrosFiltrados.push(this.itemsCentroAuxiliar[i]);
           }
-        );
-        return fetch(request)
+        }
+        this.itemsCentro = centrosFiltrados;
+        this.selectCentro = null;
+        //borro los horarios por si hay seteados
+        this.selectHorarios = null;
+        this.itemsHorarios = [];
+      }else{
+        this.itemsCentro = this.itemsCentroAuxiliar;
+      }
+    },   
+    changeCentro() {
+      if (this.selectCentro != null) {
+        fetch(
+          "http://127.0.0.1:5000/api/centros/" +
+            this.selectCentro.toString() +
+            "/turnos_disponibles?fecha=" +
+            this.date
+        )
           .then((res) => res.json())
           .then((data) => {
             var turnos = data.turnos;
+            this.selectHorarios = null;
+            this.itemsHorarios = [];
             for (var i = 0; i < turnos.length; i++) {
-            this.itemsHorarios.push({
-              hora_inicio: turnos[i].hora_inicio,              
-            });
-          }           
+              this.itemsHorarios.push({                
+                hora_inicio: turnos[i].hora_inicio,
+                hora_fin: turnos[i].hora_fin,
+              });
+            }
           });
-      }      
+      }
     },
-
+    changeFecha(){
+      this.menuFecha = false;
+      this.selectHorarios = null;
+      this.changeCentro();
+    },
     formatDate(date) {
       if (!date) return null;
       const [year, month, day] = date.split("-");
@@ -266,13 +362,74 @@ export default {
     disablePastDates(val) {
       return val >= new Date().toISOString().substr(0, 10);
     },
+    submit() {
+      this.$refs.observer.validate();
+      this.overlay = true;
+      const form_data = new FormData(document.getElementById("form_turnos"));      
+      function formatDateISO(date) {      
+        const [day, month, year] = date.split("/");
+      return `${year}-${month}-${day}`;
+      } 
+
+      var fecha = formatDateISO(form_data.get("fecha"));      
+      form_data.set("fecha", fecha);
+      form_data.set("hora_inicio", this.selectHorarios.hora_inicio);
+      form_data.set("hora_fin", this.selectHorarios.hora_fin);
+      fetch(
+        "http://127.0.0.1:5000/api/centros/" +
+          this.selectCentro.toString() +
+          "/reserva",
+        {
+          method: "POST",
+          body: form_data,
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === "201 Created") {
+            this.limpiarFormulario();
+            this.idCentroSolicitud = data.body.atributos.id;
+            this.overlay = false;
+            this.alert_type = "success";
+            this.alert_body = "El turno se ha reservado exitosamente.";
+            this.resetAlert = true;
+            this.alert_cerrar = false;
+            this.mostrarBotonAlert = true;
+            this.alert = true;
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth",
+            });
+          } else {
+            this.overlay = false;
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth",
+            });
+            this.alert_type = "error";
+            this.alert_body =
+              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
+            this.resetAlert = true;
+            this.mostrarBotonAlert = false;
+            this.alert_cerrar = true;
+            this.alert = true;
+          }
+        });
+    },
     // Esto limpia el formulario si la solicitud fue exitosa
     limpiarFormulario() {
       //this.nombre = "";
       this.telefono = "";
       this.email = "";
+      this.fecha = "";
       this.selectCentro = null;
+      this.selectHorarios = null;
       this.$refs.observer.reset();
+    },
+    verResumenTurno(){
+
     },
   },
 };

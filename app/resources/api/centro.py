@@ -132,32 +132,32 @@ class TurnosCentro(Resource):
                          'details': 'Fecha Inválida'}
                 return Response(json.dumps(datos), mimetype='application/json')
         try:
-            centro = Centro.get_by_id_and_date(id_centro, fecha)
+            turnos = Turno.get_by_id_centro(id_centro, fecha, fecha)
             turnos_disponibles = [
-                '9:00:00',
-                '9:30:00',
-                '10:00:00',
-                '10:30:00',
-                '11:00:00',
-                '11:30:00',
-                '12:00:00',
-                '12:30:00',
-                '13:00:00',
-                '13:30:00',
-                '14:00:00',
-                '14:30:00',
-                '15:00:00',
-                '15:30:00',
+                '09:00',
+                '09:30',
+                '10:00',
+                '10:30',
+                '11:00',
+                '11:30',
+                '12:00',
+                '12:30',
+                '13:00',
+                '13:30',
+                '14:00',
+                '14:30',
+                '15:00',
+                '15:30',
             ]
-            if(centro != None):
-                for turno in centro.turnos:
-                    if(str(turno.hora_inicio) in turnos_disponibles):
-                        turnos_disponibles.remove(str(turno.hora_inicio))
+            if(turnos != None):
+                for turno in turnos:
+                    if((turno.hora_inicio).strftime("%H:%M") in turnos_disponibles):
+                        turnos_disponibles.remove((turno.hora_inicio).strftime("%H:%M"))
 
             turnosRespuesta = []
             for turnoLibre in turnos_disponibles:
-                hora_fin = datetime.strptime(turnoLibre, '%H:%M:%S')
-                hora_fin = (hora_fin + timedelta(minutes=30)).time()
+                hora_fin = datetime.strptime(turnoLibre, '%H:%M')
+                hora_fin = ((hora_fin + timedelta(minutes=30)).time()).strftime("%H:%M")
                 turnosRespuesta.append(
                     {
                         'centro_id': id_centro,
