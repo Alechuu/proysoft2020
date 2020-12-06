@@ -91,20 +91,20 @@
             Centro de Ayuda
           </h3>
           <v-row>
-            <v-col md="6" cols="12">              
-                <v-select
-                  v-model="selectMunicipio"
-                  :items="itemsMunicipios"
-                  item-text="mun_nombre"
-                  item-value="mun_nombre"
-                  :error-messages="errors"
-                  label="Municipio"
-                  name="municipio"
-                  id="municipio"
-                  prepend-icon="mdi-map"
-                  clearable=true
-                  v-on:change="changeMunicipio"                                  
-                ></v-select>              
+            <v-col md="6" cols="12">
+              <v-select
+                v-model="selectMunicipio"
+                :items="itemsMunicipios"
+                item-text="mun_nombre"
+                item-value="mun_nombre"
+                :error-messages="errors"
+                label="Municipio"
+                name="municipio"
+                id="municipio"
+                prepend-icon="mdi-map"
+                clearable="true"
+                v-on:change="changeMunicipio"
+              ></v-select>
             </v-col>
             <v-col md="6" cols="12">
               <validation-provider
@@ -123,7 +123,7 @@
                   id="centro"
                   data-vv-name="select"
                   prepend-icon="mdi-map"
-                  required                  
+                  required
                   v-on:change="changeCentro"
                 ></v-select>
               </validation-provider>
@@ -137,7 +137,7 @@
                 offset-y
                 min-width="290px"
               >
-                <template v-slot:activator="{ on, attrs}">
+                <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="computedDateFormatted"
                     label="Fecha del turno"
@@ -148,13 +148,13 @@
                     elevation="15"
                     readonly
                     v-bind="attrs"
-                    v-on="on"                                       
+                    v-on="on"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   v-model="date"
                   :allowed-dates="disablePastDates"
-                  @input="changeFecha"                  
+                  @input="changeFecha"
                 ></v-date-picker>
               </v-menu>
             </v-col>
@@ -170,7 +170,7 @@
                   item-text="hora_inicio"
                   item-value="hora_inicio"
                   name="hora_inicio"
-                  return-object                  
+                  return-object
                   attach
                   chips
                   label="Horarios"
@@ -248,7 +248,7 @@ export default {
     errors: null,
     selectMunicipio: null,
     itemsMunicipios: [],
-    selectCentro: {centro_id:null},
+    selectCentro: { centro_id: null },
     itemsCentro: [],
     itemsCentroAuxiliar: [],
     dialog: false,
@@ -270,20 +270,14 @@ export default {
     if (this.$route.query.id !== undefined) {
       this.selectCentro.centro_id = this.$route.query.id;
       this.changeCentro();
-      /* for (var i = 0; i < this.itemsCentro.length; i++) {
-        if(this.itemsCentro[i].centro_id == this.$route.query.id){
-          this.selectCentro = this.itemsCentro[i].centro_nombre;
-        }
-      } */
     }
   },
-  mounted() {    
+  mounted() {
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "smooth",
     });
-
   },
   methods: {
     //Campo de ayuda para filtrar los centros
@@ -320,11 +314,13 @@ export default {
           }
         });
     },
-    changeMunicipio(){
+    changeMunicipio() {
       if (this.selectMunicipio != null) {
         var centrosFiltrados = [];
         for (var i = 0; i < this.itemsCentroAuxiliar.length; i++) {
-          if(this.itemsCentroAuxiliar[i].centro_municipio == this.selectMunicipio){
+          if (
+            this.itemsCentroAuxiliar[i].centro_municipio == this.selectMunicipio
+          ) {
             centrosFiltrados.push(this.itemsCentroAuxiliar[i]);
           }
         }
@@ -333,10 +329,10 @@ export default {
         //borro los horarios por si hay seteados
         this.selectHorarios = null;
         this.itemsHorarios = [];
-      }else{
+      } else {
         this.itemsCentro = this.itemsCentroAuxiliar;
       }
-    },   
+    },
     changeCentro() {
       if (this.selectCentro.centro_id != null) {
         fetch(
@@ -351,7 +347,7 @@ export default {
             this.selectHorarios = null;
             this.itemsHorarios = [];
             for (var i = 0; i < turnos.length; i++) {
-              this.itemsHorarios.push({                
+              this.itemsHorarios.push({
                 hora_inicio: turnos[i].hora_inicio,
                 hora_fin: turnos[i].hora_fin,
               });
@@ -359,7 +355,7 @@ export default {
           });
       }
     },
-    changeFecha(){
+    changeFecha() {
       this.menuFecha = false;
       this.selectHorarios = null;
       this.changeCentro();
@@ -375,13 +371,13 @@ export default {
     submit() {
       this.$refs.observer.validate();
       this.overlay = true;
-      const form_data = new FormData(document.getElementById("form_turnos"));      
-      function formatDateISO(date) {      
+      const form_data = new FormData(document.getElementById("form_turnos"));
+      function formatDateISO(date) {
         const [day, month, year] = date.split("/");
-      return `${year}-${month}-${day}`;
-      } 
+        return `${year}-${month}-${day}`;
+      }
 
-      var fecha = formatDateISO(form_data.get("fecha"));      
+      var fecha = formatDateISO(form_data.get("fecha"));
       form_data.set("fecha", fecha);
       form_data.set("hora_inicio", this.selectHorarios.hora_inicio);
       form_data.set("hora_fin", this.selectHorarios.hora_fin);
@@ -397,50 +393,41 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           if (data.status === "201 Created") {
-            this.limpiarFormulario();
-            this.idCentroSolicitud = data.body.atributos.id;
-            this.overlay = false;
+            this.limpiarFormulario();            
             this.alert_type = "success";
-            this.alert_body = "El turno se ha reservado exitosamente.";
-            this.resetAlert = true;
-            this.alert_cerrar = false;
-            this.mostrarBotonAlert = true;
-            this.alert = true;
-            window.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: "smooth",
-            });
-          } else {
-            this.overlay = false;
-            window.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: "smooth",
-            });
+            this.alert_body = data.details;            
+            this.mostrarBotonAlert = true;            
+          } else if (data.status === "400") {            
+            this.alert_type = "error";
+            this.alert_body = data.details;
+            this.mostrarBotonAlert = false;
+          } else {                        
             this.alert_type = "error";
             this.alert_body =
-              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
-            this.resetAlert = true;
+              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";            
             this.mostrarBotonAlert = false;
-            this.alert_cerrar = true;
-            this.alert = true;
           }
+          this.alert_cerrar = true;
+          this.overlay = false;
+          this.resetAlert = true;
+          this.alert = true;
+          window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth",
+            });
         });
     },
     // Esto limpia el formulario si la solicitud fue exitosa
     limpiarFormulario() {
-      //this.nombre = "";
       this.telefono = "";
       this.email = "";
       this.fecha = "";
-      this.selectCentro = null;
+      this.selectCentro.centro_id = null;
       this.selectHorarios = null;
       this.$refs.observer.reset();
     },
-    verResumenTurno(){
-
-    },
+    verResumenTurno() {},
   },
 };
 </script>
