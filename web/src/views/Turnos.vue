@@ -18,8 +18,11 @@
             {{ alert_body }}
           </v-col>
           <v-col class="shrink">
-            <v-btn outlined v-if="mostrarBotonAlert" @click="verResumenTurno"
-              >Resumen</v-btn
+            <v-btn
+              outlined
+              v-if="mostrarBotonAlert"
+              @click="descargarPDFResumenTurno"
+              >Descargar PDF</v-btn
             >
           </v-col>
         </v-row>
@@ -198,6 +201,7 @@
 </template>
 
 <script>
+import { jsPDF } from "jspdf";
 import { required, email, max, numeric } from "vee-validate/dist/rules";
 import {
   extend,
@@ -257,7 +261,15 @@ export default {
     menuFecha: false,
     selectHorarios: null,
     itemsHorarios: [],
-    isClearable:true
+    isClearable: true,
+    //Datos PDF
+    PDF_centro_ayuda: null,
+    PDF_municipio: null,
+    PDF_email_donante: null,
+    PDF_telefono_donante: null,
+    PDF_hora_inicio: null,
+    PDF_hora_fin: null,
+    PDF_fecha: null,
   }),
   computed: {
     computedDateFormatted() {
@@ -393,6 +405,15 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           if (data.status === "201 Created") {
+            // Para descarga del PDF con los datos del turno
+            this.PDF_centro_ayuda = data.body.atributos.centro_nombre;
+            this.PDF_municipio = data.body.atributos.centro_municipio;
+            this.PDF_email_donante = data.body.atributos.email_donante;
+            this.PDF_telefono_donante = data.body.atributos.telefono_donante;
+            this.PDF_hora_inicio = data.body.atributos.hora_inicio;
+            this.PDF_hora_fin = data.body.atributos.hora_fin;
+            this.PDF_fecha = data.body.atributos.fecha;
+            //Fin datos PDF
             this.limpiarFormulario();
             this.alert_type = "success";
             this.alert_body = data.details;
@@ -418,6 +439,7 @@ export default {
           });
         });
     },
+
     // Esto limpia el formulario si la solicitud fue exitosa
     limpiarFormulario() {
       this.telefono = "";
@@ -427,7 +449,20 @@ export default {
       this.selectHorarios = null;
       this.$refs.observer.reset();
     },
-    verResumenTurno() {},
+    descargarPDFResumenTurno() {
+      const doc = new jsPDF();
+      //Titulo centrado
+      doc.text("Resumen del Turno", 105, 10, null, null, "center");
+      //Datos a izquierda
+      doc.text("Municipio:" + this.PDF_municipio, 10, 30);
+      doc.text("Nombre del centro de ayuda:" + this.PDF_centro_ayuda, 10, 40);
+      doc.text("Correo:" + this.PDF_email_donante, 10, 50);
+      doc.text("Teléfono:" + this.PDF_telefono_donante, 10, 60);
+      doc.text("Fecha:" + this.PDF_fecha, 10, 70);
+      doc.text("Hora de Inicio:" + this.PDF_hora_inicio, 10, 80);
+      doc.text("Hora de Fin:" + this.PDF_hora_fin, 10, 90);
+      doc.save("Reserva.pdf");
+    },
   },
 };
 </script>

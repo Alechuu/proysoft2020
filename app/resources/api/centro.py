@@ -205,6 +205,8 @@ class TurnosNew(Resource):
                     Centro.agregarTurno(turno, centro)
                     datos_turno = {
                         'centro_id': id_centro,
+                        'centro_nombre': centro.nombre,
+                        'centro_municipio': centro.municipio,
                         'email_donante': form.data['email_visitante'],
                         'telefono_donante': form.data['telefono_visitante'],
                         'hora_inicio': str(form.data['hora_inicio']),
