@@ -411,6 +411,7 @@ extend("numeric", {
 });
 
 export default {
+  name: "CrearCentro",
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -425,7 +426,7 @@ export default {
       minZoom: 6,
       zoom: 6,
       center: [-37.3121792, -61.3996217],
-      bounds: latLngBounds([-32.602, -65.237], [-41.673, -50.515]),
+      bounds: latLngBounds([-33.275, -63.402], [-41.071, -56.415]),
       maxBounds: latLngBounds([-32.602, -65.237], [-41.673, -50.515]),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
@@ -575,10 +576,12 @@ export default {
     // Funciones de Leaflet
 
     agregarMarker(event) {
-      this.pin_help = "¡Ubicación guardada!";
-      this.marker = latLng(event.latlng.lat, event.latlng.lng);
-      this.latitudInput = event.latlng.lat;
-      this.longitudInput = event.latlng.lng;
+      if (this.bounds.contains(latLng(event.latlng.lat, event.latlng.lng))) {
+        this.pin_help = "¡Ubicación guardada!";
+        this.marker = latLng(event.latlng.lat, event.latlng.lng);
+        this.latitudInput = event.latlng.lat;
+        this.longitudInput = event.latlng.lng;
+      }
     },
 
     verEnMapa() {
@@ -613,6 +616,7 @@ export default {
         });
     },
 
+    // Redirigie para ver la solcitud
     verSolicitud() {
       this.$router.push({
         path: "/v/centros/estado",

@@ -102,7 +102,7 @@
                 name="municipio"
                 id="municipio"
                 prepend-icon="mdi-map"
-                clearable="true"
+                :clearable="isClearable"
                 v-on:change="changeMunicipio"
               ></v-select>
             </v-col>
@@ -172,7 +172,6 @@
                   name="hora_inicio"
                   return-object
                   attach
-                  chips
                   label="Horarios"
                   prepend-icon="mdi-clock-time-three"
                   :error-messages="errors"
@@ -258,6 +257,7 @@ export default {
     menuFecha: false,
     selectHorarios: null,
     itemsHorarios: [],
+    isClearable:true
   }),
   computed: {
     computedDateFormatted() {
@@ -393,18 +393,18 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           if (data.status === "201 Created") {
-            this.limpiarFormulario();            
+            this.limpiarFormulario();
             this.alert_type = "success";
-            this.alert_body = data.details;            
-            this.mostrarBotonAlert = true;            
-          } else if (data.status === "400") {            
+            this.alert_body = data.details;
+            this.mostrarBotonAlert = true;
+          } else if (data.status === "400") {
             this.alert_type = "error";
             this.alert_body = data.details;
             this.mostrarBotonAlert = false;
-          } else {                        
+          } else {
             this.alert_type = "error";
             this.alert_body =
-              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";            
+              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
             this.mostrarBotonAlert = false;
           }
           this.alert_cerrar = true;
@@ -412,10 +412,10 @@ export default {
           this.resetAlert = true;
           this.alert = true;
           window.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: "smooth",
-            });
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+          });
         });
     },
     // Esto limpia el formulario si la solicitud fue exitosa

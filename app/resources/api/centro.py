@@ -154,6 +154,7 @@ class TurnosCentro(Resource):
                     if((turno.hora_inicio).strftime("%H:%M") in turnos_disponibles):
                         turnos_disponibles.remove((turno.hora_inicio).strftime("%H:%M"))
 
+                        
             turnosRespuesta = []
             for turnoLibre in turnos_disponibles:
                 hora_fin = datetime.strptime(turnoLibre, '%H:%M')
@@ -177,6 +178,7 @@ class TurnosCentro(Resource):
 class TurnosNew(Resource):
 
     def post(self, id_centro):
+        breakpoint()
         form = formTurno(request.form)
         if(not form.validate()):
             datos = {'status': 400, 'body': 'Bad Request'}

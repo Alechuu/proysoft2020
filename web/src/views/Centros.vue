@@ -1,62 +1,66 @@
 <template v-slot:top>
   <v-container>
-    <v-card>
-      <v-card>
-        <v-card-title>
-          <v-btn @click="resetear">Centros de Ayuda <v-icon> mdi-map </v-icon></v-btn>
-          <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table :headers="headers" :items="centrosList" :search="search">
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="verEnMapa(item)">
-              mdi-map-marker
-            </v-icon>
-            <v-icon small @click="sacarTurno(item)">
-              mdi-calendar
-            </v-icon>
+    <v-card class="mb-5">
+      <v-card-title>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" @click="resetear" v-bind="attrs" v-on="on">
+              Centros de Ayuda
+              <v-icon> mdi-map </v-icon>
+            </v-btn>
           </template>
-        </v-data-table>
+          <span>Toque para volver a centrar el Mapa</span>
+        </v-tooltip>
 
-      </v-card>
-
-      <l-map
-        ref="map"
-        :zoom="zoom"
-        :bounds="bounds"
-        :center="center"
-        :options="mapOptions"
-        style="height: 450px; width: 100%; z-index: 1"
-        @update:center="centerUpdate"
-        @update:zoom="zoomUpdate"
-      >
-        <l-tile-layer :url="url" :attribution="attribution" />
-        <div id="button-wrapper">
-            <input type="button" id="Btn1" value="Btn1" class="btnStyle span3" />
-          </div> 
-        <l-marker
-          :key="id"
-          v-for="(centro, id) in centrosList"
-          :lat-lng="centro.position"
-        >
-          <l-popup>
-            <h3>{{ centro.nombre }}</h3>
-            <p><b>Direccion:</b> {{ centro.direccion }},</p>
-            <p>
-              <b>Horario:</b> {{ centro.hora_apertura }} -
-              {{ centro.hora_cierre }}
-            </p>
-            <p><b>Telefono:</b> {{ centro.telefono }}</p>
-          </l-popup>
-        </l-marker>
-      </l-map>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Buscar"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :items="centrosList" :search="search">
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon small class="mr-2" @click="verEnMapa(item)">
+            mdi-map-marker
+          </v-icon>
+          <v-icon small @click="sacarTurno(item)"> mdi-calendar </v-icon>
+        </template>
+      </v-data-table>
     </v-card>
+
+    <l-map
+      ref="map"
+      :zoom="zoom"
+      :bounds="bounds"
+      :center="center"
+      :options="mapOptions"
+      style="height: 450px; width: 100%; z-index: 1"
+      @update:center="centerUpdate"
+      @update:zoom="zoomUpdate"
+    >
+      <l-tile-layer :url="url" :attribution="attribution" />
+      <div id="button-wrapper">
+        <input type="button" id="Btn1" value="Btn1" class="btnStyle span3" />
+      </div>
+      <l-marker
+        :key="id"
+        v-for="(centro, id) in centrosList"
+        :lat-lng="centro.position"
+      >
+        <l-popup>
+          <h3>{{ centro.nombre }}</h3>
+          <p><b>Direccion:</b> {{ centro.direccion }},</p>
+          <p>
+            <b>Horario:</b> {{ centro.hora_apertura }} -
+            {{ centro.hora_cierre }}
+          </p>
+          <p><b>Telefono:</b> {{ centro.telefono }}</p>
+        </l-popup>
+      </l-marker>
+    </l-map>
   </v-container>
 </template>
 
@@ -136,7 +140,6 @@ export default {
   }, */
 
   created() {
-    this.fetchMunicipios();
     this.traerCentros();
   },
 
@@ -164,7 +167,7 @@ export default {
         .then((data) => {
           /* alert(data.body.centros[1].nombre); */
           /* this.centrosList = data; */
-         
+
           for (var centro in data.body.centros) {
             this.centrosList.push({
               id: data.body.centros[centro].id,
@@ -174,7 +177,10 @@ export default {
                 lat: data.body.centros[centro].latitud,
               },
               municipio: data.body.centros[centro].municipio,
-              direccion: data.body.centros[centro].direccion.replace(', Provincia de Buenos Aires',''),
+              direccion: data.body.centros[centro].direccion.replace(
+                ", Provincia de Buenos Aires",
+                ""
+              ),
               hora_apertura: data.body.centros[centro].hora_apertura,
               hora_cierre: data.body.centros[centro].hora_cierre,
               telefono: data.body.centros[centro].telefono,
@@ -205,6 +211,10 @@ export default {
           animate: true,
         },
       });
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
     },
 
     resetear() {
@@ -219,26 +229,11 @@ export default {
       });
     },
 
-    sacarTurno(centro) {      
-       this.$router.push({
+    sacarTurno(centro) {
+      this.$router.push({
         path: "/v/turnos",
         query: { id: centro.id },
       });
-    },
-
-    fetchMunicipios() {
-      fetch(
-        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135"
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          for (var municipio in data.data.Town) {
-            this.items.push({
-              mun_id: data.data.Town[municipio].id,
-              mun_nombre: data.data.Town[municipio].name,
-            });
-          }
-        });
     },
   },
 };
