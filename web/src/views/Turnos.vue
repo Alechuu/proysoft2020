@@ -452,15 +452,17 @@ export default {
     descargarPDFResumenTurno() {
       const doc = new jsPDF();
       //Titulo centrado
+      doc.setFontSize(22);
       doc.text("Resumen del Turno", 105, 10, null, null, "center");
       //Datos a izquierda
-      doc.text("Municipio:" + this.PDF_municipio, 10, 30);
-      doc.text("Nombre del centro de ayuda:" + this.PDF_centro_ayuda, 10, 40);
-      doc.text("Correo:" + this.PDF_email_donante, 10, 50);
-      doc.text("Teléfono:" + this.PDF_telefono_donante, 10, 60);
-      doc.text("Fecha:" + this.PDF_fecha, 10, 70);
-      doc.text("Hora de Inicio:" + this.PDF_hora_inicio, 10, 80);
-      doc.text("Hora de Fin:" + this.PDF_hora_fin, 10, 90);
+      doc.setFontSize(16);
+      doc.text("Municipio: " + this.PDF_municipio, 10, 30);
+      doc.text("Nombre del centro de ayuda: " + this.PDF_centro_ayuda, 10, 40);
+      doc.text("Correo: " + this.PDF_email_donante, 10, 50);
+      doc.text("Teléfono: " + this.PDF_telefono_donante, 10, 60);
+      doc.text("Fecha: " + this.formatDate(this.PDF_fecha), 10, 70);
+      doc.text("Hora de Inicio: " + this.PDF_hora_inicio, 10, 80);
+      doc.text("Hora de Fin: " + this.PDF_hora_fin, 10, 90);
       doc.save("Reserva.pdf");
     },
   },
