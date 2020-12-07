@@ -418,7 +418,7 @@ export default {
             this.alert_type = "success";
             this.alert_body = data.details;
             this.mostrarBotonAlert = true;
-          } else if (data.status === "400") {
+          } else if (data.status == "400") {
             this.alert_type = "error";
             this.alert_body = data.details;
             this.mostrarBotonAlert = false;
