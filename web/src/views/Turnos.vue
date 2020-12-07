@@ -403,8 +403,8 @@ export default {
         .then((data) => {
           if (data.status === "201 Created") {
             // Para descarga del PDF con los datos del turno
-            this.PDF_centro_ayuda = this.selectCentro.centro_nombre;
-            this.PDF_municipio = this.selectMunicipio;
+            this.PDF_centro_ayuda = data.body.atributos.centro_nombre;
+            this.PDF_municipio = data.body.atributos.centro_municipio;
             this.PDF_email_donante = data.body.atributos.email_donante;
             this.PDF_telefono_donante = data.body.atributos.telefono_donante;
             this.PDF_hora_inicio = data.body.atributos.hora_inicio;
@@ -451,8 +451,13 @@ export default {
       //Titulo centrado
       doc.text("Resumen del Turno", 105, 10, null, null, "center");
       //Datos a izquierda
-      doc.text("Nombre del centro de ayuda:" + this.PDF_centro_ayuda, 10, 20);
-
+      doc.text("Municipio:" + this.PDF_municipio, 10, 30);
+      doc.text("Nombre del centro de ayuda:" + this.PDF_centro_ayuda, 10, 40);
+      doc.text("Correo:" + this.PDF_email_donante, 10, 50);
+      doc.text("Teléfono:" + this.PDF_telefono_donante, 10, 60);
+      doc.text("Fecha:" + this.PDF_fecha, 10, 70);
+      doc.text("Hora de Inicio:" + this.PDF_hora_inicio, 10, 80);
+      doc.text("Hora de Fin:" + this.PDF_hora_fin, 10, 90);
       doc.save("Reserva.pdf");
     },
   },
