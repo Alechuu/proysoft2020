@@ -18,7 +18,10 @@
             {{ alert_body }}
           </v-col>
           <v-col class="shrink">
-            <v-btn outlined v-if="mostrarBotonAlert" @click="descargarPDFResumenTurno"
+            <v-btn
+              outlined
+              v-if="mostrarBotonAlert"
+              @click="descargarPDFResumenTurno"
               >Descargar PDF</v-btn
             >
           </v-col>
@@ -102,7 +105,7 @@
                 name="municipio"
                 id="municipio"
                 prepend-icon="mdi-map"
-                clearable="true"
+                :clearable="isClearable"
                 v-on:change="changeMunicipio"
               ></v-select>
             </v-col>
@@ -172,7 +175,6 @@
                   name="hora_inicio"
                   return-object
                   attach
-                  chips
                   label="Horarios"
                   prepend-icon="mdi-clock-time-three"
                   :error-messages="errors"
@@ -259,10 +261,11 @@ export default {
     menuFecha: false,
     selectHorarios: null,
     itemsHorarios: [],
+    isClearable: true,
     //Datos PDF
     PDF_centro_ayuda: null,
     PDF_municipio: null,
-    PDF_email_donante:null,
+    PDF_email_donante: null,
     PDF_telefono_donante: null,
     PDF_hora_inicio: null,
     PDF_hora_fin: null,
@@ -446,8 +449,8 @@ export default {
       this.selectHorarios = null;
       this.$refs.observer.reset();
     },
-    descargarPDFResumenTurno() {            
-      const doc = new jsPDF();     
+    descargarPDFResumenTurno() {
+      const doc = new jsPDF();
       //Titulo centrado
       doc.text("Resumen del Turno", 105, 10, null, null, "center");
       //Datos a izquierda
