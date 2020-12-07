@@ -10,7 +10,6 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "jspdf": "^2.2.0",
-    "jspdf-autotable": "^3.5.13",
     "leaflet": "^1.7.1",
     "vee-validate": "^3.4.5",
     "vue": "^2.6.11",
