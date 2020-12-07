@@ -377,6 +377,11 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
+    formatTime(time){
+      if(!time)return null;
+      const [horas, minutos] = time.split(":");
+      return `${horas}:${minutos}`;
+    },
     disablePastDates(val) {
       return val >= new Date().toISOString().substr(0, 10);
     },
@@ -461,8 +466,8 @@ export default {
       doc.text("Correo: " + this.PDF_email_donante, 10, 50);
       doc.text("Teléfono: " + this.PDF_telefono_donante, 10, 60);
       doc.text("Fecha: " + this.formatDate(this.PDF_fecha), 10, 70);
-      doc.text("Hora de Inicio: " + this.PDF_hora_inicio, 10, 80);
-      doc.text("Hora de Fin: " + this.PDF_hora_fin, 10, 90);
+      doc.text("Hora de Inicio: " + this.formatTime(this.PDF_hora_inicio), 10, 80);
+      doc.text("Hora de Fin: " + this.formatTime(this.PDF_hora_fin), 10, 90);
       doc.save("Reserva.pdf");
     },
   },
