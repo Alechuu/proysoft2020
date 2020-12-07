@@ -18,8 +18,8 @@
             {{ alert_body }}
           </v-col>
           <v-col class="shrink">
-            <v-btn outlined v-if="mostrarBotonAlert" @click="verResumenTurno"
-              >Resumen</v-btn
+            <v-btn outlined v-if="mostrarBotonAlert" @click="descargarPDFResumenTurno"
+              >Descargar PDF</v-btn
             >
           </v-col>
         </v-row>
@@ -199,6 +199,7 @@
 </template>
 
 <script>
+import { jsPDF } from "jspdf";
 import { required, email, max, numeric } from "vee-validate/dist/rules";
 import {
   extend,
@@ -258,6 +259,14 @@ export default {
     menuFecha: false,
     selectHorarios: null,
     itemsHorarios: [],
+    //Datos PDF
+    PDF_centro_ayuda: null,
+    PDF_municipio: null,
+    PDF_email_donante:null,
+    PDF_telefono_donante: null,
+    PDF_hora_inicio: null,
+    PDF_hora_fin: null,
+    PDF_fecha: null,
   }),
   computed: {
     computedDateFormatted() {
@@ -393,18 +402,27 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           if (data.status === "201 Created") {
-            this.limpiarFormulario();            
+            // Para descarga del PDF con los datos del turno
+            this.PDF_centro_ayuda = this.selectCentro.centro_nombre;
+            this.PDF_municipio = this.selectMunicipio;
+            this.PDF_email_donante = data.body.atributos.email_donante;
+            this.PDF_telefono_donante = data.body.atributos.telefono_donante;
+            this.PDF_hora_inicio = data.body.atributos.hora_inicio;
+            this.PDF_hora_fin = data.body.atributos.hora_fin;
+            this.PDF_fecha = data.body.atributos.fecha;
+            //Fin datos PDF
+            this.limpiarFormulario();
             this.alert_type = "success";
-            this.alert_body = data.details;            
-            this.mostrarBotonAlert = true;            
-          } else if (data.status === "400") {            
+            this.alert_body = data.details;
+            this.mostrarBotonAlert = true;
+          } else if (data.status === "400") {
             this.alert_type = "error";
             this.alert_body = data.details;
             this.mostrarBotonAlert = false;
-          } else {                        
+          } else {
             this.alert_type = "error";
             this.alert_body =
-              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";            
+              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
             this.mostrarBotonAlert = false;
           }
           this.alert_cerrar = true;
@@ -412,12 +430,13 @@ export default {
           this.resetAlert = true;
           this.alert = true;
           window.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: "smooth",
-            });
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+          });
         });
     },
+
     // Esto limpia el formulario si la solicitud fue exitosa
     limpiarFormulario() {
       this.telefono = "";
@@ -427,7 +446,15 @@ export default {
       this.selectHorarios = null;
       this.$refs.observer.reset();
     },
-    verResumenTurno() {},
+    descargarPDFResumenTurno() {            
+      const doc = new jsPDF();     
+      //Titulo centrado
+      doc.text("Resumen del Turno", 105, 10, null, null, "center");
+      //Datos a izquierda
+      doc.text("Nombre del centro de ayuda:" + this.PDF_centro_ayuda, 10, 20);
+
+      doc.save("Reserva.pdf");
+    },
   },
 };
 </script>
