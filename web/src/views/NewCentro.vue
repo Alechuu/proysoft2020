@@ -44,7 +44,7 @@
         </div>
 
         <v-divider class="mb-10"></v-divider>
-        <form id="test_form" @submit.prevent="submit">
+        <form id="form_centro" @submit.prevent="submit">
           <v-row>
             <v-col md="6" cols="12">
               <validation-provider
@@ -261,7 +261,7 @@
               </validation-provider>
             </v-col>
           </v-row>
-          <div class="d-flex flex-column ml-10">
+          <div class="d-flex flex-column">
             <v-alert type="info" dense border="bottom">
               Elegí un <b>municipio</b>, ingresá una <b>dirección</b> y hacé
               click en
@@ -275,7 +275,6 @@
           <v-alert
             v-model="resetAlertMapa"
             :value="alertMapa"
-            class="ml-10"
             style="width: 50%"
             type="warning"
             transition="scale-transition"
@@ -285,7 +284,7 @@
           >
             Ups, no encontramos esa dirección. Revisala e intentá de nuevo.
           </v-alert>
-          <v-card class="ml-10">
+          <v-card>
             <div>
               <l-map
                 @click="agregarMarker"
@@ -301,7 +300,10 @@
                 <l-marker :lat-lng="marker">
                   <l-tooltip
                     v-html="pin_help"
-                    :options="{ permanent: true, interactive: true }"
+                    :options="{
+                      permanent: true,
+                      interactive: true,
+                    }"
                   >
                     <div>
                       {{ pin_help }}
@@ -345,6 +347,23 @@
               </v-card>
             </v-dialog>
           </div>
+          <vue-recaptcha
+            ref="recaptcha"
+            class="mt-5"
+            @verify="recaptchaVerified"
+            @expired="recaptchaExpired"
+            sitekey="6LclyPsZAAAAAE9zznGuNbp-NvsWk-7iMGrLCFgN"
+            :loadRecaptchaScript="true"
+          >
+          </vue-recaptcha>
+          <div v-if="noTildoRecaptcha" class="mt-2 pb-0 mb-0">
+            <h5
+              class="font-weight-light pb-3"
+              style="color: red; text-align: left"
+            >
+              Por favor, tildá la casilla de reCaptcha
+            </h5>
+          </div>
 
           <v-btn
             class="mr-4 mt-10"
@@ -387,6 +406,7 @@ import {
   ValidationProvider,
   setInteractionMode,
 } from "vee-validate";
+import VueRecaptcha from "vue-recaptcha";
 
 setInteractionMode("aggressive");
 
@@ -419,6 +439,7 @@ export default {
     LTileLayer,
     LMarker,
     LTooltip,
+    VueRecaptcha,
   },
   data() {
     return {
@@ -472,6 +493,8 @@ export default {
       latitudInput: "",
       longitudInput: "",
       idCentroSolicitud: null,
+      recaptchaVerificado: false,
+      noTildoRecaptcha: false,
     };
   },
 
@@ -505,8 +528,12 @@ export default {
     // Submit del formulario junto a sus chequeos + Alertas
     submit() {
       this.$refs.observer.validate();
+      if (!this.recaptchaVerificado) {
+        this.noTildoRecaptcha = true;
+        return false;
+      }
       this.overlay = true;
-      const form_data = new FormData(document.getElementById("test_form"));
+      const form_data = new FormData(document.getElementById("form_centro"));
       fetch("http://127.0.0.1:5000/api/centros", {
         method: "POST",
         body: form_data,
@@ -561,6 +588,9 @@ export default {
       this.menu_apertura = false;
       this.menu_cierre = false;
       this.pdf_visita = null;
+      this.$refs.recaptcha.reset();
+      this.recaptchaVerificado = false;
+      this.noTildoRecaptcha = false;
       this.$refs.observer.reset();
     },
 
@@ -605,15 +635,27 @@ export default {
           }
           var lat = data["items"][0]["position"]["lat"];
           var lng = data["items"][0]["position"]["lng"];
+          this.marker = latLng(lat, lng);
+          this.overlayMapa = false;
+          this.$refs.mapaCentro.mapObject.setView([lat, lng], 16);
           this.pin_help =
             "Esta sería la ubicación del Centro.<br />" +
             "Si es errónea, simplemente<br />" +
             "hacé click en la ubicación correcta<br />" +
             "y se guardará.";
-          this.marker = latLng(lat, lng);
-          this.overlayMapa = false;
-          this.$refs.mapaCentro.mapObject.setView([lat, lng], 18);
         });
+    },
+
+    recaptchaVerified() {
+      if (this.noTildoRecaptcha) {
+        this.noTildoRecaptcha = false;
+      }
+      this.recaptchaVerificado = true;
+    },
+
+    recaptchaExpired() {
+      this.noTildoRecaptcha = false;
+      this.recaptchaVerificado = false;
     },
 
     // Redirigie para ver la solcitud
