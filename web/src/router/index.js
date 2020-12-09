@@ -5,6 +5,7 @@ import Turnos from "../views/Turnos.vue";
 import NewCentro from "../views/NewCentro.vue";
 import Centros from "../views/Centros.vue";
 import EstadoCentro from "../views/EstadoCentro.vue";
+import MisTurnos from "../views/MisTurnos.vue";
 
 Vue.use(VueRouter);
 
@@ -30,9 +31,14 @@ const routes = [
     component: EstadoCentro,
   },
   {
-    path: "/v/turnos",
+    path: "/v/turnos/solicitud",
     name: "Turnos",
     component: Turnos,
+  },
+  {
+    path: "/v/turnos/misturnos",
+    name: "MisTurnos",
+    component: MisTurnos,
   },
 ];
 

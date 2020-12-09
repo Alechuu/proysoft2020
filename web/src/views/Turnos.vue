@@ -1,9 +1,9 @@
 <template>
-  <validation-observer ref="observer" v-slot="{ invalid }">
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
-    <v-container>
+  <v-container>
+    <validation-observer ref="observer" v-slot="{ invalid }">
+      <v-overlay :value="overlay">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
       <v-alert
         v-model="resetAlert"
         :type="alert_type"
@@ -33,7 +33,10 @@
           <h1 class="text-h4" style="text-align: center; color: white">
             Solicitud de turno
           </h1>
-          <h6 class="text-h6 pb-5" style="text-align: left; color: white">
+          <h6
+            class="text-h6 pt-5 pb-5"
+            style="text-align: center; color: white"
+          >
             Para concurrir a nuestros centros, necesitas previamente solicitar
             un turno, que te permitirá acercarte a nosotros en los horarios
             habituales de atención.
@@ -196,8 +199,8 @@
           </v-btn>
         </form>
       </v-card>
-    </v-container>
-  </validation-observer>
+    </validation-observer>
+  </v-container>
 </template>
 
 <script>
@@ -233,6 +236,7 @@ extend("numeric", {
 });
 
 export default {
+  name: "Turnos",
   components: {
     ValidationProvider,
     ValidationObserver,

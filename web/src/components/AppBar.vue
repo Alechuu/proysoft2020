@@ -45,13 +45,36 @@
         <!-- /Opciones de los Centros -->
 
         <!-- Opciones de los Turnos -->
-        <v-list-item link to="/v/turnos">
+        <!--         <v-list-item link to="/v/turnos">
           <v-list-item-icon>
             <v-icon>mdi-ticket-account</v-icon>
           </v-list-item-icon>
 
           <v-list-item-title>Turnos</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
+        <v-list-group
+          group="/v/turnos"
+          :value="false"
+          prepend-icon="mdi-calendar-clock"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Turnos</v-list-item-title>
+          </template>
+
+          <v-list-item
+            class="ml-10"
+            v-for="([title, icon, link], i) in turnos"
+            :key="i"
+            link
+            :to="link"
+          >
+            <v-list-item-title v-text="title"></v-list-item-title>
+
+            <v-list-item-icon>
+              <v-icon v-text="icon"></v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
 
         <v-list-group
           group="/v/estadisticas"
@@ -115,7 +138,10 @@ export default {
         ["Nuevo Centro", "mdi-home-plus", "/v/centros/crear"],
         ["Estado Solicitud", "mdi-home-edit", "/v/centros/estado"],
       ],
-      turnos: [["Solicitud", "mdi-plus-circle", "/v/turnos"]],
+      turnos: [
+        ["Solicitud", "mdi-calendar-plus", "/v/turnos/solicitud"],
+        ["Mis Turnos", "mdi-calendar-search", "/v/turnos/misturnos"],
+      ],
       estadisticas: [
         ["Centros", "mdi-home-heart", "/v/estadisticas/centros"],
         ["Turnos", "mdi-ticket-account", "/v/estadisticas/turnos"],
