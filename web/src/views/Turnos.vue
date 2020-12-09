@@ -308,7 +308,7 @@ export default {
     },
     // Función que trae los centros para llenar el Select
     fetchCentros() {
-      fetch("http://127.0.0.1:5000/api/centros?pagina=1")
+      fetch(process.env.VUE_APP_RUTA_API + "centros?pagina=1")
         .then((res) => res.json())
         .then((data) => {
           var centros = data.body.centros;
@@ -348,7 +348,8 @@ export default {
     changeCentro() {
       if (this.selectCentro.centro_id != null) {
         fetch(
-          "http://127.0.0.1:5000/api/centros/" +
+          process.env.VUE_APP_RUTA_API +
+            "centros/" +
             this.selectCentro.centro_id +
             "/turnos_disponibles?fecha=" +
             this.date
@@ -377,6 +378,11 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
+    formatTime(time) {
+      if (!time) return null;
+      const [horas, minutos] = time.split(":");
+      return `${horas}:${minutos}`;
+    },
     disablePastDates(val) {
       return val >= new Date().toISOString().substr(0, 10);
     },
@@ -394,7 +400,8 @@ export default {
       form_data.set("hora_inicio", this.selectHorarios.hora_inicio);
       form_data.set("hora_fin", this.selectHorarios.hora_fin);
       fetch(
-        "http://127.0.0.1:5000/api/centros/" +
+        process.env.VUE_APP_RUTA_API +
+          "centros/" +
           this.selectCentro.centro_id +
           "/reserva",
         {
@@ -418,7 +425,7 @@ export default {
             this.alert_type = "success";
             this.alert_body = data.details;
             this.mostrarBotonAlert = true;
-          } else if (data.status === "400") {
+          } else if (data.status == "400") {
             this.alert_type = "error";
             this.alert_body = data.details;
             this.mostrarBotonAlert = false;
@@ -452,15 +459,21 @@ export default {
     descargarPDFResumenTurno() {
       const doc = new jsPDF();
       //Titulo centrado
+      doc.setFontSize(22);
       doc.text("Resumen del Turno", 105, 10, null, null, "center");
       //Datos a izquierda
-      doc.text("Municipio:" + this.PDF_municipio, 10, 30);
-      doc.text("Nombre del centro de ayuda:" + this.PDF_centro_ayuda, 10, 40);
-      doc.text("Correo:" + this.PDF_email_donante, 10, 50);
-      doc.text("Teléfono:" + this.PDF_telefono_donante, 10, 60);
-      doc.text("Fecha:" + this.PDF_fecha, 10, 70);
-      doc.text("Hora de Inicio:" + this.PDF_hora_inicio, 10, 80);
-      doc.text("Hora de Fin:" + this.PDF_hora_fin, 10, 90);
+      doc.setFontSize(16);
+      doc.text("Municipio: " + this.PDF_municipio, 10, 30);
+      doc.text("Nombre del centro de ayuda: " + this.PDF_centro_ayuda, 10, 40);
+      doc.text("Correo: " + this.PDF_email_donante, 10, 50);
+      doc.text("Teléfono: " + this.PDF_telefono_donante, 10, 60);
+      doc.text("Fecha: " + this.formatDate(this.PDF_fecha), 10, 70);
+      doc.text(
+        "Hora de Inicio: " + this.formatTime(this.PDF_hora_inicio),
+        10,
+        80
+      );
+      doc.text("Hora de Fin: " + this.formatTime(this.PDF_hora_fin), 10, 90);
       doc.save("Reserva.pdf");
     },
   },

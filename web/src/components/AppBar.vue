@@ -52,7 +52,30 @@
 
           <v-list-item-title>Turnos</v-list-item-title>
         </v-list-item>
-        
+
+        <v-list-group
+          group="/v/estadisticas"
+          :value="false"
+          prepend-icon="mdi-chart-line"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Estadísticas</v-list-item-title>
+          </template>
+
+          <v-list-item
+            class="ml-10"
+            v-for="([title, icon, link], i) in estadisticas"
+            :key="i"
+            link
+            :to="link"
+          >
+            <v-list-item-title v-text="title"></v-list-item-title>
+
+            <v-list-item-icon>
+              <v-icon v-text="icon"></v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
 
         <!-- /Opciones de los Turnos -->
       </v-list>
@@ -92,8 +115,11 @@ export default {
         ["Nuevo Centro", "mdi-home-plus", "/v/centros/crear"],
         ["Estado Solicitud", "mdi-home-edit", "/v/centros/estado"],
       ],
-      turnos: [
-        ["Solicitud", "mdi-plus-circle", "/v/turnos"],        
+      turnos: [["Solicitud", "mdi-plus-circle", "/v/turnos"]],
+      estadisticas: [
+        ["Centros", "mdi-home-heart", "/v/estadisticas/centros"],
+        ["Turnos", "mdi-ticket-account", "/v/estadisticas/turnos"],
+        ["Horarios", "mdi-calendar-clock", "/v/estadisticas/horarios"],
       ],
       drawer: false,
     };

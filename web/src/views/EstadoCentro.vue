@@ -184,7 +184,7 @@ export default {
       this.cargandoSolicitud = true;
       this.panelSolicitud = [];
       this.alert = false;
-      fetch("http://127.0.0.1:5000/api/centros/id=" + this.idSolicitud, {
+      fetch(process.env.VUE_APP_RUTA_API + "centros/id=" + this.idSolicitud, {
         method: "GET",
       })
         .then((res) => res.json())

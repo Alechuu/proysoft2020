@@ -162,7 +162,7 @@ export default {
       {
         alert(pagina)
       } */
-      fetch("http://127.0.0.1:5000/api/centros")
+      fetch(process.env.VUE_APP_RUTA_API + "centros")
         .then((res) => res.json())
         .then((data) => {
           /* alert(data.body.centros[1].nombre); */
