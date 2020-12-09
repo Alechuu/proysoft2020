@@ -111,13 +111,10 @@ class Centro(db.Model):
             micentro.tipo_centro = data.get("tipo_centro")
             micentro.sitio_web = data.get("sitio_web")
             micentro.direccion = data.get("direccion")
-            coords = Geocoder(micentro.direccion)
             micentro.email = data.get("email")
             micentro.municipio = data.get("municipio")
             micentro.hora_apertura = data.get("hora_apertura")
             micentro.hora_cierre = data.get("hora_cierre")
-            micentro.latitud=coords[0]
-            micentro.longitud=coords[1]
             micentro.solicitud=data.get("solicitud")
             if(newPath != "NO_UPDATE_PDF"):
                 os.remove(current_app.root_path+micentro.path_pdf)

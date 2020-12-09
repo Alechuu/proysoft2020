@@ -7,8 +7,7 @@
             Centros de donación de la Provincia de Buenos Aires
           </h1>
           <h3 class="text-h5 font-italic">
-            Cientos de centros de ropa, alimentos, donaciones de sangre, plasma
-            y muchas categorías más.
+            Dándole una mano a quienes más lo necesitan
           </h3>
         </v-col>
       </v-row>
