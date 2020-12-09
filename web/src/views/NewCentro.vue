@@ -616,6 +616,7 @@ export default {
         this.marker = latLng(event.latlng.lat, event.latlng.lng);
         this.latitudInput = event.latlng.lat;
         this.longitudInput = event.latlng.lng;
+        console.log(this.latitudInput, this.longitudInput);
       }
     },
 
