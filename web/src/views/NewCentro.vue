@@ -349,6 +349,7 @@
           </div>
           <vue-recaptcha
             ref="recaptcha"
+            :theme="themeRecaptcha"
             class="mt-5"
             @verify="recaptchaVerified"
             @expired="recaptchaExpired"
@@ -495,11 +496,15 @@ export default {
       idCentroSolicitud: null,
       recaptchaVerificado: false,
       noTildoRecaptcha: false,
+      themeRecaptcha: "light",
     };
   },
 
   created() {
     this.fetchMunicipios();
+    if (this.$vuetify.theme.dark) {
+      this.themeRecaptcha = "dark";
+    }
   },
   mounted() {
     window.scrollTo({
@@ -534,7 +539,7 @@ export default {
       }
       this.overlay = true;
       const form_data = new FormData(document.getElementById("form_centro"));
-      fetch("http://127.0.0.1:5000/api/centros", {
+      fetch(process.env.VUE_APP_RUTA_API + "centros", {
         method: "POST",
         body: form_data,
       })
