@@ -1,9 +1,9 @@
 <template>
-  <validation-observer ref="observer" v-slot="{ invalid }">
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
-    <v-container>
+  <v-container>
+    <validation-observer ref="observer" v-slot="{ invalid }">
+      <v-overlay :value="overlay">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
       <v-alert
         v-model="resetAlert"
         :type="alert_type"
@@ -391,8 +391,8 @@
           />
         </form>
       </v-card>
-    </v-container>
-  </validation-observer>
+    </validation-observer>
+  </v-container>
 </template>
 
 

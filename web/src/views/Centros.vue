@@ -1,11 +1,19 @@
 <template v-slot:top>
   <v-container>
-    <v-card class="mb-5">
+    <v-card class="mt-5" color="primary" elevation="5">
+      <div class="pa-5" style="text-align: center">
+        <v-icon color="white" size="50"> mdi-home-search </v-icon>
+        <h1 class="text-h4" style="text-align: center; color: white">
+          Listado de Centros
+        </h1>
+      </div>
+    </v-card>
+    <v-card class="mt-6 mb-10" elevation="5">
       <v-card-title>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" @click="resetear" v-bind="attrs" v-on="on">
-              Centros de Ayuda
+              Centrar Mapa
               <v-icon> mdi-map </v-icon>
             </v-btn>
           </template>
@@ -16,7 +24,7 @@
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
-          label="Buscar"
+          label="Buscá por cualquier campo..."
           single-line
           hide-details
         ></v-text-field>
@@ -30,37 +38,38 @@
         </template>
       </v-data-table>
     </v-card>
-
-    <l-map
-      ref="map"
-      :zoom="zoom"
-      :bounds="bounds"
-      :center="center"
-      :options="mapOptions"
-      style="height: 450px; width: 100%; z-index: 1"
-      @update:center="centerUpdate"
-      @update:zoom="zoomUpdate"
-    >
-      <l-tile-layer :url="url" :attribution="attribution" />
-      <div id="button-wrapper">
-        <input type="button" id="Btn1" value="Btn1" class="btnStyle span3" />
-      </div>
-      <l-marker
-        :key="id"
-        v-for="(centro, id) in centrosList"
-        :lat-lng="centro.position"
+    <v-card class="mb-10" elevation="5">
+      <l-map
+        ref="map"
+        :zoom="zoom"
+        :bounds="bounds"
+        :center="center"
+        :options="mapOptions"
+        style="height: 450px; width: 100%; z-index: 1"
+        @update:center="centerUpdate"
+        @update:zoom="zoomUpdate"
       >
-        <l-popup>
-          <h3>{{ centro.nombre }}</h3>
-          <p><b>Direccion:</b> {{ centro.direccion }},</p>
-          <p>
-            <b>Horario:</b> {{ centro.hora_apertura }} -
-            {{ centro.hora_cierre }}
-          </p>
-          <p><b>Telefono:</b> {{ centro.telefono }}</p>
-        </l-popup>
-      </l-marker>
-    </l-map>
+        <l-tile-layer :url="url" :attribution="attribution" />
+        <div id="button-wrapper">
+          <input type="button" id="Btn1" value="Btn1" class="btnStyle span3" />
+        </div>
+        <l-marker
+          :key="id"
+          v-for="(centro, id) in centrosList"
+          :lat-lng="centro.position"
+        >
+          <l-popup>
+            <h3>{{ centro.nombre }}</h3>
+            <p><b>Direccion:</b> {{ centro.direccion }},</p>
+            <p>
+              <b>Horario:</b> {{ centro.hora_apertura }} -
+              {{ centro.hora_cierre }}
+            </p>
+            <p><b>Telefono:</b> {{ centro.telefono }}</p>
+          </l-popup>
+        </l-marker>
+      </l-map>
+    </v-card>
   </v-container>
 </template>
 
@@ -69,7 +78,7 @@ import { latLngBounds, latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 
 export default {
-  name: "Example",
+  name: "Centros",
   components: {
     LMap,
     LTileLayer,
@@ -138,6 +147,14 @@ export default {
   {
     this.traerCentros();
   }, */
+
+  mounted() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },
 
   created() {
     this.traerCentros();
