@@ -1,11 +1,11 @@
+const Centros = () => import("../views/Centros.vue");
+const EstadoCentro = () => import("../views/EstadoCentro.vue");
+const Home = () => import("../views/Home.vue");
+const MisTurnos = () => import("../views/MisTurnos.vue");
+const NewCentro = () => import("../views/NewCentro.vue");
+const Turnos = () => import("../views/Turnos.vue");
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Turnos from "../views/Turnos.vue";
-import NewCentro from "../views/NewCentro.vue";
-import Centros from "../views/Centros.vue";
-import EstadoCentro from "../views/EstadoCentro.vue";
-import MisTurnos from "../views/MisTurnos.vue";
 
 Vue.use(VueRouter);
 

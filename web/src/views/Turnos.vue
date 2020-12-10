@@ -171,6 +171,7 @@
                 rules="required"
               >
                 <v-select
+                  :menu-props="{ top: true }"
                   v-model="selectHorarios"
                   :items="itemsHorarios"
                   item-text="hora_inicio"

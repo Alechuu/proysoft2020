@@ -113,7 +113,6 @@
               <div style="color: white" class="text-body-1">Turnos</div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-divider></v-divider>
               <v-data-table
                 dense
                 :headers="headers"
@@ -244,7 +243,10 @@ export default {
             this.turnos = [];
             for (var turno in data.body) {
               this.turnos.push({
-                fecha: data.body[turno]["turno"]["datos"].fecha,
+                fechaSinFormato: data.body[turno]["turno"]["datos"].fecha,
+                fecha: this.formatDate(
+                  data.body[turno]["turno"]["datos"].fecha
+                ),
                 hora_inicio: data.body[turno]["turno"]["datos"].hora_inicio,
                 hora_fin: data.body[turno]["turno"]["datos"].hora_fin,
                 centro: data.body[turno]["turno"]["centro"].nombre,
@@ -324,23 +326,23 @@ export default {
       doc.setFontSize(16);
       doc.text("Nombre: " + turno.centro, 10, 75);
       doc.text("Municipio: " + turno.municipio, 10, 85);
-      //doc.text("Dirección: " + turno.direccion, 10, 30);
+      doc.text("Dirección: " + turno.direccion, 10, 95);
       doc.setFontSize(22);
       doc.setLineWidth(1);
-      doc.line(0, 90, 300, 90);
+      doc.line(0, 100, 300, 100);
       //doc.text("-----------------------", 105, 10, null, null, "center");
-      doc.text("Datos del Turno", 105, 100, null, null, "center");
+      doc.text("Datos del Turno", 105, 110, null, null, "center");
       //doc.text("-----------------------", 105, 10, null, null, "center");
       doc.setLineWidth(1);
-      doc.line(0, 105, 300, 105);
+      doc.line(0, 115, 300, 115);
       doc.setFontSize(16);
-      doc.text("Fecha: " + this.formatDate(turno.fecha), 10, 115);
+      doc.text("Fecha: " + this.formatDate(turno.fechaSinFormato), 10, 125);
       doc.text(
         "Hora de Inicio: " + this.formatTime(turno.hora_inicio),
         10,
-        125
+        135
       );
-      doc.text("Hora de Fin: " + this.formatTime(turno.hora_fin), 10, 135);
+      doc.text("Hora de Fin: " + this.formatTime(turno.hora_fin), 10, 145);
       doc.save("Turno.pdf");
     },
   },
