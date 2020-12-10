@@ -15,7 +15,7 @@ class Turno(db.Model):
         return Turno.query.all()
 
     def get_by_date_and_email(date,email):
-        return Turno.query.filter(Turno.fecha==date, Turno.email_visitante==email).all()
+        return Turno.query.filter(Turno.fecha==date, Turno.email_visitante==email).order_by(Turno.hora_inicio).all()
     
     @staticmethod
     def get_by_id(id_turno):
