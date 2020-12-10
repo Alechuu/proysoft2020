@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import "leaflet/dist/leaflet.css";
 import { latLngBounds, latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 
