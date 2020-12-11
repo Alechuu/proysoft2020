@@ -249,7 +249,7 @@ export default {
 
     sacarTurno(centro) {
       this.$router.push({
-        path: "/v/turnos",
+        path: "/v/turnos/solicitud",
         query: { id: centro.id },
       });
     },

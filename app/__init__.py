@@ -14,6 +14,7 @@ from app.db import db
 from app.resources import user, auth, configuracion, centro,profile, mainController, turno
 from app.resources.api import centro as centroAPI
 from app.resources.api import turno as turnoAPI
+from app.resources.api import stats as statsAPI
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
@@ -105,4 +106,5 @@ def create_app(environment="development"):
     api.add_resource(centroAPI.TurnosUpdate, '/api/centros/<id_centro>/modificar-reserva')
     api.add_resource(centroAPI.TurnosCentroRangoFecha, '/api/centros/turnos_tomados')
     api.add_resource(turnoAPI.Turnos, '/api/turnos')
+    api.add_resource(statsAPI.EstadisticasTurnos, '/api/stats/turnos')
     return app

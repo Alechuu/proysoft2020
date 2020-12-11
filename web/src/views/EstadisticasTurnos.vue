@@ -10,7 +10,7 @@
     </v-card>
     <v-card class="mt-5">
       <v-card-title class="headline primary">
-        <span style="color:white;">Buscá un Centro para compararlo</span>
+        <span style="color: white">Buscá un Centro para compararlo</span>
       </v-card-title>
       <v-card-text class="mt-5">
         Acá podes comparar la cantidad de <b>Turnos</b> totales por cada
@@ -19,6 +19,9 @@
       </v-card-text>
       <v-card-text>
         <v-autocomplete
+          chips
+          deletable-chips
+          multiple
           v-model="model"
           :items="items"
           :loading="isLoading"
@@ -33,40 +36,113 @@
           return-object
         ></v-autocomplete>
       </v-card-text>
-      <v-divider></v-divider>
-      <v-expand-transition>
-        <v-list v-if="model">
-          <v-list-item v-for="(field, i) in fields" :key="i">
-            <v-list-item-content>
-              <v-list-item-title v-text="field.value"></v-list-item-title>
-              <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-expand-transition>
     </v-card>
-    <v-card class="mt-5 pa-5" elevation="5">
-      <ve-bar :data="chartData"></ve-bar>
-    </v-card>
+    <transition name="fade">
+      <v-card v-if="!emptyArray">
+        <ve-bar
+          class="mt-5 pa-0"
+          :settings="chartSettings"
+          :data="chartData"
+        ></ve-bar>
+      </v-card>
+    </transition>
   </v-container>
 </template>
 
 <script>
 export default {
+  name: "EstadisticasTurnos",
   data() {
+    this.chartSettings = {
+      dataOrder: {
+        label: "turnos",
+        order: "desc",
+      },
+    };
     return {
+      emptyArray: true,
+      descriptionLimit: 25,
+      chartLimit: 10,
+      entries: [],
+      isLoading: false,
+      model: null,
+      search: null,
       chartData: {
         columns: ["centro", "turnos"],
-        rows: [
-          { centro: "Centro 1", turnos: 123 },
-          { centro: "Centro 2", turnos: 1223 },
-          { centro: "Centro 3", turnos: 2123 },
-          { centro: "Centro 4", turnos: 4123 },
-          { centro: "Centro 5", turnos: 3123 },
-          { centro: "Centro 6", turnos: 200 },
-        ],
+        rows: [],
       },
     };
   },
+  computed: {
+    fields() {
+      if (!this.model) return [];
+      return Object.keys(this.model).map((key) => {
+        return {
+          key,
+          value: this.model[key] || "n/a",
+        };
+      });
+    },
+    items() {
+      return this.entries.map((entry) => {
+        const Description =
+          entry.centro.length > this.descriptionLimit
+            ? entry.centro.slice(0, this.descriptionLimit) + "..."
+            : entry.centro;
+        entry.centro =
+          entry.centro.length > this.chartLimit
+            ? entry.centro.slice(0, this.chartLimit) + "..."
+            : entry.centro;
+
+        return Object.assign({}, entry, { Description });
+      });
+    },
+  },
+  watch: {
+    search() {
+      // Items have already been loaded
+      if (this.items.length > 0) return;
+
+      // Items have already been requested
+      if (this.isLoading) return;
+
+      this.isLoading = true;
+
+      // Lazily load input items
+      fetch(process.env.VUE_APP_RUTA_API + "stats/turnos")
+        .then((res) => res.json())
+        .then((res) => {
+          const { count, entries } = res;
+          this.count = count;
+          this.entries = entries;
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => (this.isLoading = false));
+    },
+    model() {
+      /*       this.chartData["rows"].push({
+        centro: this.model[this.model.length - 1].centro,
+        turnos: this.model[this.model.length - 1].turnos,
+      }); */
+      if (this.model.length != 0) {
+        this.emptyArray = false;
+      } else {
+        this.emptyArray = true;
+      }
+      this.chartData["rows"] = this.model;
+    },
+  },
 };
 </script>
+
+<style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>
