@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import "leaflet/dist/leaflet.css";
 import { latLngBounds, latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 
@@ -248,7 +249,7 @@ export default {
 
     sacarTurno(centro) {
       this.$router.push({
-        path: "/v/turnos",
+        path: "/v/turnos/solicitud",
         query: { id: centro.id },
       });
     },

@@ -4,6 +4,10 @@ import vuetify from "./plugins/vuetify";
 import Vue from "vue";
 import router from "./router";
 
+import VeBar from "v-charts/lib/bar.common";
+
+Vue.component(VeBar.name, VeBar);
+
 Vue.config.productionTip = false;
 
 // Configuración de Leaflet

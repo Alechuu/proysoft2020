@@ -4,6 +4,7 @@ const Home = () => import("../views/Home.vue");
 const MisTurnos = () => import("../views/MisTurnos.vue");
 const NewCentro = () => import("../views/NewCentro.vue");
 const Turnos = () => import("../views/Turnos.vue");
+const EstadisticasTurnos = () => import("../views/EstadisticasTurnos.vue");
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -39,6 +40,11 @@ const routes = [
     path: "/v/turnos/misturnos",
     name: "MisTurnos",
     component: MisTurnos,
+  },
+  {
+    path: "/v/estadisticas/turnos",
+    name: "EstadisticasTurnos",
+    component: EstadisticasTurnos,
   },
 ];
 
