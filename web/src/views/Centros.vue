@@ -60,12 +60,12 @@
         >
           <l-popup>
             <h3>{{ centro.nombre }}</h3>
-            <p><b>Direccion:</b> {{ centro.direccion }},</p>
+            <p><b>Dirección:</b> {{ centro.direccion }}</p>
             <p>
               <b>Horario:</b> {{ centro.hora_apertura }} -
               {{ centro.hora_cierre }}
             </p>
-            <p><b>Telefono:</b> {{ centro.telefono }}</p>
+            <p><b>Teléfono:</b> {{ centro.telefono }}</p>
           </l-popup>
         </l-marker>
       </l-map>
