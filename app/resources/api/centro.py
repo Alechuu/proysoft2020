@@ -88,7 +88,6 @@ class CentroNew(Resource):
                     coords = Geocoder(form.data['direccion'])
                 else:
                     coords = [request.form['latitud'],request.form['longitud']]
-                #breakpoint()
                 usuario_logueado = session.get('user')
                 if(usuario_logueado == None):
                     solicitud = "ESPERANDO_REVISION"
@@ -109,9 +108,13 @@ class CentroNew(Resource):
                 print(str(e))
                 if('400 Bad Request' in str(e)):
                     datos = {'status': 400, 'body': 'Bad Request'}
-                    return Response(json.dumps(datos), mimetype='application/json')                    
-                datos = {'status': 500, 'body': 'Internal Server Error'}
-                return Response(json.dumps(datos), mimetype='application/json')
+                    return Response(json.dumps(datos), mimetype='application/json')
+                elif ('out of range' in str(e)):
+                    datos = {'status': 404, 'body': 'Dirección no encontrada'}
+                    return Response(json.dumps(datos), status=404, mimetype='application/json')    
+                else:                     
+                    datos = {'status': 500, 'body': 'Internal Server Error'}
+                    return Response(json.dumps(datos), mimetype='application/json')
 
 
 class TurnosCentro(Resource):
