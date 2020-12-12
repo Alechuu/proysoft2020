@@ -1,6 +1,7 @@
 from os import path, environ
 
 from flask import Flask, render_template, g
+from flask_cors import CORS
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -12,6 +13,8 @@ from config import config
 from app.db import db
 from app.resources import user, auth, configuracion, centro,profile, mainController, turno
 from app.resources.api import centro as centroAPI
+from app.resources.api import turno as turnoAPI
+from app.resources.api import stats as statsAPI
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
@@ -22,6 +25,7 @@ def create_app(environment="development"):
     csrf = CSRFProtect(app)
     Bootstrap(app)
     api = Api(app, decorators=[csrf.exempt])
+    cors = CORS(app, resources={r"/api/*":{"origins": "*"}})
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
@@ -101,4 +105,6 @@ def create_app(environment="development"):
     api.add_resource(centroAPI.TurnosNew, '/api/centros/<id_centro>/reserva')
     api.add_resource(centroAPI.TurnosUpdate, '/api/centros/<id_centro>/modificar-reserva')
     api.add_resource(centroAPI.TurnosCentroRangoFecha, '/api/centros/turnos_tomados')
+    api.add_resource(turnoAPI.Turnos, '/api/turnos')
+    api.add_resource(statsAPI.EstadisticasTurnos, '/api/stats/turnos')
     return app

@@ -1,11 +1,14 @@
-import json
-import os
+import json, os, random
 from datetime import datetime, timedelta
 
-from flask import Response, request
+from flask import Response, request, session, current_app
 from flask_restful import Resource
 from flask_wtf.csrf import CSRFProtect
 
+# ESTO ROMPE EL MODELO MVC. HAY QUE HACER UN METODO EN EL RECURSO USER
+# IMPORTAR DIRECTAMENTE EL MODELO ROMPE EL MVC
+from app.models.user import User 
+# <== ------------------------------------------------------------ =>>
 from app.forms.api.centro import formCentros
 from app.forms.api.turno import formTurno
 from app.helpers.serialize import serializeSQLAlchemy
@@ -13,12 +16,15 @@ from app.helpers.geocoder import geocoder as Geocoder
 from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.models.turno import Turno
+from app.helpers.autorizacion import get_permisos
 
 
 class AllCentros(Resource):
 
     def get(self):
         pagina = request.args.get('pagina')
+        if pagina == None:
+            pagina = 1
         try:
             miConfiguracion = Configuracion.get_first()
             centros = Centro.get_all_api(int(pagina), miConfiguracion.paginado)
@@ -27,15 +33,15 @@ class AllCentros(Resource):
                          'pagina_maxima': centros[2]}
                 return Response(json.dumps(datos), mimetype='application/json')
             parsed_list = []
-            campos_no_deseados = ['latitud', 'longitud',
-                                  'id_tipo_centro', 'estado', 'id_municipio']
+            campos_no_deseados = ['solicitud', 'estado']
             for centro in centros[1]:
                 parsed_list.append(serializeSQLAlchemy(
                     centro, campos_no_deseados))
             datos = {'status': 200, 'body': {'centros': parsed_list,
                                              'total': centros[0], 'pagina': int(pagina)}}
             return Response(json.dumps(datos), mimetype='application/json')
-        except:
+        except Exception as e:
+            print(str(e))
             datos = {'status': 500, 'body': 'Internal Server Error'}
             return Response(json.dumps(datos), mimetype='application/json')
 
@@ -45,14 +51,13 @@ class CentroID(Resource):
     def get(self, id_centro):
         try:
             centro = Centro.get_by_id(id_centro)
-            campos_no_deseados = ['latitud', 'longitud',
-                                  'tipo_centro', 'estado', 'municipio']
             datos = {'status': 200, 'atributos': serializeSQLAlchemy(
-                centro, campos_no_deseados)}
+                centro)}
         except Exception as e:
             if ('__table__' in str(e)):
-                datos = {'status': 401, 'body': 'Not Found'}
+                datos = {'status': 404, 'body': 'Not Found'}
             else:
+                print(str(e))
                 datos = {'status': 500, 'body': 'Internal Server Error'}
         finally:
             return Response(json.dumps(datos), mimetype='application/json')
@@ -64,32 +69,52 @@ class CentroNew(Resource):
         form = formCentros(request.form)
         pdf_visita = request.files['path_pdf']
         # Apendo el path del archivo al formulario
-        if(os.path.exists("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + (pdf_visita.filename).replace(" ", ""))):
+        if(os.path.exists(current_app.root_path+"/static/uploads/" + (pdf_visita.filename).replace(" ", ""))):
             secuencia = 'abcdefghijklmnopqrst'
             result_str = ''.join((random.choice(secuencia) for i in range(30)))
             nombre_archivo = result_str+(pdf_visita.filename).replace(" ", "")
             form.path_pdf.data = "/static/uploads/" + nombre_archivo
-            pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" + nombre_archivo)
+            pdf_visita.save(current_app.root_path+"/static/uploads/" + nombre_archivo)
         else:
             form.path_pdf.data = "/static/uploads/" + (pdf_visita.filename).replace(" ", "")
             # Guardo el archivo
-            pdf_visita.save("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app/static/uploads/" +(pdf_visita.filename).replace(" ", ""))
-        form.estado.data = False
+            pdf_visita.save(current_app.root_path+"/static/uploads/" +(pdf_visita.filename).replace(" ", ""))
         if(not form.validate()):
             datos = {'status': 400, 'body': 'Bad Request'}
             return Response(json.dumps(datos), mimetype='application/json')
         else:
             try:
-                coords = Geocoder(form.data['direccion'])
-                nuevo_centro = Centro.create(form.data, coords)
-                campos_no_deseados = ['latitud', 'longitud',
-                                      'tipo_centro', 'estado', 'municipio']
+                if(request.form['latitud'] == "" and request.form['longitud'] == ""):
+                    coords = Geocoder(form.data['direccion'])
+                else:
+                    coords = [request.form['latitud'],request.form['longitud']]
+                usuario_logueado = session.get('user')
+                if(usuario_logueado == None):
+                    solicitud = "ESPERANDO_REVISION"
+                    form.estado.data = False
+                else:
+                    usuario_logueado = User.find_by_username(usuario_logueado) 
+                    permisos = get_permisos(usuario_logueado)
+                    if 'centro_new' in permisos:
+                        solicitud = "ACEPTADO"
+                        form.estado.data = True
+            
+                nuevo_centro = Centro.create(form.data, coords, solicitud)
+                campos_no_deseados = ['latitud', 'longitud']
                 datos = {'status': '201 Created', 'body': {
                     'atributos': serializeSQLAlchemy(nuevo_centro, campos_no_deseados)}}
                 return Response(json.dumps(datos), mimetype='application/json')
             except Exception as e:
-                datos = {'status': 500, 'body': 'Internal Server Error'}
-                return Response(json.dumps(datos), mimetype='application/json')
+                print(str(e))
+                if('400 Bad Request' in str(e)):
+                    datos = {'status': 400, 'body': 'Bad Request'}
+                    return Response(json.dumps(datos), mimetype='application/json')
+                elif ('out of range' in str(e)):
+                    datos = {'status': 404, 'body': 'Dirección no encontrada'}
+                    return Response(json.dumps(datos), status=404, mimetype='application/json')    
+                else:                     
+                    datos = {'status': 500, 'body': 'Internal Server Error'}
+                    return Response(json.dumps(datos), mimetype='application/json')
 
 
 class TurnosCentro(Resource):
@@ -110,32 +135,33 @@ class TurnosCentro(Resource):
                          'details': 'Fecha Inválida'}
                 return Response(json.dumps(datos), mimetype='application/json')
         try:
-            centro = Centro.get_by_id_and_date(id_centro, fecha)
+            turnos = Turno.get_by_id_centro(id_centro, fecha, fecha)
             turnos_disponibles = [
-                '9:00:00',
-                '9:30:00',
-                '10:00:00',
-                '10:30:00',
-                '11:00:00',
-                '11:30:00',
-                '12:00:00',
-                '12:30:00',
-                '13:00:00',
-                '13:30:00',
-                '14:00:00',
-                '14:30:00',
-                '15:00:00',
-                '15:30:00',
+                '09:00',
+                '09:30',
+                '10:00',
+                '10:30',
+                '11:00',
+                '11:30',
+                '12:00',
+                '12:30',
+                '13:00',
+                '13:30',
+                '14:00',
+                '14:30',
+                '15:00',
+                '15:30',
             ]
-            if(centro != None):
-                for turno in centro.turnos:
-                    if(str(turno.hora_inicio) in turnos_disponibles):
-                        turnos_disponibles.remove(str(turno.hora_inicio))
+            if(turnos != None):
+                for turno in turnos:
+                    if((turno.hora_inicio).strftime("%H:%M") in turnos_disponibles):
+                        turnos_disponibles.remove((turno.hora_inicio).strftime("%H:%M"))
 
+                        
             turnosRespuesta = []
             for turnoLibre in turnos_disponibles:
-                hora_fin = datetime.strptime(turnoLibre, '%H:%M:%S')
-                hora_fin = (hora_fin + timedelta(minutes=30)).time()
+                hora_fin = datetime.strptime(turnoLibre, '%H:%M')
+                hora_fin = ((hora_fin + timedelta(minutes=30)).time()).strftime("%H:%M")
                 turnosRespuesta.append(
                     {
                         'centro_id': id_centro,
@@ -181,6 +207,8 @@ class TurnosNew(Resource):
                     Centro.agregarTurno(turno, centro)
                     datos_turno = {
                         'centro_id': id_centro,
+                        'centro_nombre': centro.nombre,
+                        'centro_municipio': centro.municipio,
                         'email_donante': form.data['email_visitante'],
                         'telefono_donante': form.data['telefono_visitante'],
                         'hora_inicio': str(form.data['hora_inicio']),

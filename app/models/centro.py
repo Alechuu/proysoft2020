@@ -1,5 +1,7 @@
 import os
 
+from flask import current_app
+
 from app import db
 from app.models.turno import Turno
 from app.helpers.geocoder import geocoder as Geocoder
@@ -18,6 +20,7 @@ class Centro(db.Model):
     sitio_web = db.Column(db.String(60),nullable=True)
     email = db.Column(db.String(255), nullable=True)
     estado = db.Column(db.Boolean, default=False)
+    solicitud = db.Column(db.String, nullable=False)
     latitud = db.Column(db.Numeric(9,6), nullable=True)
     longitud = db.Column(db.Numeric(9,6), nullable=True)
     path_pdf = db.Column(db.String(400), nullable=False)
@@ -29,11 +32,15 @@ class Centro(db.Model):
 
     @staticmethod
     def get_all_api(pagina,maxCentros):
-        totales = db.session.query(Centro).count()
-        datos = Centro.query.paginate(pagina,maxCentros,False).items
-        numPaginas = Centro.query.paginate(pagina,maxCentros,False).pages
+        totales = db.session.query(Centro).filter(Centro.estado==1).count()
+        datos = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).items
+        numPaginas = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).pages
         res = [totales,datos,numPaginas]
         return res
+
+    def get_all_turnos_stats():
+        return Centro.query.filter_by(estado=1).all()
+
     
     @staticmethod
     def get_by_id(id_centro):
@@ -50,7 +57,7 @@ class Centro(db.Model):
             raise 
 
 
-    def create(data,coords):
+    def create(data,coords, solicitud):
         nuevo_centro = Centro(
             nombre=data['nombre'],
             direccion=data['direccion'],
@@ -62,6 +69,7 @@ class Centro(db.Model):
             sitio_web=data['sitio_web'],
             email=data['email'],
             estado=data['estado'],
+            solicitud=solicitud,
             latitud=coords[0],
             longitud=coords[1],
             path_pdf=data['path_pdf']
@@ -107,15 +115,13 @@ class Centro(db.Model):
             micentro.tipo_centro = data.get("tipo_centro")
             micentro.sitio_web = data.get("sitio_web")
             micentro.direccion = data.get("direccion")
-            coords = Geocoder(micentro.direccion)
             micentro.email = data.get("email")
             micentro.municipio = data.get("municipio")
             micentro.hora_apertura = data.get("hora_apertura")
             micentro.hora_cierre = data.get("hora_cierre")
-            micentro.latitud=coords[0]
-            micentro.longitud=coords[1]
+            micentro.solicitud=data.get("solicitud")
             if(newPath != "NO_UPDATE_PDF"):
-                os.remove("/home/grupo33.proyecto2020.linti.unlp.edu.ar/app"+micentro.path_pdf)
+                os.remove(current_app.root_path+micentro.path_pdf)
                 micentro.path_pdf = newPath
 
             db.session.commit()
