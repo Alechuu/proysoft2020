@@ -281,6 +281,13 @@ export default {
       return this.formatDate(this.date);
     },
   },
+  mounted() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },
   created() {
     this.fetchMunicipios();
     this.fetchCentros();
@@ -288,13 +295,6 @@ export default {
       this.selectCentro.centro_id = this.$route.query.id;
       this.changeCentro();
     }
-  },
-  mounted() {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
   },
   methods: {
     //Campo de ayuda para filtrar los centros
