@@ -1,10 +1,15 @@
-const Centros = () => import("../views/Centros.vue");
-const EstadoCentro = () => import("../views/EstadoCentro.vue");
+const Centros = () => import("../views/Centros/Centros.vue");
+const EstadoCentro = () => import("../views/Centros/EstadoCentro.vue");
 const Home = () => import("../views/Home.vue");
-const MisTurnos = () => import("../views/MisTurnos.vue");
-const NewCentro = () => import("../views/NewCentro.vue");
-const Turnos = () => import("../views/Turnos.vue");
-const EstadisticasTurnos = () => import("../views/EstadisticasTurnos.vue");
+const MisTurnos = () => import("../views/Turnos/MisTurnos.vue");
+const NewCentro = () => import("../views/Centros/NewCentro.vue");
+const Turnos = () => import("../views/Turnos/Turnos.vue");
+const EstadisticasTurnos = () =>
+  import("../views/Estadisticas/EstadisticasTurnos.vue");
+const EstadisticasHorarios = () =>
+  import("../views/Estadisticas/EstadisticasHorarios.vue");
+const EstadisticasCentros = () =>
+  import("../views/Estadisticas/EstadisticasCentros.vue");
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -45,6 +50,16 @@ const routes = [
     path: "/v/estadisticas/turnos",
     name: "EstadisticasTurnos",
     component: EstadisticasTurnos,
+  },
+  {
+    path: "/v/estadisticas/horarios",
+    name: "EstadisticasHorarios",
+    component: EstadisticasHorarios,
+  },
+  {
+    path: "/v/estadisticas/centros",
+    name: "EstadisticasCentros",
+    component: EstadisticasCentros,
   },
 ];
 
