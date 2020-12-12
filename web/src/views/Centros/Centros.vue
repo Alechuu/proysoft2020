@@ -29,7 +29,13 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="centrosList" :search="search">
+      <v-data-table
+        :loading="cargandoTabla"
+        loading-text="Cargando Centros..."
+        :headers="headers"
+        :items="centrosList"
+        :search="search"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -173,6 +179,7 @@ export default {
       ],
       centrosList: [],
       items: [],
+      cargandoTabla: true,
     };
   },
 
@@ -236,6 +243,7 @@ export default {
               telefono: data.body.centros[centro].telefono,
               link_pdf: data.body.centros[centro].path_pdf,
             });
+            this.cargandoTabla = false;
           }
         });
     },
@@ -277,6 +285,10 @@ export default {
         zoom: {
           animate: true,
         },
+      });
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
       });
     },
 
