@@ -50,6 +50,9 @@ export default {
           icon: "mdi-help-circle",
           descripcion:
             "Acá vas a poder encontrar un montón de Centros ubicados en la Provincia de Buenos Aires. <br/> Podés buscar tu Centro más cercano para donar, recibir asistencia o incluso agregar un Centro nuevo. ",
+          boton: true,
+          botonContent: "Preguntas Frecuentes",
+          link: "/v/faq",
         },
         {
           title: "Donaciones",
