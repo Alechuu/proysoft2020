@@ -10,6 +10,7 @@ const EstadisticasHorarios = () =>
   import("../views/Estadisticas/EstadisticasHorarios.vue");
 const EstadisticasCentros = () =>
   import("../views/Estadisticas/EstadisticasCentros.vue");
+const FAQ = () => import("../views/Faq.vue");
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -60,6 +61,11 @@ const routes = [
     path: "/v/estadisticas/centros",
     name: "EstadisticasCentros",
     component: EstadisticasCentros,
+  },
+  {
+    path: "/v/faq",
+    name: "PreguntasFrecuentes",
+    component: FAQ,
   },
 ];
 
