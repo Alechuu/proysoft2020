@@ -11,6 +11,7 @@ const EstadisticasHorarios = () =>
 const EstadisticasCentros = () =>
   import("../views/Estadisticas/EstadisticasCentros.vue");
 const FAQ = () => import("../views/Faq.vue");
+const NotFound = () => import("../views/NotFound.vue");
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -67,6 +68,8 @@ const routes = [
     name: "PreguntasFrecuentes",
     component: FAQ,
   },
+  { path: "/404", component: NotFound },
+  { path: "*", redirect: "/404" },
 ];
 
 const router = new VueRouter({
