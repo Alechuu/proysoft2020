@@ -102,6 +102,13 @@
 
         <!-- /Opciones de los Turnos -->
       </v-list>
+      <v-list-item to="/v/faq">
+        <v-list-item-icon>
+          <v-icon>mdi-help-circle</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-title>Preguntas Frecuentes</v-list-item-title>
+      </v-list-item>
       <v-list-item @click="darkMode">
         <v-list-item-icon>
           <v-icon>mdi-theme-light-dark</v-icon>
