@@ -37,6 +37,10 @@ class Centro(db.Model):
         numPaginas = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).pages
         res = [totales,datos,numPaginas]
         return res
+
+    def get_all_turnos_stats():
+        return Centro.query.filter_by(estado=1).all()
+
     
     @staticmethod
     def get_by_id(id_centro):

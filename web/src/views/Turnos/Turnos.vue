@@ -29,7 +29,7 @@
       </v-alert>
       <v-card class="mt-5" color="primary" elevation="5">
         <div class="pa-5" style="text-align: center">
-          <v-icon color="white" size="50"> mdi-calendar-month </v-icon>
+          <v-icon color="white" size="50"> mdi-calendar-plus </v-icon>
           <h1 class="text-h4" style="text-align: center; color: white">
             Solicitud de turno
           </h1>
@@ -128,7 +128,7 @@
                   name="centro"
                   id="centro"
                   data-vv-name="select"
-                  prepend-icon="mdi-map"
+                  prepend-icon="mdi-home-heart"
                   required
                   v-on:change="changeCentro"
                 ></v-select>
@@ -281,6 +281,13 @@ export default {
       return this.formatDate(this.date);
     },
   },
+  mounted() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },
   created() {
     this.fetchMunicipios();
     this.fetchCentros();
@@ -288,13 +295,6 @@ export default {
       this.selectCentro.centro_id = this.$route.query.id;
       this.changeCentro();
     }
-  },
-  mounted() {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
   },
   methods: {
     //Campo de ayuda para filtrar los centros

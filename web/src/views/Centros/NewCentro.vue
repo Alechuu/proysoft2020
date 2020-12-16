@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <validation-observer ref="observer" v-slot="{ invalid }">
+    <validation-observer ref="observer">
       <v-overlay :value="overlay">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
@@ -357,21 +357,12 @@
             :loadRecaptchaScript="true"
           >
           </vue-recaptcha>
-          <div v-if="noTildoRecaptcha" class="mt-2 pb-0 mb-0">
-            <h5
-              class="font-weight-light pb-3"
-              style="color: red; text-align: left"
-            >
-              Por favor, tildá la casilla de reCaptcha
-            </h5>
-          </div>
-
           <v-btn
             class="mr-4 mt-10"
             x-large
             style="width: 100%"
             type="submit"
-            :disabled="invalid"
+            :disabled="disableButton"
             color="success"
           >
             enviar
@@ -394,7 +385,6 @@
     </validation-observer>
   </v-container>
 </template>
-
 
 <script>
 import "leaflet/dist/leaflet.css";
@@ -495,8 +485,8 @@ export default {
       longitudInput: "",
       idCentroSolicitud: null,
       recaptchaVerificado: false,
-      noTildoRecaptcha: false,
       themeRecaptcha: "light",
+      disableButton: true,
     };
   },
 
@@ -512,7 +502,24 @@ export default {
       left: 0,
       behavior: "smooth",
     });
+    this.$watch(
+      () => {
+        return this.$refs.observer.flags.invalid;
+      },
+      (val) => {
+        if (val === false) {
+          if (this.recaptchaVerificado === true) {
+            this.disableButton = false;
+          }
+        } else {
+          if (this.disableButton === false) {
+            this.disableButton = true;
+          }
+        }
+      }
+    );
   },
+
   methods: {
     // Función que trae los municipios para llenar el Select
     fetchMunicipios() {
@@ -533,10 +540,6 @@ export default {
     // Submit del formulario junto a sus chequeos + Alertas
     submit() {
       this.$refs.observer.validate();
-      if (!this.recaptchaVerificado) {
-        this.noTildoRecaptcha = true;
-        return false;
-      }
       this.overlay = true;
       const form_data = new FormData(document.getElementById("form_centro"));
       fetch(process.env.VUE_APP_RUTA_API + "centros", {
@@ -562,19 +565,35 @@ export default {
               behavior: "smooth",
             });
           } else {
-            this.overlay = false;
-            window.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: "smooth",
-            });
-            this.alert_type = "error";
-            this.alert_body =
-              "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
-            this.resetAlert = true;
-            this.mostrarBotonAlert = false;
-            this.alert_cerrar = true;
-            this.alert = true;
+            if (data.status === 404) {
+              this.overlay = false;
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              });
+              this.alert_type = "warning";
+              this.alert_body =
+                "¡Ups! No encontramos la dirección que ingresaste. Por favor, elegí manualmente un punto en el mapa.";
+              this.resetAlert = true;
+              this.mostrarBotonAlert = false;
+              this.alert_cerrar = true;
+              this.alert = true;
+            } else {
+              this.overlay = false;
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              });
+              this.alert_type = "error";
+              this.alert_body =
+                "Hubo un error procesando tu solicitud. Por favor, intentá de nuevo.";
+              this.resetAlert = true;
+              this.mostrarBotonAlert = false;
+              this.alert_cerrar = true;
+              this.alert = true;
+            }
           }
         });
     },
@@ -593,9 +612,8 @@ export default {
       this.menu_apertura = false;
       this.menu_cierre = false;
       this.pdf_visita = null;
-      this.$refs.recaptcha.reset();
       this.recaptchaVerificado = false;
-      this.noTildoRecaptcha = false;
+      this.$refs.recaptcha.reset();
       this.$refs.observer.reset();
     },
 
@@ -653,14 +671,14 @@ export default {
     },
 
     recaptchaVerified() {
-      if (this.noTildoRecaptcha) {
-        this.noTildoRecaptcha = false;
-      }
       this.recaptchaVerificado = true;
+      if (this.$refs.observer.flags.invalid === false) {
+        this.disableButton = false;
+      }
     },
 
     recaptchaExpired() {
-      this.noTildoRecaptcha = false;
+      this.disableButton = true;
       this.recaptchaVerificado = false;
     },
 

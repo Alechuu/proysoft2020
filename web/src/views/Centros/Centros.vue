@@ -29,12 +29,50 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="centrosList" :search="search">
+      <v-data-table
+        :loading="cargandoTabla"
+        loading-text="Cargando Centros..."
+        :headers="headers"
+        :items="centrosList"
+        :search="search"
+      >
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="verEnMapa(item)">
-            mdi-map-marker
-          </v-icon>
-          <v-icon small @click="sacarTurno(item)"> mdi-calendar </v-icon>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                small
+                class="mr-2"
+                @click="verEnMapa(item)"
+              >
+                mdi-map-marker
+              </v-icon>
+            </template>
+            <span>Ver en Mapa</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                class="mr-2"
+                v-bind="attrs"
+                v-on="on"
+                small
+                @click="sacarTurno(item)"
+              >
+                mdi-calendar
+              </v-icon>
+            </template>
+            <span>Solicitar Turno</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" small @click="verPDF(item)">
+                mdi-file-pdf
+              </v-icon>
+            </template>
+            <span>Ver Protocolo de Visita</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -60,12 +98,12 @@
         >
           <l-popup>
             <h3>{{ centro.nombre }}</h3>
-            <p><b>Direccion:</b> {{ centro.direccion }},</p>
+            <p><b>Dirección:</b> {{ centro.direccion }}</p>
             <p>
               <b>Horario:</b> {{ centro.hora_apertura }} -
               {{ centro.hora_cierre }}
             </p>
-            <p><b>Telefono:</b> {{ centro.telefono }}</p>
+            <p><b>Teléfono:</b> {{ centro.telefono }}</p>
           </l-popup>
         </l-marker>
       </l-map>
@@ -74,6 +112,7 @@
 </template>
 
 <script>
+import "leaflet/dist/leaflet.css";
 import { latLngBounds, latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 
@@ -140,6 +179,7 @@ export default {
       ],
       centrosList: [],
       items: [],
+      cargandoTabla: true,
     };
   },
 
@@ -201,7 +241,9 @@ export default {
               hora_apertura: data.body.centros[centro].hora_apertura,
               hora_cierre: data.body.centros[centro].hora_cierre,
               telefono: data.body.centros[centro].telefono,
+              link_pdf: data.body.centros[centro].path_pdf,
             });
+            this.cargandoTabla = false;
           }
         });
     },
@@ -244,13 +286,25 @@ export default {
           animate: true,
         },
       });
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
     },
 
     sacarTurno(centro) {
       this.$router.push({
-        path: "/v/turnos",
+        path: "/v/turnos/solicitud",
         query: { id: centro.id },
       });
+    },
+
+    verPDF(centro) {
+      console.log(centro.link_pdf);
+      window.open(
+        process.env.VUE_APP_RUTA_API.slice(0, -5) + centro.link_pdf,
+        "__blank"
+      );
     },
   },
 };
