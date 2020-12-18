@@ -107,4 +107,5 @@ def create_app(environment="development"):
     api.add_resource(centroAPI.TurnosCentroRangoFecha, '/api/centros/turnos_tomados')
     api.add_resource(turnoAPI.Turnos, '/api/turnos')
     api.add_resource(statsAPI.EstadisticasTurnos, '/api/stats/turnos')
+    api.add_resource(statsAPI.EstadisticasCentros, '/api/stats/centros')
     return app
