@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy import func
 
 class Turno(db.Model):
     __tablename__ = "turnos"
@@ -13,6 +14,11 @@ class Turno(db.Model):
     @staticmethod
     def get_all():
         return Turno.query.all()
+
+    def get_horarios_pedidos():
+        #return Turno.query.filter(Turno.hora_inicio).group_by(Turno.hora_inicio).order_by(Turno.hora_inicio).all()
+        #return Turno.query.with_entities(Turno.hora_inicio, label('cantidad', func.count(Turno.hora_inicio))).group_by(Turno.hora_inicio).all()
+        return Turno.query.with_entities(Turno.hora_inicio, func.count(Turno.hora_inicio)).group_by(Turno.hora_inicio).all()
 
     def get_by_date_and_email(date,email):
         return Turno.query.filter(Turno.fecha==date, Turno.email_visitante==email).order_by(Turno.hora_inicio).all()
