@@ -23,7 +23,6 @@ class EstadisticasTurnos(Resource):
             status=200,
             mimetype='application/json'
             )
-        )
 
 
 
