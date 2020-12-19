@@ -66,5 +66,4 @@ class EstadisticasCentros(Resource):
             status=200,
             mimetype='application/json'
             )
-        )
             
