@@ -5,8 +5,10 @@ import Vue from "vue";
 import router from "./router";
 
 import VeBar from "v-charts/lib/bar.common";
+import VeLine from "v-charts/lib/line.common";
 
 Vue.component(VeBar.name, VeBar);
+Vue.component(VeLine.name, VeLine);
 
 Vue.config.productionTip = false;
 

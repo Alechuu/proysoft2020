@@ -1,5 +1,5 @@
 import os
-
+from datetime import datetime
 from flask import current_app
 
 from app import db
@@ -10,54 +10,75 @@ from app.helpers.geocoder import geocoder as Geocoder
 class Centro(db.Model):
     __tablename__ = "centro_ayuda"
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(255),nullable=False)
-    direccion = db.Column(db.String(255),nullable=False)
-    telefono = db.Column(db.String(20),nullable=False)
+    nombre = db.Column(db.String(255), nullable=False)
+    direccion = db.Column(db.String(255), nullable=False)
+    telefono = db.Column(db.String(20), nullable=False)
     hora_apertura = db.Column(db.Time, nullable=True)
     hora_cierre = db.Column(db.Time, nullable=True)
     tipo_centro = db.Column(db.String(255), nullable=True)
     municipio = db.Column(db.String(255), nullable=True)
-    sitio_web = db.Column(db.String(60),nullable=True)
+    sitio_web = db.Column(db.String(60), nullable=True)
     email = db.Column(db.String(255), nullable=True)
     estado = db.Column(db.Boolean, default=False)
     solicitud = db.Column(db.String, nullable=False)
-    latitud = db.Column(db.Numeric(9,6), nullable=True)
-    longitud = db.Column(db.Numeric(9,6), nullable=True)
+    latitud = db.Column(db.Numeric(9, 6), nullable=True)
+    longitud = db.Column(db.Numeric(9, 6), nullable=True)
     path_pdf = db.Column(db.String(400), nullable=False)
     turnos = db.relationship("Turno", backref='centro', lazy=True)
+    fecha_alta = db.Column(db.Date, nullable=True)
 
     @staticmethod
     def get_all():
         return Centro.query.all()
 
     @staticmethod
-    def get_all_api(pagina,maxCentros):
-        totales = db.session.query(Centro).filter(Centro.estado==1).count()
-        datos = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).items
-        numPaginas = Centro.query.filter(Centro.estado==1).paginate(pagina,maxCentros,False).pages
-        res = [totales,datos,numPaginas]
+    def get_all_api(pagina, maxCentros):
+        totales = db.session.query(Centro).filter(Centro.estado == 1).count()
+        datos = Centro.query.filter(Centro.estado == 1).paginate(
+            pagina, maxCentros, False).items
+        numPaginas = Centro.query.filter(Centro.estado == 1).paginate(
+            pagina, maxCentros, False).pages
+        res = [totales, datos, numPaginas]
         return res
 
     def get_all_turnos_stats():
         return Centro.query.filter_by(estado=1).all()
 
-    
+    @staticmethod
+    def get_estadistica_por_municipio(municipio):
+        estadistica = []
+        fecha_inicio = datetime.strptime('2020-01-01', '%Y-%m-%d')
+        for x in range(2, 13):
+            if(x < 10):
+                fecha_fin = datetime.strptime('2020-0' + str(x) + '-01', '%Y-%m-%d')
+            else:
+                fecha_fin = datetime.strptime('2020-' + str(x) + '-01', '%Y-%m-%d')
+            cantCentros = Centro.query.filter(Centro.municipio == municipio, Centro.estado == 1, Centro.fecha_alta.between(fecha_inicio, fecha_fin)).count()
+            cant_turnos = Centro.query.join(Centro.turnos).filter(Centro.municipio == municipio, Turno.fecha.between(fecha_inicio, fecha_fin)).count()
+            dato = {'a_fecha': fecha_fin.strftime('%d-%m-%Y'), 'cant_centros': cantCentros, 'cant_turnos': cant_turnos}
+            estadistica.append(dato)                        
+        fecha_fin = datetime.strptime('2021-01-01', '%Y-%m-%d')
+        cantCentros = Centro.query.filter(Centro.municipio == municipio, Centro.estado == 1, Centro.fecha_alta.between(fecha_inicio, fecha_fin)).count()
+        cant_turnos = Centro.query.join(Centro.turnos).filter(Centro.municipio == municipio, Turno.fecha.between(fecha_inicio, fecha_fin)).count()
+        dato = {'a_fecha': fecha_fin.strftime('%d-%m-%Y'), 'cant_centros': cantCentros, 'cant_turnos': cant_turnos}
+        estadistica.append(dato)
+        return estadistica
+
     @staticmethod
     def get_by_id(id_centro):
         try:
-            return Centro.query.filter_by(id=id_centro).first()            
+            return Centro.query.filter_by(id=id_centro).first()
         except Exception as e:
-            raise 
-    
+            raise
+
     @staticmethod
-    def get_by_id_and_date(id_centro,fecha):
+    def get_by_id_and_date(id_centro, fecha):
         try:
-            return Centro.query.join(Centro.turnos).filter(Centro.id==id_centro,Turno.fecha==fecha).first()      
+            return Centro.query.join(Centro.turnos).filter(Centro.id == id_centro, Turno.fecha == fecha).first()
         except Exception as e:
-            raise 
+            raise
 
-
-    def create(data,coords, solicitud):
+    def create(data, coords, solicitud):
         nuevo_centro = Centro(
             nombre=data['nombre'],
             direccion=data['direccion'],
@@ -72,7 +93,8 @@ class Centro(db.Model):
             solicitud=solicitud,
             latitud=coords[0],
             longitud=coords[1],
-            path_pdf=data['path_pdf']
+            path_pdf=data['path_pdf'],
+            fecha_alta=datetime.now().date()
         )
 
         try:
@@ -84,8 +106,8 @@ class Centro(db.Model):
             raise
             return False
 
-    @staticmethod       
-    def agregarTurno(turno,centro):
+    @staticmethod
+    def agregarTurno(turno, centro):
         try:
             centro.turnos.append(turno)
             db.session.commit()
@@ -98,18 +120,20 @@ class Centro(db.Model):
             raise e
             return False
 
-    @staticmethod 
+    @staticmethod
     def cambiarEstado(id_centro):
-        centro = db.session.query(Centro).filter(Centro.id==id_centro).first()
-        #centro = Centro.find_by_username(nombre) como no tengo el campo username busco asi
+        centro = db.session.query(Centro).filter(
+            Centro.id == id_centro).first()
+        # centro = Centro.find_by_username(nombre) como no tengo el campo username busco asi
         centro.estado = not centro.estado
         db.session.commit()
         return True
 
     @staticmethod
-    def update(data,newPath):       
+    def update(data, newPath):
         try:
-            micentro = db.session.query(Centro).filter(Centro.id==data.get('id_centro')).first()
+            micentro = db.session.query(Centro).filter(
+                Centro.id == data.get('id_centro')).first()
             micentro.nombre = data.get("nombre")
             micentro.telefono = data.get("telefono")
             micentro.tipo_centro = data.get("tipo_centro")
@@ -119,7 +143,7 @@ class Centro(db.Model):
             micentro.municipio = data.get("municipio")
             micentro.hora_apertura = data.get("hora_apertura")
             micentro.hora_cierre = data.get("hora_cierre")
-            micentro.solicitud=data.get("solicitud")
+            micentro.solicitud = data.get("solicitud")
             if(newPath != "NO_UPDATE_PDF"):
                 os.remove(current_app.root_path+micentro.path_pdf)
                 micentro.path_pdf = newPath
@@ -128,17 +152,16 @@ class Centro(db.Model):
         except:
             db.session.rollback()
             raise
- 
+
         return True
 
-    @staticmethod 
+    @staticmethod
     def delete(id_centro):
-        micentro = db.session.query(Centro).filter(Centro.id==id_centro).first()
+        micentro = db.session.query(Centro).filter(
+            Centro.id == id_centro).first()
         if(micentro.turnos == []):
             db.session.delete(micentro)
             db.session.commit()
             return True
         else:
             return False
-
-
