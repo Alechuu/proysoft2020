@@ -2,6 +2,7 @@ import json
 from flask import Response, request
 from flask_restful import Resource
 from app.models.centro import Centro
+from app.models.turno import Turno
 
 
 class EstadisticasTurnos(Resource):
@@ -22,7 +23,29 @@ class EstadisticasTurnos(Resource):
             json.dumps(data),
             status=200,
             mimetype='application/json'
-        )
+            )
+
+
+
+class EstadisticasHorarios(Resource):
+    def get(self):
+        turnos = Turno.get_horarios_pedidos()
+        parsed_data = []
+        for turno in turnos:
+            parsed_data.append({
+                'horario': str(turno.hora_inicio)[:-3],
+                'turnos': turno[1]
+            })
+        data = {
+            'count': len(turnos),
+            'entries' : parsed_data
+        }
+        #breakpoint()
+        return Response(
+            json.dumps(data),
+            status=200,
+            mimetype='application/json'
+            )
 
 
 class EstadisticasCentros(Resource):
@@ -42,4 +65,5 @@ class EstadisticasCentros(Resource):
             json.dumps(data),
             status=200,
             mimetype='application/json'
-        )
+            )
+            

@@ -170,14 +170,24 @@ def delete():
     miConfiguracion = Configuracion.get_first()  
     usuario = User.find_by_username(session.get("user"))
     permisos = get_permisos(usuario)
+    URL= 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=135'
+
+     
+    # sending get request and saving the response as response object 
+    r = requests.get(url = URL) 
+    data = r.json()
+    municipios = []
+    for municipio in data['data']['Town']:
+        municipios.append(data['data']['Town'][municipio]['name'])
+       
     if "centro_destroy" in permisos:
         if(Centro.delete(request.form.get("id_centro"))):
             centros = Centro.get_all()
             notificacion = "¡Se eliminó con éxito al Centro "+request.form.get('nombre')+"!"
-            return render_template("centro/centros.html", permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)
+            return render_template("centro/centros.html", permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)
         else:    
             centros = Centro.get_all()
             notificacion = "¡El centro "+request.form.get('nombre')+" contiene reservas!"
-            return render_template("centro/centros.html", permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros)    
+            return render_template("centro/centros.html", permisos=permisos, notificacion=notificacion, conf=miConfiguracion, centros=centros, municipios = municipios)    
     else:
         abort(401)

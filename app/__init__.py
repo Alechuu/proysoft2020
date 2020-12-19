@@ -108,4 +108,5 @@ def create_app(environment="development"):
     api.add_resource(turnoAPI.Turnos, '/api/turnos')
     api.add_resource(statsAPI.EstadisticasTurnos, '/api/stats/turnos')
     api.add_resource(statsAPI.EstadisticasCentros, '/api/stats/centros')
+    api.add_resource(statsAPI.EstadisticasHorarios, '/api/stats/horarios')
     return app
