@@ -38,7 +38,6 @@ class EstadisticasCentros(Resource):
         estadistica.append({ 'cost': 3123, 'date': '01/05', 'profit': 1523, 'growthRate': 0.12, 'people': 100 })
         estadistica.append({ 'cost': 7123, 'date': '01/06', 'profit': 1523, 'growthRate': 0.65, 'people': 100 }) """
         data = {'lista':estadistica}
-            )
 
 class EstadisticasHorarios(Resource):
     def get(self):
@@ -59,5 +58,4 @@ class EstadisticasHorarios(Resource):
             status=200,
             mimetype='application/json'
         )
-            )
             
