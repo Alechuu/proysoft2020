@@ -10,7 +10,7 @@
     </v-card>
     <v-card class="mt-5">
       <v-card-title class="headline primary">
-        <span style="color: white">Buscá un Centro para compararlo</span>
+        <span style="color: white;text-align:left;">Comparar Centros</span>
       </v-card-title>
       <v-card-text class="mt-5">
         Acá podes comparar la cantidad de <b>Turnos</b> totales por cada

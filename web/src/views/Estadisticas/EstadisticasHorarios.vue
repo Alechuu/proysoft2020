@@ -4,7 +4,7 @@
       <div class="pa-5" style="text-align: center">
         <v-icon color="white" size="50"> mdi-chart-bar </v-icon>
         <h1 class="text-h4" style="text-align: center; color: white">
-          Franjas Horarias mas concurridas
+          Franjas Horarias más concurridas
         </h1>
       </div>
     </v-card>
@@ -14,13 +14,11 @@
         <span style="color: white">Turnos por Franjas Horarias</span>
       </v-card-title>
       <v-card-text class="mt-5">
-        Acá podes comparar la cantidad de <b>Turnos</b> totales por cada 
-        <b>Franja Horaria</b> para saber cuales son los horarios mas concurridos en general
-       
+        Acá podés comparar la cantidad de <b>Turnos</b> totales por cada
+        <b>Franja Horaria</b> para saber cuáles son los horarios más concurridos
+        en general
       </v-card-text>
-      
     </v-card>
-
 
     <!--  <div class="container">
     <line-chart
@@ -28,40 +26,43 @@
       
       :options="options"/>
     </div> -->
-    <transition name="fade">
-      <v-card >
-  
-  <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+    <transition name="slide-fade">
+      <v-card class="mt-5">
+        <ve-line
+          :loading="isLoading"
+          class="pa-5"
+          :data="chartData"
+          :settings="chartSettings"
+        ></ve-line>
 
         <!-- <ve-bar
           class="mt-5 pa-0"
           :settings="chartSettings"
           :data="chartData"
         ></ve-bar> -->
+        <v-overlay :absolute="true" :value="isLoading">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
       </v-card>
     </transition>
-
   </v-container>
 </template>
 
 <script>
-
-
 export default {
   name: "EstadisticasHorarios",
   data() {
     this.chartSettings = {
-        metrics: ['turnos'],
-        dimension: ['horario']
-      }
+      metrics: ["turnos"],
+      dimension: ["horario"],
+    };
 
-    
     return {
       emptyArray: true,
       descriptionLimit: 25,
       chartLimit: 10,
       entries: [],
-      isLoading: false,
+      isLoading: true,
       model: null,
       search: null,
       chartData: {
@@ -71,33 +72,27 @@ export default {
     };
   },
 
-  async mounted () {
-    this.loaded = false
+  async mounted() {
+    this.loaded = false;
     try {
       await fetch(process.env.VUE_APP_RUTA_API + "stats/horarios")
-      .then((res) => res.json())
+        .then((res) => res.json())
         .then((res) => {
           const { count, entries } = res;
           this.count = count;
           this.entries = entries;
-          this.chartData['rows']= this.entries
+          this.chartData["rows"] = this.entries;
         })
         .catch((err) => {
           console.log(err);
         })
         .finally(() => (this.isLoading = false));
-
-    
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   },
-  
-}
-
-
+};
 </script>
-
 
 <style lang="scss">
 .fade-enter-active,

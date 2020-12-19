@@ -19,7 +19,7 @@
           <p class="mt-5" style="text-align:left;white-space: pre-line">
             Debido a la situación que se enfrenta hoy en día en el mundo entero,
             decidimos crear una forma fácil y rápida de poder conectar a
-            personas <br />
+            personas 
             que quieran donar o necesiten una mano, junto con los mismos Centros
             de donación. <br />
             La idea principal es que puedas encontrar tu Centro más cercano y
