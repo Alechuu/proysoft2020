@@ -92,44 +92,6 @@ export default {
   
 }
 
-/* 
-export default {
-  name: "EstadisticasHorarios",
-  data() {
-    this.chartSettings = {
-      dataOrder: {
-        label: "turnos",
-        order: "desc",
-      },
-    };
-    return {
-      emptyArray: false,
-      descriptionLimit: 25,
-      chartLimit: 10,
-      entries: [],
-      isLoading: true,
-      model: null,
-      search: null,
-      chartData: {
-        columns: ["horario", "turnos"],
-        rows: [
-        ],
-      },
-    };
-  },
-  async mounted () {
-    this.loaded = false
-    try {
-      const { turnosList } = await fetch(process.env.VUE_APP_RUTA_API + "stats/turnos")
-      this.chartdata = turnosList
-      this.loaded = true
-    } catch (e) {
-      console.error(e)
-    }
-  }
-}
- */
-
 
 </script>
 

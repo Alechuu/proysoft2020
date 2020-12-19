@@ -23,6 +23,9 @@ class EstadisticasTurnos(Resource):
             status=200,
             mimetype='application/json'
             )
+        )
+
+
 
 class EstadisticasHorarios(Resource):
     def get(self):
@@ -63,4 +66,5 @@ class EstadisticasCentros(Resource):
             status=200,
             mimetype='application/json'
             )
+        )
             
