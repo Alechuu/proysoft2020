@@ -14,9 +14,9 @@
         <span style="color: white">Turnos por Franjas Horarias</span>
       </v-card-title>
       <v-card-text class="mt-5">
-        Acá podes comparar la cantidad de <b>Turnos</b> totales por cada
-        <b>Centro</b>
-        registrado.
+        Acá podes comparar la cantidad de <b>Turnos</b> totales por cada 
+        <b>Franja Horaria</b> para saber cuales son los horarios mas concurridos en general
+       
       </v-card-text>
       
     </v-card>
@@ -30,11 +30,14 @@
     </div> -->
     <transition name="fade">
       <v-card >
-        <ve-bar
+  
+  <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+
+        <!-- <ve-bar
           class="mt-5 pa-0"
           :settings="chartSettings"
           :data="chartData"
-        ></ve-bar>
+        ></ve-bar> -->
       </v-card>
     </transition>
 
@@ -48,11 +51,11 @@ export default {
   name: "EstadisticasHorarios",
   data() {
     this.chartSettings = {
-      dataOrder: {
-        label: "turnos",
-        order: "desc",
-      },
-    };
+        metrics: ['turnos'],
+        dimension: ['horario']
+      }
+
+    
     return {
       emptyArray: true,
       descriptionLimit: 25,

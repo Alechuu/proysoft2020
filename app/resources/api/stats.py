@@ -2,6 +2,7 @@ import json
 from flask import Response, request
 from flask_restful import Resource
 from app.models.centro import Centro
+from app.models.turno import Turno
 
 
 class EstadisticasTurnos(Resource):
