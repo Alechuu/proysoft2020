@@ -37,14 +37,15 @@ export default {
     this.chartSettings = {
       labelMap: {
         a_fecha: 'fecha',
-        cant_centros: 'cantidad centros'
+        cant_centros: 'cantidad centros',
+        cant_turnos: 'cantidad de turnos'
       }
     }
     return {
       selectMunicipio: null,
       itemsMunicipios: [],     
       chartData: {
-        columns: ["a_fecha", 'cant_centros'],
+        columns: ["a_fecha", 'cant_centros', 'cant_turnos'],
         rows: [],
       },
     };

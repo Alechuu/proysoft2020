@@ -54,11 +54,13 @@ class Centro(db.Model):
             else:
                 fecha_fin = datetime.strptime('2020-' + str(x) + '-01', '%Y-%m-%d')
             cantCentros = Centro.query.filter(Centro.municipio == municipio, Centro.estado == 1, Centro.fecha_alta.between(fecha_inicio, fecha_fin)).count()
-            dato = {'a_fecha': fecha_fin.strftime('%d-%m-%Y'), 'cant_centros': cantCentros}
-            estadistica.append(dato)
+            cant_turnos = Centro.query.join(Centro.turnos).filter(Centro.municipio == municipio, Turno.fecha.between(fecha_inicio, fecha_fin)).count()
+            dato = {'a_fecha': fecha_fin.strftime('%d-%m-%Y'), 'cant_centros': cantCentros, 'cant_turnos': cant_turnos}
+            estadistica.append(dato)                        
         fecha_fin = datetime.strptime('2021-01-01', '%Y-%m-%d')
         cantCentros = Centro.query.filter(Centro.municipio == municipio, Centro.estado == 1, Centro.fecha_alta.between(fecha_inicio, fecha_fin)).count()
-        dato = {'a_fecha': fecha_fin.strftime('%d-%m-%Y'), 'cant_centros': cantCentros}
+        cant_turnos = Centro.query.join(Centro.turnos).filter(Centro.municipio == municipio, Turno.fecha.between(fecha_inicio, fecha_fin)).count()
+        dato = {'a_fecha': fecha_fin.strftime('%d-%m-%Y'), 'cant_centros': cantCentros, 'cant_turnos': cant_turnos}
         estadistica.append(dato)
         return estadistica
 
